@@ -1,0 +1,34 @@
+{
+  "config": {
+    "flow_title": "{name} ({unique_id})",
+    "title": "Philips Hue Play HDMI Sync Box",
+    "step": {
+      "user": {
+        "title": "Connect to the device",
+        "data": {
+          "host": "Host"
+        }
+      },
+      "link": {
+        "title": "Link Philips Hue Play HDMI Sync Box",
+        "description": "Press the button on the Philips Hue Play HDMI Sync Box for 3 seconds until it blinks green. Then press the SUBMIT button within 5 seconds to register it with Home Assistant."
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect, please try again",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error",
+      "register_failed": "Failed to register, please try again",
+      "linking": "Unknown linking error occurred."
+    },
+    "abort": {
+      "no_huesyncboxes": "No Philips Hue Play HDMI Sync Boxes discovered",
+      "all_configured": "All Philips Hue Play HDMI Sync Boxes are already configured",
+      "unknown": "Unknown error occurred",
+      "cannot_connect": "Unable to connect to the device",
+      "already_configured": "Device is already configured",
+      "already_in_progress": "Config flow for device is already in progress.",
+      "manual_not_supported": "Manual configuration not supported. Configure the Philips Hue Play HDMI Sync Box from the list of discovered integrations."
+   }
+  }
+}

@@ -1,0 +1,34 @@
+# Describes the format for available huesync services
+
+set_brightness:
+  description: Set the brightnes on the sync box
+  fields:
+    entity_id:
+      description: Name(s) of entities to set brightness.
+      example: 'media_player.huesyncbox'
+    brightness:
+      description: Brightness value to set [0,1].
+      example: 0.5
+
+set_sync_mode:
+  description: Set sync mode to activate on the sync box
+  fields:
+    entity_id:
+      description: Name(s) of entities to activate sync on.
+      example: 'media_player.huesyncbox'
+    mode:
+      description: Mode to set. One of 'video', 'music', 'game'
+      example: 'video'
+
+set_intensity:
+  description: Set intensity for current mode
+  fields:
+    entity_id:
+      description: Name(s) of entities to set intensity on.
+      example: 'media_player.huesyncbox'
+    intensity:
+      description: Intensity to set. One of 'subtle', 'moderate', 'high', 'intense'.
+      example: 'moderate'
+    mode:
+      description: Optional mode to apply intensity to. If not set intensity is applied to current or last used mode.
+      example: 'video'
