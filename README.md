@@ -4,7 +4,7 @@ Custom component for Philips Hue Play HDMI Sync Box devices.
 
 ## Installation
 
-* Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hue Sync app.
+Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hue Sync app before adding it to Home Assistant.
 
 ### HACS
 
