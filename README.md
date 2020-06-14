@@ -31,7 +31,7 @@ Things still to do before it is "done"
 (not priority order)
 
 * Fix known issues
-* ~~Make repository HACS compatible
+* ~~Make repository HACS compatible~~
 * Implement custom service to set all sync parameters at once? Could be usefull for automations
 * Add support for device actions
 * Add support for device conditions
