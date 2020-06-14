@@ -28,7 +28,7 @@
       "cannot_connect": "Unable to connect to the device",
       "already_configured": "Device is already configured",
       "already_in_progress": "Config flow for device is already in progress.",
-      "manual_not_supported": "Manual configuration not supported. Configure the Philips Hue Play HDMI Sync Box from the list of discovered integrations."
+      "manual_not_supported": "Manual configuration not supported. Devices should be discover automatically. Make sure to add `huesyncbox:` to configuraion.yaml."
    }
   }
 }
