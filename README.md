@@ -1,6 +1,6 @@
 # Philips Hue Play HDMI Sync Box
 
-Custom component for Philips Hue Play HDMI Sync Box devices.
+Custom integration for the Philips Hue Play HDMI Sync Box.
 
 ## Installation
 
