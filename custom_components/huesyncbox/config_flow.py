@@ -6,7 +6,6 @@ import voluptuous as vol
 
 from homeassistant import core, config_entries, exceptions
 from homeassistant.core import callback
-from homeassistant.helpers import ConfigType
 
 from .const import DOMAIN, LOGGER  # pylint:disable=unused-import
 from .errors import AuthenticationRequired, CannotConnect
