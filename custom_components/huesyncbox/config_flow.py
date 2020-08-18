@@ -20,7 +20,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def __init__(self):
         """Initialize the config flow."""
-        self.api = None
+        pass
 
     async def async_step_user(self, user_input=None):
         """Handle a flow initialized by the user."""
@@ -38,12 +38,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         try:
-            result = await async_register_aiohuesyncbox(self.hass, self.api)
+            api = await async_get_aiohuesyncbox_from_entry_data(self.context)
+            result = await async_register_aiohuesyncbox(self.hass, api)
             self.context['access_token'] = result['access_token']
             self.context['registration_id'] = result['registration_id']
-
-            await self.api.close()
-            self.api = None
+            await api.close()
 
             return await self._async_create_entry_from_context()
         except AuthenticationRequired:
@@ -93,11 +92,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if await api.is_registered():
             await api.close()
             return await self._async_create_entry_from_context()
-
-        # Keep the api object around since the initial connection has already taken place.
-        # Since the initial connection takes long (~3-4 seconds) this will ease the linking procedure
-        # which only has a time window of 5 seconds
-        self.api = api
 
         return await self.async_step_link()
 
