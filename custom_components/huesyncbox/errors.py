@@ -7,7 +7,7 @@ class HueSyncBoxException(HomeAssistantError):
 
 
 class CannotConnect(HueSyncBoxException):
-    """Unable to connect to the bridge."""
+    """Unable to connect to the syncbox."""
 
 
 class AuthenticationRequired(HueSyncBoxException):

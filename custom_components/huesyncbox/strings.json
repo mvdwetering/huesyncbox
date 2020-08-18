@@ -28,7 +28,7 @@
       "cannot_connect": "Unable to connect to the device",
       "already_configured": "Device is already configured",
       "already_in_progress": "Config flow for device is already in progress.",
-      "manual_not_supported": "Manual configuration not supported. Devices should be discover automatically. Make sure to add `huesyncbox:` to configuraion.yaml."
+      "manual_not_supported": "Manual configuration not supported. Devices should be discovered automatically."
    }
   }
 }

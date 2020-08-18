@@ -8,7 +8,6 @@ import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.generated.zeroconf import ZEROCONF
 from homeassistant.helpers import (config_validation as cv)
 from homeassistant.helpers.config_validation import make_entity_service_schema
 from homeassistant.helpers.service import async_extract_entity_ids
@@ -39,27 +38,12 @@ HUESYNCBOX_SET_INTENSITY_SCHEMA = make_entity_service_schema(
     {vol.Required(HUESYNCBOX_ATTR_INTENSITY): vol.In(HUESYNCBOX_INTENSITIES), vol.Optional(HUESYNCBOX_ATTR_MODE): vol.In(HUESYNCBOX_MODES)}
 )
 
-def _register_zeroconf_hack():
-    """ Dirty hack to get our zeroconf info into the generated file without actually generating it (which is not possible for custom components) """
-    dirname = os.path.dirname(__file__)
-    with open(os.path.join(dirname, "manifest.json")) as manifest_file:
-        manifest = json.load(manifest_file)
-        for service in manifest["zeroconf"]:
-            if service not in ZEROCONF:
-                ZEROCONF[service] = [DOMAIN]
-
-
 async def async_setup(hass: HomeAssistant, config: dict):
     """
     Set up the Philips Hue Play HDMI Sync Box integration.
     Only supporting zeroconf, so nothing to do here.
     """
     hass.data[DOMAIN] = {}
-
-    # This seems to be the earliest place to register with zeroconf
-    # Unfortunately this requires an entry in the configuration.yaml
-    # Apperently this is still early enough so the this list has not been processed yet
-    _register_zeroconf_hack()
 
     return True
 
