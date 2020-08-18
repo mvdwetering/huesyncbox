@@ -21,16 +21,11 @@ Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hu
 * Restart Home Assistant.
 * Devices will be found automatically.
 
-## Known issues
-
-* Linking fails the first time, but works second time (I know what it is just need to get it fixed somehow)
-
 ## TODO
 
 Things still to do before it is "done"
 (not priority order)
 
-* Fix known issues
 * ~~Make repository HACS compatible~~
 * Add component to HACS default list (currently does not meet requirements)
 * Implement custom service to set all sync parameters at once? Could be usefull for automations
