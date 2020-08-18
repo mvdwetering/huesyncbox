@@ -69,11 +69,19 @@ class HueSyncBox:
 
 async def async_register_aiohuesyncbox(hass, api):
     try:
-        with async_timeout.timeout(10):
-            return await api.register("home-assistant", hass.config.location_name)
-    except (aiohuesyncbox.InvalidState, aiohuesyncbox.Unauthorized):
+        with async_timeout.timeout(30):
+            registration_info = None
+            while not registration_info:
+                try:
+                    registration_info = await api.register("Home Assistant", hass.config.location_name)
+                except aiohuesyncbox.InvalidState:
+                    # This is expected as syncbox will be in invalid state until button is pressed
+                    pass
+                await asyncio.sleep(1)
+            return registration_info
+    except (asyncio.TimeoutError, aiohuesyncbox.Unauthorized):
         raise AuthenticationRequired
-    except (asyncio.TimeoutError, aiohuesyncbox.RequestError):
+    except aiohuesyncbox.RequestError:
         raise CannotConnect
     except aiohuesyncbox.AiohuesyncboxException:
         LOGGER.exception("Unknown Philips Hue Play HDMI Sync Box error occurred")

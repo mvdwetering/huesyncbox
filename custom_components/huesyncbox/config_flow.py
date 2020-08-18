@@ -44,6 +44,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             await self.api.close()
             self.api = None
+
             return await self._async_create_entry_from_context()
         except AuthenticationRequired:
             errors["base"] = "register_failed"
