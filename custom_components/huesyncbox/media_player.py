@@ -10,10 +10,11 @@ from homeassistant.components.media_player.const import (
 from homeassistant.const import (
     STATE_OFF, STATE_IDLE, STATE_PLAYING
 )
-
-from .const import DOMAIN, LOGGER, MANUFACTURER_NAME, HUESYNCBOX_MODES, HUESYNCBOX_INTENSITIES
+from homeassistant.components.light import ATTR_BRIGHTNESS, ATTR_BRIGHTNESS_STEP
 
 import aiohuesyncbox
+
+from .const import MANUFACTURER_NAME, DOMAIN, LOGGER, ATTR_SYNC, ATTR_SYNC_TOGGLE, ATTR_MODE, ATTR_MODE_NEXT, ATTR_MODE_PREV, MODES, ATTR_INTENSITY, ATTR_INTENSITY_NEXT, ATTR_INTENSITY_PREV, INTENSITIES, ATTR_INPUT, ATTR_INPUT_NEXT, ATTR_INPUT_PREV, INPUTS
 
 SUPPORT_HUESYNCBOX = SUPPORT_TURN_ON | SUPPORT_TURN_OFF | SUPPORT_SELECT_SOURCE | SUPPORT_PLAY | SUPPORT_PAUSE | SUPPORT_STOP | SUPPORT_VOLUME_SET | SUPPORT_SELECT_SOUND_MODE | SUPPORT_PREVIOUS_TRACK | SUPPORT_NEXT_TRACK
 
@@ -99,12 +100,12 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     async def async_turn_off(self):
         """Turn off media player."""
         await self._huesyncbox.api.execution.set_state(mode='powersave')
-        self.async_schedule_update_ha_state()
+        self.async_schedule_update_ha_state(True)
 
     async def async_turn_on(self):
         """Turn the media player on."""
         await self._huesyncbox.api.execution.set_state(mode='passthrough')
-        self.async_schedule_update_ha_state()
+        self.async_schedule_update_ha_state(True)
 
     async def async_media_play(self):
         """Send play command."""
@@ -120,7 +121,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
                     await self._huesyncbox.api.hue.set_group_state(id, active=False)
             await self._huesyncbox.api.execution.set_state(sync_active=True)
 
-        self.async_schedule_update_ha_state()
+        self.async_schedule_update_ha_state(True)
 
     async def async_media_pause(self):
         """Send pause command."""
@@ -132,7 +133,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     async def async_media_stop(self):
         """Send stop command."""
         await self._huesyncbox.api.execution.set_state(sync_active=False)
-        self.async_schedule_update_ha_state()
+        self.async_schedule_update_ha_state(True)
 
     @property
     def source(self):
@@ -169,15 +170,47 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
 
         if mode != 'powersave':
             attributes['brightness'] = self.scale(api.execution.brightness, [0, MAX_BRIGHTNESS], [0, 1])
-            if not mode in HUESYNCBOX_MODES:
+            if not mode in MODES:
                 mode = api.execution.last_sync_mode
             attributes['intensity'] = getattr(api.execution, mode).intensity
         return attributes
 
+    async def async_set_sync_state(self, sync_state):
+        """Set sync state."""
+
+        # Special handling for Toggle specific mode as that cannot be done in 1 call on the API
+        sync_toggle = sync_state.get(ATTR_SYNC_TOGGLE, None)
+        mode = sync_state.get(ATTR_MODE, None)
+        if sync_toggle and mode:
+            if self._huesyncbox.api.execution.mode != mode:
+                # When not syncing in the desired mode, just turn on the desired mode, no toggle
+                sync_toggle = None
+            else:
+                # Otherwise just toggle, no mode (setting mode would interfere with the toggle)
+                mode = None
+
+        state = {
+            "sync_active": sync_state.get(ATTR_SYNC, None),
+            "sync_toggle": sync_toggle,
+            # "hdmi_active": ,
+            # "hdmi_active_toggle": None,
+            "mode": mode,
+            "mode_cycle": 'next' if ATTR_MODE_NEXT in sync_state else 'previous' if ATTR_MODE_PREV in sync_state else None,
+            "hdmi_source": sync_state.get(ATTR_INPUT, None),
+            "hdmi_source_cycle": 'next' if ATTR_INPUT_NEXT in sync_state else 'previous' if ATTR_INPUT_PREV in sync_state else None,
+            "brightness": int(self.scale(sync_state[ATTR_BRIGHTNESS], [0, 1], [0, MAX_BRIGHTNESS])) if ATTR_BRIGHTNESS in sync_state else None,
+            "brightness_step": int(self.scale(sync_state[ATTR_BRIGHTNESS_STEP], [-1, 1], [-MAX_BRIGHTNESS, MAX_BRIGHTNESS])) if ATTR_BRIGHTNESS_STEP in sync_state else None,
+            "intensity": sync_state.get(ATTR_INTENSITY, None),
+            "intensity_cycle": 'next' if ATTR_INTENSITY_NEXT in sync_state else 'previous' if ATTR_INTENSITY_PREV in sync_state else None,
+        }
+
+        await self._huesyncbox.api.execution.set_state(**state)
+        self.async_schedule_update_ha_state(True)
+
     async def async_set_sync_mode(self, sync_mode):
         """Select sync mode."""
         await self._huesyncbox.api.execution.set_state(mode=sync_mode)
-        self.async_schedule_update_ha_state()
+        self.async_schedule_update_ha_state(True)
 
     async def async_set_intensity(self, intensity, mode):
         """Set intensity for sync mode."""
@@ -189,13 +222,36 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
             mode: {'intensity': intensity}
         }
         await self._huesyncbox.api.execution.set_state(**state)
-        self.async_schedule_update_ha_state()
+        self.async_schedule_update_ha_state(True)
 
     async def async_set_brightness(self, brightness):
         """Set brightness"""
         api_brightness = self.scale(brightness, [0, 1], [0, MAX_BRIGHTNESS])
         await self._huesyncbox.api.execution.set_state(brightness=api_brightness)
-        self.async_schedule_update_ha_state()
+        self.async_schedule_update_ha_state(True)
+
+    def get_mode(self):
+        mode = self._huesyncbox.api.execution.mode
+        if not self._huesyncbox.api.execution.mode in MODES:
+            mode = self._huesyncbox.api.execution.last_sync_mode
+        return mode
+
+    @staticmethod
+    def scale(input_value, input_range, output_range):
+        input_min = input_range[0]
+        input_max = input_range[1]
+        input_spread = input_max - input_min
+
+        output_min = output_range[0]
+        output_max = output_range[1]
+        output_spread = output_max - output_min
+
+        value_scaled = float(input_value - input_min) / float(input_spread)
+
+        return output_min + (value_scaled * output_spread)
+
+
+    # Below properties and methods are temporary to get a "free" UI with the mediaplayer card
 
     @property
     def volume_level(self):
@@ -217,7 +273,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     @property
     def sound_mode_list(self):
         """List of available soundmodes / intensities."""
-        return HUESYNCBOX_INTENSITIES
+        return INTENSITIES
 
     async def async_select_sound_mode(self, sound_mode):
         """Select sound mode, abuse for intensity to get free UI."""
@@ -234,12 +290,6 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
         """Title of current playing media, abuse to disaplay mode + intensity for free UI."""
         return f"{self.get_mode().capitalize()} - {self.sound_mode.capitalize()}"
 
-    def get_mode(self):
-        mode = self._huesyncbox.api.execution.mode
-        if not self._huesyncbox.api.execution.mode in HUESYNCBOX_MODES:
-            mode = self._huesyncbox.api.execution.last_sync_mode
-        return mode
-
     @property
     def media_artist(self):
         """Title of current playing media, abuse to display current source so I have a free UI."""
@@ -248,23 +298,10 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     async def async_media_previous_track(self):
         """Send previous track command, abuse to cycle modes for now."""
         await self._huesyncbox.api.execution.cycle_sync_mode(False)
-        self.async_schedule_update_ha_state()
+        self.async_schedule_update_ha_state(True)
 
     async def async_media_next_track(self):
         """Send next track command, abuse to cycle modes for now."""
         await self._huesyncbox.api.execution.cycle_sync_mode(True)
-        self.async_schedule_update_ha_state()
+        self.async_schedule_update_ha_state(True)
 
-    @staticmethod
-    def scale(input_value, input_range, output_range):
-        input_min = input_range[0]
-        input_max = input_range[1]
-        input_spread = input_max - input_min
-
-        output_min = output_range[0]
-        output_max = output_range[1]
-        output_spread = output_max - output_min
-
-        value_scaled = float(input_value - input_min) / float(input_spread)
-
-        return output_min + (value_scaled * output_spread)

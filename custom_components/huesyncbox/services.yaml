@@ -1,5 +1,44 @@
 # Describes the format for available huesync services
 
+set_sync_state:
+  description: Set sync state of the syncbox
+  fields:
+    entity_id:
+      description: Name(s) of entities to set state.
+      example: 'media_player.huesyncbox'
+    sync:
+      description: Set sync state on/off.
+      example: true
+    sync_toggle:
+      description: Toggle sync state.
+    brightness:
+      description: Brightness value to set [0,1].
+      example: 0.47
+    brightness_step:
+      description: Change brightness. Should be between -1..1.
+      example: -0.1
+    mode:
+      description: Mode to set. One of 'video', 'music', 'game'
+      example: 'video'
+    mode_next:
+      description: Select next mode
+    mode_prev:
+      description: Select previous mode
+    intensity:
+      description: Intensity to set. One of 'subtle', 'moderate', 'high', 'intense'.
+      example: 'moderate'
+    intensity_next:
+      description: Select next intensity
+    intensity_prev:
+      description: Select previous intensity
+    input:
+      description: Input to select. One of 'hdmi1', 'hdmi2', 'hdmi3', 'hdmi4'.
+      example: 'hdmi3'
+    input_next:
+      description: Select next input
+    input_prev:
+      description: Select previous input
+
 set_brightness:
   description: Set the brightnes on the sync box
   fields:
