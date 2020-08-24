@@ -30,5 +30,45 @@
       "already_in_progress": "Config flow for device is already in progress.",
       "manual_not_supported": "Manual configuration not supported. Devices should be discovered automatically."
    }
+  },
+  "device_automation": {
+    "action_type": {
+      "brightness_decrease": "Decrease {entity_name} brightness",
+      "brightness_increase": "Increase {entity_name} brightness",
+      "intensity_down": "Decrease {entity_name} intensity",
+      "intensity_up": "Increase {entity_name} intensity",
+      "intensity_subtle": "Set {entity_name} intensity subtle",
+      "intensity_moderate": "Set {entity_name} intensity moderate",
+      "intensity_high": "Set {entity_name} intensity high",
+      "intensity_intense": "Set {entity_name} intensity extreme",
+      "sync_toggle": "Toggle {entity_name} light syncing",
+      "sync_video_toggle": "Toggle {entity_name} video light syncing",
+      "sync_music_toggle": "Toggle {entity_name} music light syncing",
+      "sync_game_toggle": "Toggle {entity_name} game light syncing",
+      "sync_video_on": "Start {entity_name} video light syncing",
+      "sync_music_on": "Start {entity_name} music light syncing",
+      "sync_game_on": "Start {entity_name} game light syncing",
+      "sync_on": "Turn on {entity_name} light syncing",
+      "sync_off": "Turn off {entity_name} light syncing",
+      "input_next": "Select {entity_name} next input",
+      "input_previous": "Select {entity_name} previous input",
+      "input_hdmi1": "Set {entity_name} input HDMI1",
+      "input_hdmi2": "Set {entity_name} input HDMI2",
+      "input_hdmi3": "Set {entity_name} input HDMI3",
+      "input_hdmi4": "Set {entity_name} input HDMI4",
+      "mode_next": "Select {entity_name} next mode",
+      "mode_previous": "Select {entity_name} previous mode",
+      "mode_game": "Set {entity_name} mode game",
+      "mode_music": "Set {entity_name} mode music",
+      "mode_video": "Set {entity_name} mode video",
+      "toggle": "Toggle {entity_name}",
+      "turn_on": "Turn on {entity_name}",
+      "turn_off": "Turn off {entity_name}"
+    },
+    "condition_type": {
+      "is_on": "{entity_name} is on",
+      "is_off": "{entity_name} is off",
+      "is_syncing": "{entity_name} is syncing"
+    }
   }
 }
