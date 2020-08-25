@@ -7,10 +7,10 @@ DOMAIN = "huesyncbox"
 
 MANUFACTURER_NAME = "Signify"
 
-SERVICE_SET_STATE = 'set_state'
+SERVICE_SET_SYNC_STATE = 'set_sync_state'
 SERVICE_SET_BRIGHTNESS = 'set_brightness'
 SERVICE_SET_INTENSITY = 'set_intensity'
-SERVICE_SET_MODE = 'set_mode'
+SERVICE_SET_MODE = 'set_sync_mode'
 
 ATTR_SYNC = 'sync'
 ATTR_SYNC_TOGGLE = 'sync_toggle'

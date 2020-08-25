@@ -14,7 +14,7 @@ from homeassistant.helpers.service import async_extract_entity_ids
 from homeassistant.components.light import ATTR_BRIGHTNESS, ATTR_BRIGHTNESS_STEP
 
 from .huesyncbox import HueSyncBox, async_remove_entry_from_huesyncbox
-from .const import DOMAIN, LOGGER, ATTR_SYNC, ATTR_SYNC_TOGGLE, ATTR_MODE, ATTR_MODE_NEXT, ATTR_MODE_PREV, MODES, ATTR_INTENSITY, ATTR_INTENSITY_NEXT, ATTR_INTENSITY_PREV, INTENSITIES, ATTR_INPUT, ATTR_INPUT_NEXT, ATTR_INPUT_PREV, INPUTS, SERVICE_SET_STATE, SERVICE_SET_BRIGHTNESS, SERVICE_SET_MODE, SERVICE_SET_INTENSITY
+from .const import DOMAIN, LOGGER, ATTR_SYNC, ATTR_SYNC_TOGGLE, ATTR_MODE, ATTR_MODE_NEXT, ATTR_MODE_PREV, MODES, ATTR_INTENSITY, ATTR_INTENSITY_NEXT, ATTR_INTENSITY_PREV, INTENSITIES, ATTR_INPUT, ATTR_INPUT_NEXT, ATTR_INPUT_PREV, INPUTS, SERVICE_SET_SYNC_STATE, SERVICE_SET_BRIGHTNESS, SERVICE_SET_MODE, SERVICE_SET_INTENSITY
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -118,7 +118,7 @@ async def async_register_services(hass: HomeAssistant):
                 await entry.entity.async_set_sync_state(call.data)
 
     hass.services.async_register(
-        DOMAIN, SERVICE_SET_STATE, async_set_sync_state, schema=HUESYNCBOX_SET_STATE_SCHEMA
+        DOMAIN, SERVICE_SET_SYNC_STATE, async_set_sync_state, schema=HUESYNCBOX_SET_STATE_SCHEMA
     )
 
     async def async_set_sync_mode(call):
@@ -153,7 +153,7 @@ async def async_register_services(hass: HomeAssistant):
 
 
 async def async_unregister_services(hass):
-    hass.services.async_remove(DOMAIN, SERVICE_SET_STATE)
+    hass.services.async_remove(DOMAIN, SERVICE_SET_SYNC_STATE)
     hass.services.async_remove(DOMAIN, SERVICE_SET_BRIGHTNESS)
     hass.services.async_remove(DOMAIN, SERVICE_SET_MODE)
     hass.services.async_remove(DOMAIN, SERVICE_SET_INTENSITY)
