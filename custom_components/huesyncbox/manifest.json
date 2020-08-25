@@ -2,7 +2,8 @@
   "domain": "huesyncbox",
   "name": "Philips Hue Play HDMI Sync Box",
   "config_flow": true,
-  "documentation": "https://www.github.com/mvdwetering/huesyncbox",
+  "documentation": "https://github.com/mvdwetering/huesyncbox",
+  "issue_tracker": "https://github.com/mvdwetering/huesyncbox/issues",
   "requirements": ["aiohuesyncbox==0.0.15"],
   "dependencies": [],
   "codeowners": [
