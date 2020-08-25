@@ -11,6 +11,7 @@ set_sync_state:
       example: true
     sync_toggle:
       description: Toggle sync state.
+      example: true
     brightness:
       description: Brightness value to set [0,1].
       example: 0.47
@@ -22,22 +23,28 @@ set_sync_state:
       example: 'video'
     mode_next:
       description: Select next mode
+      example: true
     mode_prev:
       description: Select previous mode
+      example: true
     intensity:
       description: Intensity to set. One of 'subtle', 'moderate', 'high', 'intense'.
       example: 'moderate'
     intensity_next:
       description: Select next intensity
+      example: true
     intensity_prev:
       description: Select previous intensity
+      example: true
     input:
       description: Input to select. One of 'hdmi1', 'hdmi2', 'hdmi3', 'hdmi4'.
       example: 'hdmi3'
     input_next:
       description: Select next input
+      example: true
     input_prev:
       description: Select previous input
+      example: true
 
 set_brightness:
   description: Set the brightnes on the sync box
