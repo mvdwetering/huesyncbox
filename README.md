@@ -28,8 +28,8 @@ Things still to do before it is "done"
 
 * ~~Make repository HACS compatible~~
 * Add component to HACS default list (currently does not meet requirements)
-* Implement custom service to set all sync parameters at once? Could be usefull for automations
-* Add support for device actions
+* ~~Implement custom service to set all sync parameters at once? Could be usefull for automations~~
+* ~~Add support for device actions~~
 * Add support for device conditions
 * Add support for reproduce state
 * Extend translation for everything relevant (e.g. intensities and modes)
