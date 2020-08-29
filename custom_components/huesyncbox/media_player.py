@@ -60,7 +60,10 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
         try:
             with async_timeout.timeout(5):
                 # Since we need to update multiple endpoints just update all in one call
+                old_device = self._huesyncbox.api.device
                 await self._huesyncbox.api.update()
+                if old_device != self._huesyncbox.api.device:
+                    await self._huesyncbox.async_update_registered_device_info()
                 self._available = True
         except (asyncio.TimeoutError, aiohuesyncbox.AiohuesyncboxException):
             self._available = False

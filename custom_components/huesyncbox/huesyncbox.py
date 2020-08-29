@@ -9,7 +9,7 @@ from homeassistant import config_entries, core, exceptions
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.exceptions import ConfigEntryNotReady
 
-from .const import DOMAIN, LOGGER
+from .const import DOMAIN, LOGGER, MANUFACTURER_NAME
 from .errors import AuthenticationRequired, CannotConnect
 
 class HueSyncBox:
@@ -31,6 +31,7 @@ class HueSyncBox:
             self.api = await async_get_aiohuesyncbox_from_entry_data(self.config_entry.data)
             with async_timeout.timeout(10):
                 await self.api.initialize()
+                await self.async_update_registered_device_info() # Info might have changed while HA was not running
                 initialized = True
         except (aiohuesyncbox.InvalidState, aiohuesyncbox.Unauthorized):
             LOGGER.error("Authorization data for Philips Hue Play HDMI Sync Box %s is invalid. Delete and setup the integration again.", self.config_entry.data["unique_id"])
@@ -63,6 +64,30 @@ class HueSyncBox:
         """
         if self.api is not None:
             await self.api.close()
+
+        return True
+
+    async def async_update_registered_device_info(self):
+        """
+        Update device registry with info from the API
+        """
+        if self.api is not None:
+            device_registry = (
+                await self.hass.helpers.device_registry.async_get_registry()
+            )
+            devices = self.hass.helpers.device_registry.async_entries_for_config_entry(device_registry, self.config_entry.entry_id)
+            # There is one device per configentry
+            device_registry.async_update_device(
+                devices[0].id,
+                name=self.api.device.name,
+                manufacturer=MANUFACTURER_NAME,
+                model=self.api.device.device_type,
+                sw_version= self.api.device.firmware_version,
+            )
+
+            # Title formatting is actually in the translation file, but don't know how to get it from here.
+            # Actually it being in the translation is a bit weird anyway since the frontend can be different language
+            self.hass.config_entries.async_update_entry(self.config_entry, title=f"{self.api.device.name} ({self.api.device.unique_id})")
 
         return True
 
