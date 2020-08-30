@@ -75,10 +75,10 @@ class HueSyncBox:
             device_registry = (
                 await self.hass.helpers.device_registry.async_get_registry()
             )
-            devices = self.hass.helpers.device_registry.async_entries_for_config_entry(device_registry, self.config_entry.entry_id)
-            # There is one device per configentry
-            device_registry.async_update_device(
-                devices[0].id,
+            # Get or create also updates existing entries
+            device_registry.async_get_or_create(
+                config_entry_id=self.config_entry.entry_id,
+                identifiers={(DOMAIN, self.api.device.unique_id)},
                 name=self.api.device.name,
                 manufacturer=MANUFACTURER_NAME,
                 model=self.api.device.device_type,

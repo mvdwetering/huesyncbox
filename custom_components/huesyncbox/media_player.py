@@ -46,14 +46,12 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     @property
     def device_info(self):
         """Return the device info."""
+        # Only return the identifiers so the entry gets linked properly
+        # Managing deviceinfo is done elsewhere
         return {
             'identifiers': {
                 (DOMAIN, self._huesyncbox.api.device.unique_id)
             },
-            'name': self._huesyncbox.api.device.name,
-            'manufacturer': MANUFACTURER_NAME,
-            'model': self._huesyncbox.api.device.device_type,
-            'sw_version': self._huesyncbox.api.device.firmware_version,
         }
 
     async def async_update(self):
