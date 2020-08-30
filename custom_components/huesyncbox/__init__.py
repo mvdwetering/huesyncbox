@@ -50,6 +50,8 @@ HUESYNCBOX_SET_INTENSITY_SCHEMA = make_entity_service_schema(
     {vol.Required(ATTR_INTENSITY): vol.In(INTENSITIES), vol.Optional(ATTR_MODE): vol.In(MODES)}
 )
 
+services_registered = False
+
 async def async_setup(hass: HomeAssistant, config: dict):
     """
     Set up the Philips Hue Play HDMI Sync Box integration.
@@ -73,8 +75,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         )
 
     # Register services on first entry
-    if len(hass.data[DOMAIN].items()) == 1:
+    LOGGER.debug("async_setup_entry len(hass.data[DOMAIN].items()) = %s" % len(hass.data[DOMAIN].items()))
+
+    global services_registered
+    if not services_registered:
         await async_register_services(hass)
+        services_registered = True
 
     return True
 
@@ -96,6 +102,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     # Unregister services when last entry is unloaded
     if len(hass.data[DOMAIN].items()) == 0:
         await async_unregister_services(hass)
+        global services_registered
+        services_registered = False
 
     return unload_ok
 
@@ -110,6 +118,7 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
 
 
 async def async_register_services(hass: HomeAssistant):
+    LOGGER.debug("async_register_services")
 
     async def async_set_sync_state(call):
         entity_ids = await async_extract_entity_ids(hass, call)
@@ -153,6 +162,7 @@ async def async_register_services(hass: HomeAssistant):
 
 
 async def async_unregister_services(hass):
+    LOGGER.debug("async_unregister_services")
     hass.services.async_remove(DOMAIN, SERVICE_SET_SYNC_STATE)
     hass.services.async_remove(DOMAIN, SERVICE_SET_BRIGHTNESS)
     hass.services.async_remove(DOMAIN, SERVICE_SET_MODE)
