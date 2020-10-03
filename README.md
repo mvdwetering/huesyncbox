@@ -2,20 +2,19 @@
 
 Custom integration for the Philips Hue Play HDMI Sync Box.
 
-> Note that since HA 0.114 it is not needed to have `huesyncbox:` in your `configuration.yaml` anymore. Please remove it to avoid possible issues in the future.
+> Since HA 0.114 it is not needed to have `huesyncbox:` in your `configuration.yaml` anymore. Please remove it to avoid possible issues in the future.
 
 ## Installation
 
 Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hue Sync app before adding it to Home Assistant.
 
-### HACS
+### HACS (https://hacs.xyz)
 
-* Add this repository https://github.com/mvdwetering/huesyncbox to HACS as a "custom repository" with category "integration". This option can be found in the ⋮ menu
-* Install the integration from within HACS
+* Install the integration from within HACS (you can use the search box to find it)
 * Restart Home Assistant.
 * Devices will be found automatically.
 
-### Manually
+### Manually (when not using HACS)
 
 * Install the custom component by downloading it and copy it to the custom_components directory as usual.
 * Restart Home Assistant.
@@ -27,7 +26,7 @@ Things still to do before it is "done"
 (not priority order)
 
 * ~~Make repository HACS compatible~~
-* Add component to HACS default list (currently does not meet requirements)
+* ~~Add component to HACS default list (currently does not meet requirements)~~
 * ~~Implement custom service to set all sync parameters at once? Could be usefull for automations~~
 * ~~Add support for device actions~~
 * Add support for device conditions
