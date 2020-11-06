@@ -40,7 +40,7 @@ jobs:
 #            Changes in this Release
 #            - First Change
 #            - Second Change
-          draft: false
+          draft: true
           prerelease: false
       - name: Upload Release Asset
         id: upload-release-asset 
