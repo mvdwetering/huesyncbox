@@ -22,6 +22,13 @@ class HueSyncBox:
         self.api = None # aiohuesyncbox instance
         self.entity = None # Mediaplayer entity
 
+    def __str__(self):
+        output = ""
+        output += f"{self.config_entry}\n"
+        output += f"{self.api}\n"
+        output += f"{self.entity}\n"
+        return output
+
     async def async_setup(self, tries=0):
         """Set up a huesyncbox based on host parameter."""
         hass = self.hass
@@ -114,6 +121,9 @@ async def async_register_aiohuesyncbox(hass, api):
 
 async def async_get_aiohuesyncbox_from_entry_data(entry_data):
     """Create a huesyncbox object from entry data."""
+
+    LOGGER.debug("%s async_get_aiohuesyncbox_from_entry_data\nentry_data:\n%s" % (__name__, str(entry_data)))
+
     return aiohuesyncbox.HueSyncBox(
         entry_data["host"],
         entry_data["unique_id"],

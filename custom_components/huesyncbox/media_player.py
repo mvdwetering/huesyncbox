@@ -26,8 +26,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Setup from config_entry."""
-    device = HueSyncBoxMediaPlayerEntity(hass.data[DOMAIN][config_entry.data["unique_id"]])
-    async_add_entities([device], update_before_add=True)
+    LOGGER.debug("%s async_setup_entry\nconfig_entry:\n%s\nhass.data\n%s" % (__name__, config_entry, str(hass.data[DOMAIN])))
+    entity = HueSyncBoxMediaPlayerEntity(hass.data[DOMAIN][config_entry.data["unique_id"]])
+    async_add_entities([entity], update_before_add=True)
 
 async def async_unload_entry(hass, config_entry):
     # Not sure what to do, entities seem to disappear by themselves

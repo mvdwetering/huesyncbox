@@ -108,6 +108,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "registration_id":  self.context["registration_id"],
         }
 
+        LOGGER.debug("%s _async_create_entry_from_context\entry_data:\n%s\nhass.data\n%s" % (__name__, entry_data, hass.data[DOMAIN]))
+
         return self.async_create_entry(
             # Title should identify this entry, so use device name and lets include unique_id in case of multiple devices with the same name
             title=f"{entry_data['name']} ({entry_data['unique_id']})",

@@ -63,6 +63,9 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up a config entry for Philips Hue Play HDMI Sync Box."""
+
+    LOGGER.debug("%s async_setup_entry\nentry:\n%s\nhass.data\n%s" % (__name__, str(entry), hass.data[DOMAIN]))
+
     huesyncbox = HueSyncBox(hass, entry)
     hass.data[DOMAIN][entry.data["unique_id"]] = huesyncbox
 
