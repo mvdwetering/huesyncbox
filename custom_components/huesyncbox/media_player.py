@@ -162,12 +162,37 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
                 self.async_schedule_update_ha_state()
                 break
 
+    def _get_entertainment_areas(self):
+        """List of available entertainment areas."""
+        areas = []
+        for area in self._huesyncbox.api.hue.groups:
+            areas.append(area.name)
+        return sorted(areas)
+
+    def _get_selected_entertainment_area(self):
+        """Return the name of the active entertainment area."""
+        hue_target = self._huesyncbox.api.execution.hue_target # note that this returns a string like "groups/123"
+        selected_area = None
+        try:
+            parts = hue_target.split('/')
+            id = parts[1]
+            for group in self._huesyncbox.api.hue.groups:
+                if group.id == id:
+                    selected_area = group.name
+                    break
+        except KeyError:
+            LOGGER.warning("Selected entertainment area not available in groups")
+        return selected_area
+
     @property
     def device_state_attributes(self):
         api = self._huesyncbox.api
         mode = api.execution.mode
+
         attributes =  {
             'mode': mode,
+            'entertainment_area_list': self._get_entertainment_areas(),
+            'entertainment_area': self._get_selected_entertainment_area()
         }
 
         if mode != 'powersave':
