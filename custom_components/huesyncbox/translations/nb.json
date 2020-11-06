@@ -1,0 +1,73 @@
+{
+  "config": {
+    "flow_title": "{name} ({unique_id})",
+    "step": {
+      "user": {
+        "title": "Koble til enheten",
+        "data": {
+          "host": "Vert"
+        }
+      },
+      "link": {
+        "title": "Link Philips Hue Play HDMI Sync Box",
+        "description": "Trykk på 'Send' i denne dialogboksen for å starte koblingsprosedyren. Gå deretter til Philips Hue Play HDMI Sync Box og hold knappen inne i 3 sekunder til den blinker grønt for å registrere den hos Home Assistant."
+      }
+    },
+    "error": {
+      "cannot_connect": "Kunne ikke koble til, prøv igjen",
+      "invalid_auth": "Ugyldig godkjenning",
+      "unknown": "Uventet feil",
+      "register_failed": "Kunne ikke registrere, prøv igjen",
+      "linking": "Det oppstod en ukjent koblingsfeil."
+    },
+    "abort": {
+      "no_huesyncboxes": "Ingen Philips Hue Play HDMI-synkroniseringsbokser oppdaget",
+      "all_configured": "Alle Philips Hue Play HDMI-synkroniseringsbokser er allerede konfigurert",
+      "unknown": "Det oppstod en ukjent feil",
+      "cannot_connect": "Kan ikke koble til enheten",
+      "already_configured": "Enheten er allerede konfigurert",
+      "already_in_progress": "Konfigurasjonsflyt for enheten pågår allerede.",
+      "manual_not_supported": "Manuell konfigurasjon støttes ikke. Enheter bør oppdages automatisk."
+   }
+  },
+  "device_automation": {
+    "action_type": {
+      "brightness_decrease": "Reduser lysstyrken",
+      "brightness_increase": "Øk lysstyrken",
+      "intensity_down": "Reduser intensiteten",
+      "intensity_up": "Øk intensiteten",
+      "intensity_subtle": "Angi subtilitet for intensitet",
+      "intensity_moderate": "Still intensiteten moderat",
+      "intensity_high": "Sett intensiteten høyt",
+      "intensity_intense": "Sett intensitet ekstrem",
+      "sync_on": "Start lys synkronisering",
+      "sync_off": "Stopp lys synkronisering",
+      "sync_toggle": "Bytt lys synkronisering",
+      "sync_video_toggle": "Bytt lysbildesynkronisering for videomodus",
+      "sync_music_toggle": "Bytt lysmodus for synkronisering av musikkmodus",
+      "sync_game_toggle": "Veksle spillmodus lys synkronisering",
+      "sync_video_on": "Start synkronisering av videomodus",
+      "sync_music_on": "Start synkronisering av musikkmodus",
+      "sync_game_on": "Start synkronisering av spillmodus",
+      "input_next": "Velg neste inngang",
+      "input_previous": "Velg forrige inngang",
+      "input_hdmi1": "Still inn inngang HDMI1",
+      "input_hdmi2": "Still inn inngang HDMI2",
+      "input_hdmi3": "Still inn inngang HDMI3",
+      "input_hdmi4": "Still inn inngang HDMI4",
+      "mode_next": "Velg neste modus",
+      "mode_previous": "Velg forrige modus",
+      "mode_game": "Sett modus spill",
+      "mode_music": "Sett modus musikk",
+      "mode_video": "Sett modusvideo",
+      "toggle": "Slå på/av",
+      "turn_on": "Slå på",
+      "turn_off": "Slå av"
+    },
+    "condition_type": {
+      "is_on": "{entity_name} er på",
+      "is_off": "{entity_name} er av",
+      "is_syncing": "{entity_name} synkroniseres"
+    }
+  }
+}
