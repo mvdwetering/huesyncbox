@@ -14,7 +14,7 @@ from homeassistant.helpers.service import async_extract_entity_ids
 from homeassistant.components.light import ATTR_BRIGHTNESS, ATTR_BRIGHTNESS_STEP
 
 from .huesyncbox import HueSyncBox, async_remove_entry_from_huesyncbox
-from .const import DOMAIN, LOGGER, ATTR_SYNC, ATTR_SYNC_TOGGLE, ATTR_MODE, ATTR_MODE_NEXT, ATTR_MODE_PREV, MODES, ATTR_INTENSITY, ATTR_INTENSITY_NEXT, ATTR_INTENSITY_PREV, INTENSITIES, ATTR_INPUT, ATTR_INPUT_NEXT, ATTR_INPUT_PREV, INPUTS, SERVICE_SET_SYNC_STATE, SERVICE_SET_BRIGHTNESS, SERVICE_SET_MODE, SERVICE_SET_INTENSITY
+from .const import DOMAIN, LOGGER, ATTR_SYNC, ATTR_SYNC_TOGGLE, ATTR_MODE, ATTR_MODE_NEXT, ATTR_MODE_PREV, MODES, ATTR_INTENSITY, ATTR_INTENSITY_NEXT, ATTR_INTENSITY_PREV, INTENSITIES, ATTR_INPUT, ATTR_INPUT_NEXT, ATTR_INPUT_PREV, INPUTS, ATTR_ENTERTAINMENT_AREA, SERVICE_SET_SYNC_STATE, SERVICE_SET_BRIGHTNESS, SERVICE_SET_MODE, SERVICE_SET_INTENSITY, SERVICE_SET_ENTERTAINMENT_AREA
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -35,6 +35,7 @@ HUESYNCBOX_SET_STATE_SCHEMA = make_entity_service_schema(
         vol.Optional(ATTR_INPUT): vol.In(INPUTS),
         vol.Optional(ATTR_INPUT_NEXT): cv.boolean,
         vol.Optional(ATTR_INPUT_PREV): cv.boolean,
+        vol.Optional(ATTR_ENTERTAINMENT_AREA): cv.string,
     }
 )
 
@@ -48,6 +49,10 @@ HUESYNCBOX_SET_MODE_SCHEMA = make_entity_service_schema(
 
 HUESYNCBOX_SET_INTENSITY_SCHEMA = make_entity_service_schema(
     {vol.Required(ATTR_INTENSITY): vol.In(INTENSITIES), vol.Optional(ATTR_MODE): vol.In(MODES)}
+)
+
+HUESYNCBOX_SET_ENTERTAINMENT_AREA_SCHEMA = make_entity_service_schema(
+    {vol.Required(ATTR_ENTERTAINMENT_AREA): cv.string}
 )
 
 services_registered = False
@@ -159,9 +164,20 @@ async def async_register_services(hass: HomeAssistant):
         DOMAIN, SERVICE_SET_BRIGHTNESS, async_set_brightness, schema=HUESYNCBOX_SET_BRIGHTNESS_SCHEMA
     )
 
+    async def async_set_entertainment_area(call):
+        entity_ids = await async_extract_entity_ids(hass, call)
+        for _, entry in hass.data[DOMAIN].items():
+            if entry.entity and entry.entity.entity_id in entity_ids:
+                await entry.entity.async_select_entertainment_area(call.data.get(ATTR_ENTERTAINMENT_AREA))
+
+    hass.services.async_register(
+        DOMAIN, SERVICE_SET_ENTERTAINMENT_AREA, async_set_entertainment_area, schema=HUESYNCBOX_SET_ENTERTAINMENT_AREA_SCHEMA
+    )
+
 
 async def async_unregister_services(hass):
     hass.services.async_remove(DOMAIN, SERVICE_SET_SYNC_STATE)
     hass.services.async_remove(DOMAIN, SERVICE_SET_BRIGHTNESS)
     hass.services.async_remove(DOMAIN, SERVICE_SET_MODE)
     hass.services.async_remove(DOMAIN, SERVICE_SET_INTENSITY)
+    hass.services.async_remove(DOMAIN, SERVICE_SET_ENTERTAINMENT_AREA)

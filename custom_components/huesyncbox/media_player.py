@@ -14,7 +14,7 @@ from homeassistant.components.light import ATTR_BRIGHTNESS, ATTR_BRIGHTNESS_STEP
 
 import aiohuesyncbox
 
-from .const import MANUFACTURER_NAME, DOMAIN, LOGGER, ATTR_SYNC, ATTR_SYNC_TOGGLE, ATTR_MODE, ATTR_MODE_NEXT, ATTR_MODE_PREV, MODES, ATTR_INTENSITY, ATTR_INTENSITY_NEXT, ATTR_INTENSITY_PREV, INTENSITIES, ATTR_INPUT, ATTR_INPUT_NEXT, ATTR_INPUT_PREV, INPUTS
+from .const import MANUFACTURER_NAME, DOMAIN, LOGGER, ATTR_SYNC, ATTR_SYNC_TOGGLE, ATTR_MODE, ATTR_MODE_NEXT, ATTR_MODE_PREV, MODES, ATTR_INTENSITY, ATTR_INTENSITY_NEXT, ATTR_INTENSITY_PREV, INTENSITIES, ATTR_INPUT, ATTR_INPUT_NEXT, ATTR_INPUT_PREV, INPUTS, ATTR_ENTERTAINMENT_AREA
 
 SUPPORT_HUESYNCBOX = SUPPORT_TURN_ON | SUPPORT_TURN_OFF | SUPPORT_SELECT_SOURCE | SUPPORT_PLAY | SUPPORT_PAUSE | SUPPORT_STOP | SUPPORT_VOLUME_SET | SUPPORT_SELECT_SOUND_MODE | SUPPORT_PREVIOUS_TRACK | SUPPORT_NEXT_TRACK
 
@@ -162,16 +162,31 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
                 self.async_schedule_update_ha_state()
                 break
 
+    async def async_select_entertainment_area(self, area_name):
+        """Select entertainmentarea."""
+        # Area is the user given name, so needs to be mapped back to a valid API value."""
+        group = self._get_group_from_area_name(area_name)
+        if group:
+            await self._huesyncbox.api.execution.set_state(hue_target=f"groups/{group.id}")
+            self.async_schedule_update_ha_state()
+
+    def _get_group_from_area_name(self, area_name):
+        """Get the group object by entertainment area name."""
+        for group in self._huesyncbox.api.hue.groups:
+            if group.name == area_name:
+                return group
+        return None
+
     def _get_entertainment_areas(self):
         """List of available entertainment areas."""
         areas = []
-        for area in self._huesyncbox.api.hue.groups:
-            areas.append(area.name)
+        for group in self._huesyncbox.api.hue.groups:
+            areas.append(group.name)
         return sorted(areas)
 
     def _get_selected_entertainment_area(self):
         """Return the name of the active entertainment area."""
-        hue_target = self._huesyncbox.api.execution.hue_target # note that this returns a string like "groups/123"
+        hue_target = self._huesyncbox.api.execution.hue_target # note that this is a string like "groups/123"
         selected_area = None
         try:
             parts = hue_target.split('/')
@@ -216,6 +231,10 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
                 # Otherwise just toggle, no mode (setting mode would interfere with the toggle)
                 mode = None
 
+        # Entertainment area
+        group = self._get_group_from_area_name(sync_state.get(ATTR_ENTERTAINMENT_AREA, None))
+        hue_target = f"groups/{group.id}" if group else None
+
         state = {
             "sync_active": sync_state.get(ATTR_SYNC, None),
             "sync_toggle": sync_toggle,
@@ -229,6 +248,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
             "brightness_step": int(self.scale(sync_state[ATTR_BRIGHTNESS_STEP], [-1, 1], [-MAX_BRIGHTNESS, MAX_BRIGHTNESS])) if ATTR_BRIGHTNESS_STEP in sync_state else None,
             "intensity": sync_state.get(ATTR_INTENSITY, None),
             "intensity_cycle": 'next' if ATTR_INTENSITY_NEXT in sync_state else 'previous' if ATTR_INTENSITY_PREV in sync_state else None,
+            "hue_target": hue_target,
         }
 
         await self._huesyncbox.api.execution.set_state(**state)

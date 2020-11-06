@@ -45,6 +45,9 @@ set_sync_state:
     input_prev:
       description: Select previous input
       example: true
+    entertainment_area:
+      description: Entertainment area to select. Can be one of the names available in "entertainment_area_list" attribute.
+      example: 'TV Area'
 
 set_brightness:
   description: Set the brightnes on the sync box
@@ -78,3 +81,13 @@ set_intensity:
     mode:
       description: Optional mode to apply intensity to. If not set intensity is applied to current or last used mode.
       example: 'video'
+
+set_entertainment_area:
+  description: Select entertainment area
+  fields:
+    entity_id:
+      description: Name(s) of entities to select entertainment area for.
+      example: 'media_player.huesyncbox'
+    entertainment_area:
+      description: Entertainment area to select. Can be one of the names available in "entertainment_area_list" attribute.
+      example: 'TV Area'
