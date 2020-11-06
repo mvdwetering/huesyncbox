@@ -11,6 +11,7 @@ SERVICE_SET_SYNC_STATE = 'set_sync_state'
 SERVICE_SET_BRIGHTNESS = 'set_brightness'
 SERVICE_SET_INTENSITY = 'set_intensity'
 SERVICE_SET_MODE = 'set_sync_mode'
+SERVICE_SET_ENTERTAINMENT_AREA = 'set_entertainment_area'
 
 ATTR_SYNC = 'sync'
 ATTR_SYNC_TOGGLE = 'sync_toggle'
@@ -46,3 +47,5 @@ INPUT_HDMI3 = 'input3'
 INPUT_HDMI4 = 'input4'
 
 INPUTS = [ INPUT_HDMI1, INPUT_HDMI2, INPUT_HDMI3, INPUT_HDMI4 ]
+
+ATTR_ENTERTAINMENT_AREA = "entertainment_area"
