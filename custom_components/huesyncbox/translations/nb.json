@@ -62,7 +62,7 @@
       "mode_video": "Sett modusvideo",
       "toggle": "Slå på/av",
       "turn_on": "Slå på",
-      "turn_off": "Slå av",
+      "turn_off": "Slå av"
     },
     "condition_type": {
       "is_on": "{entity_name} er på",
