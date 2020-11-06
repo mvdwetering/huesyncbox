@@ -75,8 +75,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         )
 
     # Register services on first entry
-    LOGGER.debug("async_setup_entry len(hass.data[DOMAIN].items()) = %s" % len(hass.data[DOMAIN].items()))
-
     global services_registered
     if not services_registered:
         await async_register_services(hass)
@@ -114,12 +112,10 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     try:
         await async_remove_entry_from_huesyncbox(entry)
     except Exception as e:
-        LOGGER.debug("Unregistering Philips Hue Play HDMI Sync Box failed: %s ", e)
+        LOGGER.warning("Unregistering Philips Hue Play HDMI Sync Box failed: %s ", e)
 
 
 async def async_register_services(hass: HomeAssistant):
-    LOGGER.debug("async_register_services")
-
     async def async_set_sync_state(call):
         entity_ids = await async_extract_entity_ids(hass, call)
         for _, entry in hass.data[DOMAIN].items():
@@ -162,7 +158,6 @@ async def async_register_services(hass: HomeAssistant):
 
 
 async def async_unregister_services(hass):
-    LOGGER.debug("async_unregister_services")
     hass.services.async_remove(DOMAIN, SERVICE_SET_SYNC_STATE)
     hass.services.async_remove(DOMAIN, SERVICE_SET_BRIGHTNESS)
     hass.services.async_remove(DOMAIN, SERVICE_SET_MODE)
