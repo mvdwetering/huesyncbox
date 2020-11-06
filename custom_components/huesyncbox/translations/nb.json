@@ -1,7 +1,6 @@
 {
   "config": {
     "flow_title": "{name} ({unique_id})",
-    "title": "Philips Hue Play HDMI Sync Box",
     "step": {
       "user": {
         "title": "Koble til enheten",
