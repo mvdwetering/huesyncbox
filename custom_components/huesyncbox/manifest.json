@@ -5,7 +5,7 @@
   "documentation": "https://github.com/mvdwetering/huesyncbox",
   "issue_tracker": "https://github.com/mvdwetering/huesyncbox/issues",
   "requirements": ["aiohuesyncbox==0.0.17"],
-  "dependencies": [],
+  "dependencies": ["zeroconf"],
   "codeowners": [
     "@mvdwetering"
   ],
