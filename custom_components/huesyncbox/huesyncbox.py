@@ -4,13 +4,13 @@ import asyncio
 import aiohuesyncbox
 import async_timeout
 import voluptuous as vol
-
 from homeassistant import config_entries, core, exceptions
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.exceptions import ConfigEntryNotReady
 
 from .const import DOMAIN, LOGGER, MANUFACTURER_NAME
 from .errors import AuthenticationRequired, CannotConnect
+
 
 class HueSyncBox:
     """Manages a single Philips Hue Play HDMI Sync Box."""

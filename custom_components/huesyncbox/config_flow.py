@@ -3,13 +3,13 @@ import asyncio
 import logging
 
 import voluptuous as vol
-
-from homeassistant import core, config_entries, exceptions
+from homeassistant import config_entries, core, exceptions
 from homeassistant.core import callback
 
 from .const import DOMAIN, LOGGER  # pylint:disable=unused-import
 from .errors import AuthenticationRequired, CannotConnect
-from .huesyncbox import async_get_aiohuesyncbox_from_entry_data, async_register_aiohuesyncbox
+from .huesyncbox import (async_get_aiohuesyncbox_from_entry_data,
+                         async_register_aiohuesyncbox)
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
