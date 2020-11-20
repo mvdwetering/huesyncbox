@@ -1,23 +1,49 @@
 """Provides device automations for Philips Hue Play HDMI Sync Box."""
 from typing import List, Optional
 
-import homeassistant.helpers.config_validation as cv
-import voluptuous as vol
 from homeassistant.components.light import ATTR_BRIGHTNESS_STEP
-from homeassistant.const import (ATTR_ENTITY_ID, CONF_DEVICE_ID, CONF_DOMAIN,
-                                 CONF_ENTITY_ID, CONF_TYPE, SERVICE_TOGGLE,
-                                 SERVICE_TURN_OFF, SERVICE_TURN_ON)
+from homeassistant.const import (
+    ATTR_ENTITY_ID,
+    CONF_DEVICE_ID,
+    CONF_DOMAIN,
+    CONF_ENTITY_ID,
+    CONF_TYPE,
+    SERVICE_TOGGLE,
+    SERVICE_TURN_OFF,
+    SERVICE_TURN_ON,
+)
 from homeassistant.core import Context, HomeAssistant
 from homeassistant.helpers import entity_registry
+import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
 
-from .const import (ATTR_INPUT, ATTR_INPUT_NEXT, ATTR_INPUT_PREV,
-                    ATTR_INTENSITY, ATTR_INTENSITY_NEXT, ATTR_INTENSITY_PREV,
-                    ATTR_MODE, ATTR_MODE_NEXT, ATTR_MODE_PREV, ATTR_SYNC,
-                    ATTR_SYNC_TOGGLE, DOMAIN, INPUT_HDMI1, INPUT_HDMI2,
-                    INPUT_HDMI3, INPUT_HDMI4, INTENSITY_HIGH,
-                    INTENSITY_INTENSE, INTENSITY_MODERATE, INTENSITY_SUBTLE,
-                    MODE_GAME, MODE_MUSIC, MODE_VIDEO, SERVICE_SET_INTENSITY,
-                    SERVICE_SET_SYNC_STATE)
+from .const import (
+    ATTR_INPUT,
+    ATTR_INPUT_NEXT,
+    ATTR_INPUT_PREV,
+    ATTR_INTENSITY,
+    ATTR_INTENSITY_NEXT,
+    ATTR_INTENSITY_PREV,
+    ATTR_MODE,
+    ATTR_MODE_NEXT,
+    ATTR_MODE_PREV,
+    ATTR_SYNC,
+    ATTR_SYNC_TOGGLE,
+    DOMAIN,
+    INPUT_HDMI1,
+    INPUT_HDMI2,
+    INPUT_HDMI3,
+    INPUT_HDMI4,
+    INTENSITY_HIGH,
+    INTENSITY_INTENSE,
+    INTENSITY_MODERATE,
+    INTENSITY_SUBTLE,
+    MODE_GAME,
+    MODE_MUSIC,
+    MODE_VIDEO,
+    SERVICE_SET_INTENSITY,
+    SERVICE_SET_SYNC_STATE,
+)
 
 SERVICE = "service"
 SERVICE_DATA = "service_data"

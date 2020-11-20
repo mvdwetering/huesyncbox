@@ -11,7 +11,8 @@ from custom_components.huesyncbox import huesyncbox
 # )
 
 
-# TODO: move device registry code from huesyncbox class to async_setup_entry in  __init__.py
+# TODO:
+# move device registry code from huesyncbox class to async_setup_entry in  __init__.py
 # async def test_huesyncbox_setup(hass, mock_api):
 #     """Test a successful setup."""
 #     entry = MockConfigEntry()
@@ -24,6 +25,7 @@ from custom_components.huesyncbox import huesyncbox
 
 #     assert syncbox.api is mock_api
 #     assert mock_api.initialize.call_count == 1
+
 
 async def test_register_aiohuesyncbox_request_error(hass, mock_api):
     """Test we retry to connect if we cannot connect."""

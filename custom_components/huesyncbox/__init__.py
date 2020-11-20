@@ -1,22 +1,38 @@
 """The Philips Hue Play HDMI Sync Box integration."""
 import asyncio
 
-import voluptuous as vol
-from homeassistant.components.light import (ATTR_BRIGHTNESS,
-                                            ATTR_BRIGHTNESS_STEP)
+from homeassistant.components.light import ATTR_BRIGHTNESS, ATTR_BRIGHTNESS_STEP
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.config_validation import make_entity_service_schema
 from homeassistant.helpers.service import async_extract_entity_ids
+import voluptuous as vol
 
-from .const import (ATTR_ENTERTAINMENT_AREA, ATTR_INPUT, ATTR_INPUT_NEXT,
-                    ATTR_INPUT_PREV, ATTR_INTENSITY, ATTR_INTENSITY_NEXT,
-                    ATTR_INTENSITY_PREV, ATTR_MODE, ATTR_MODE_NEXT,
-                    ATTR_MODE_PREV, ATTR_SYNC, ATTR_SYNC_TOGGLE, DOMAIN,
-                    INPUTS, INTENSITIES, LOGGER, MODES, SERVICE_SET_BRIGHTNESS,
-                    SERVICE_SET_ENTERTAINMENT_AREA, SERVICE_SET_INTENSITY,
-                    SERVICE_SET_MODE, SERVICE_SET_SYNC_STATE)
+from .const import (
+    ATTR_ENTERTAINMENT_AREA,
+    ATTR_INPUT,
+    ATTR_INPUT_NEXT,
+    ATTR_INPUT_PREV,
+    ATTR_INTENSITY,
+    ATTR_INTENSITY_NEXT,
+    ATTR_INTENSITY_PREV,
+    ATTR_MODE,
+    ATTR_MODE_NEXT,
+    ATTR_MODE_PREV,
+    ATTR_SYNC,
+    ATTR_SYNC_TOGGLE,
+    DOMAIN,
+    INPUTS,
+    INTENSITIES,
+    LOGGER,
+    MODES,
+    SERVICE_SET_BRIGHTNESS,
+    SERVICE_SET_ENTERTAINMENT_AREA,
+    SERVICE_SET_INTENSITY,
+    SERVICE_SET_MODE,
+    SERVICE_SET_SYNC_STATE,
+)
 from .huesyncbox import HueSyncBox, async_remove_entry_from_huesyncbox
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
