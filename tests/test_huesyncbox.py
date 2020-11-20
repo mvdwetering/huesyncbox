@@ -2,10 +2,9 @@
 
 import aiohuesyncbox
 import pytest
-from pytest_homeassistant_custom_component.async_mock import (AsyncMock, Mock,
-                                                              patch)
+from pytest_homeassistant_custom_component.async_mock import patch
 
-from custom_components.huesyncbox import errors, huesyncbox
+from custom_components.huesyncbox import huesyncbox
 
 # from pytest_homeassistant_custom_component.common import (
 #     MockConfigEntry,

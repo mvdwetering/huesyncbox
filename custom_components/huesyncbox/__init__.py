@@ -1,8 +1,5 @@
 """The Philips Hue Play HDMI Sync Box integration."""
 import asyncio
-import json
-import logging
-import os
 
 import voluptuous as vol
 from homeassistant.components.light import (ATTR_BRIGHTNESS,
