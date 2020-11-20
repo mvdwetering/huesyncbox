@@ -44,7 +44,9 @@ HUESYNCBOX_SET_STATE_SCHEMA = make_entity_service_schema(
         vol.Optional(ATTR_SYNC): cv.boolean,
         vol.Optional(ATTR_SYNC_TOGGLE): cv.boolean,
         vol.Optional(ATTR_BRIGHTNESS): cv.small_float,
-        vol.Optional(ATTR_BRIGHTNESS_STEP): vol.All(vol.Coerce(float), vol.Range(min=-1, max=1)),
+        vol.Optional(ATTR_BRIGHTNESS_STEP): vol.All(
+            vol.Coerce(float), vol.Range(min=-1, max=1)
+        ),
         vol.Optional(ATTR_MODE): vol.In(MODES),
         vol.Optional(ATTR_MODE_NEXT): cv.boolean,
         vol.Optional(ATTR_MODE_PREV): cv.boolean,
@@ -67,7 +69,10 @@ HUESYNCBOX_SET_MODE_SCHEMA = make_entity_service_schema(
 )
 
 HUESYNCBOX_SET_INTENSITY_SCHEMA = make_entity_service_schema(
-    {vol.Required(ATTR_INTENSITY): vol.In(INTENSITIES), vol.Optional(ATTR_MODE): vol.In(MODES)}
+    {
+        vol.Required(ATTR_INTENSITY): vol.In(INTENSITIES),
+        vol.Optional(ATTR_MODE): vol.In(MODES),
+    }
 )
 
 HUESYNCBOX_SET_ENTERTAINMENT_AREA_SCHEMA = make_entity_service_schema(
@@ -75,6 +80,7 @@ HUESYNCBOX_SET_ENTERTAINMENT_AREA_SCHEMA = make_entity_service_schema(
 )
 
 services_registered = False
+
 
 async def async_setup(hass: HomeAssistant, config: dict):
     """
@@ -85,10 +91,14 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
     return True
 
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up a config entry for Philips Hue Play HDMI Sync Box."""
 
-    LOGGER.debug("%s async_setup_entry\nentry:\n%s\nhass.data\n%s" % (__name__, str(entry), hass.data[DOMAIN]))
+    LOGGER.debug(
+        "%s async_setup_entry\nentry:\n%s\nhass.data\n%s"
+        % (__name__, str(entry), hass.data[DOMAIN])
+    )
 
     huesyncbox = HueSyncBox(hass, entry)
     hass.data[DOMAIN][entry.data["unique_id"]] = huesyncbox
@@ -108,6 +118,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         services_registered = True
 
     return True
+
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
@@ -150,7 +161,10 @@ async def async_register_services(hass: HomeAssistant):
                 await entry.entity.async_set_sync_state(call.data)
 
     hass.services.async_register(
-        DOMAIN, SERVICE_SET_SYNC_STATE, async_set_sync_state, schema=HUESYNCBOX_SET_STATE_SCHEMA
+        DOMAIN,
+        SERVICE_SET_SYNC_STATE,
+        async_set_sync_state,
+        schema=HUESYNCBOX_SET_STATE_SCHEMA,
     )
 
     async def async_set_sync_mode(call):
@@ -167,10 +181,15 @@ async def async_register_services(hass: HomeAssistant):
         entity_ids = await async_extract_entity_ids(hass, call)
         for _, entry in hass.data[DOMAIN].items():
             if entry.entity and entry.entity.entity_id in entity_ids:
-                await entry.entity.async_set_intensity(call.data.get(ATTR_INTENSITY), call.data.get(ATTR_MODE, None))
+                await entry.entity.async_set_intensity(
+                    call.data.get(ATTR_INTENSITY), call.data.get(ATTR_MODE, None)
+                )
 
     hass.services.async_register(
-        DOMAIN, SERVICE_SET_INTENSITY, async_set_intensity, schema=HUESYNCBOX_SET_INTENSITY_SCHEMA
+        DOMAIN,
+        SERVICE_SET_INTENSITY,
+        async_set_intensity,
+        schema=HUESYNCBOX_SET_INTENSITY_SCHEMA,
     )
 
     async def async_set_brightness(call):
@@ -180,17 +199,25 @@ async def async_register_services(hass: HomeAssistant):
                 await entry.entity.async_set_brightness(call.data.get(ATTR_BRIGHTNESS))
 
     hass.services.async_register(
-        DOMAIN, SERVICE_SET_BRIGHTNESS, async_set_brightness, schema=HUESYNCBOX_SET_BRIGHTNESS_SCHEMA
+        DOMAIN,
+        SERVICE_SET_BRIGHTNESS,
+        async_set_brightness,
+        schema=HUESYNCBOX_SET_BRIGHTNESS_SCHEMA,
     )
 
     async def async_set_entertainment_area(call):
         entity_ids = await async_extract_entity_ids(hass, call)
         for _, entry in hass.data[DOMAIN].items():
             if entry.entity and entry.entity.entity_id in entity_ids:
-                await entry.entity.async_select_entertainment_area(call.data.get(ATTR_ENTERTAINMENT_AREA))
+                await entry.entity.async_select_entertainment_area(
+                    call.data.get(ATTR_ENTERTAINMENT_AREA)
+                )
 
     hass.services.async_register(
-        DOMAIN, SERVICE_SET_ENTERTAINMENT_AREA, async_set_entertainment_area, schema=HUESYNCBOX_SET_ENTERTAINMENT_AREA_SCHEMA
+        DOMAIN,
+        SERVICE_SET_ENTERTAINMENT_AREA,
+        async_set_entertainment_area,
+        schema=HUESYNCBOX_SET_ENTERTAINMENT_AREA_SCHEMA,
     )
 
 
