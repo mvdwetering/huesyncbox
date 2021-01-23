@@ -22,7 +22,7 @@ Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hu
 
 ## TODO
 
-Things still to do before it is "done"
+Things that can be done to improve the integration.
 (not priority order)
 
 * ~~Make repository HACS compatible~~
@@ -30,10 +30,9 @@ Things still to do before it is "done"
 * ~~Implement custom service to set all sync parameters at once? Could be usefull for automations~~
 * ~~Add support for device actions~~
 * Add support for device conditions
-* Add support for reproduce state
+* Add support for reproduce state (HA scene support)
 * Extend translation for everything relevant (e.g. intensities and modes)
 * Find someone to make a custom card that supports the sync specific stuff
   * Remove mapping to standard media_player attributes
 * Write some tests
 * Code cleanup
-* Submit to HA official repo
