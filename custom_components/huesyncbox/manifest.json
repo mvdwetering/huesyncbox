@@ -9,5 +9,6 @@
   "codeowners": [
     "@mvdwetering"
   ],
-  "zeroconf": ["_huesync._tcp.local."]
+  "zeroconf": ["_huesync._tcp.local."],
+  "version": "1.10.0"
 }
