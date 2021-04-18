@@ -114,7 +114,7 @@ class HueSyncBox:
 
 async def async_register_aiohuesyncbox(hass, api):
     try:
-        with async_timeout.timeout(30):
+        with async_timeout.timeout(60):
             registration_info = None
             while not registration_info:
                 try:
@@ -126,7 +126,10 @@ async def async_register_aiohuesyncbox(hass, api):
                     pass
                 await asyncio.sleep(1)
             return registration_info
-    except (asyncio.TimeoutError, aiohuesyncbox.Unauthorized):
+    except asyncio.TimeoutError:
+        LOGGER.warning("Registration timed out")
+        raise AuthenticationRequired
+    except aiohuesyncbox.Unauthorized:
         raise AuthenticationRequired
     except aiohuesyncbox.RequestError:
         raise CannotConnect
