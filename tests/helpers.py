@@ -1,6 +1,5 @@
 """Test helpers for Philips Hue Play HDMI Sync Box."""
 import pytest
-
 from pytest_homeassistant_custom_component.common import AsyncMock, Mock, patch
 
 

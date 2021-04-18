@@ -3,13 +3,13 @@ import asyncio
 import logging
 
 import voluptuous as vol
-
-from homeassistant import core, config_entries, exceptions
+from homeassistant import config_entries, core, exceptions
 from homeassistant.core import callback
 
 from .const import DOMAIN, LOGGER  # pylint:disable=unused-import
 from .errors import AuthenticationRequired, CannotConnect
-from .huesyncbox import async_get_aiohuesyncbox_from_entry_data, async_register_aiohuesyncbox
+from .huesyncbox import (async_get_aiohuesyncbox_from_entry_data,
+                         async_register_aiohuesyncbox)
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -108,7 +108,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "registration_id":  self.context["registration_id"],
         }
 
-        LOGGER.debug("%s _async_create_entry_from_context\entry_data:\n%s\n" % (__name__, entry_data))
+        LOGGER.debug("%s _async_create_entry_from_context\nentry_data:\n%s\n" % (__name__, entry_data))
 
         return self.async_create_entry(
             # Title should identify this entry, so use device name and lets include unique_id in case of multiple devices with the same name
