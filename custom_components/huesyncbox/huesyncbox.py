@@ -3,8 +3,6 @@ import asyncio
 
 import aiohuesyncbox
 import async_timeout
-import voluptuous as vol
-from homeassistant import config_entries, core, exceptions
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.exceptions import ConfigEntryNotReady
 

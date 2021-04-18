@@ -1,9 +1,5 @@
 """Config flow for Philips Hue Play HDMI Sync Box integration."""
-import asyncio
-import logging
-
-import voluptuous as vol
-from homeassistant import config_entries, core, exceptions
+from homeassistant import config_entries
 from homeassistant.core import callback
 
 from .const import DOMAIN, LOGGER  # pylint:disable=unused-import

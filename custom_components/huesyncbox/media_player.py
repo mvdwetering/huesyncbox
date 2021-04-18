@@ -1,24 +1,21 @@
 import asyncio
-import logging
 
 import aiohuesyncbox
 import async_timeout
 from homeassistant.components.light import (ATTR_BRIGHTNESS,
                                             ATTR_BRIGHTNESS_STEP)
-from homeassistant.components.media_player import (PLATFORM_SCHEMA,
-                                                   MediaPlayerEntity)
+from homeassistant.components.media_player import MediaPlayerEntity
 from homeassistant.components.media_player.const import (
     MEDIA_TYPE_MUSIC, SUPPORT_NEXT_TRACK, SUPPORT_PAUSE, SUPPORT_PLAY,
     SUPPORT_PREVIOUS_TRACK, SUPPORT_SELECT_SOUND_MODE, SUPPORT_SELECT_SOURCE,
-    SUPPORT_STOP, SUPPORT_TURN_OFF, SUPPORT_TURN_ON, SUPPORT_VOLUME_SET,
-    SUPPORT_VOLUME_STEP)
+    SUPPORT_STOP, SUPPORT_TURN_OFF, SUPPORT_TURN_ON, SUPPORT_VOLUME_SET)
 from homeassistant.const import STATE_IDLE, STATE_OFF, STATE_PLAYING
 
 from .const import (ATTR_ENTERTAINMENT_AREA, ATTR_INPUT, ATTR_INPUT_NEXT,
                     ATTR_INPUT_PREV, ATTR_INTENSITY, ATTR_INTENSITY_NEXT,
                     ATTR_INTENSITY_PREV, ATTR_MODE, ATTR_MODE_NEXT,
                     ATTR_MODE_PREV, ATTR_SYNC, ATTR_SYNC_TOGGLE, DOMAIN,
-                    INPUTS, INTENSITIES, LOGGER, MANUFACTURER_NAME, MODES)
+                    INTENSITIES, LOGGER, MODES)
 
 SUPPORT_HUESYNCBOX = SUPPORT_TURN_ON | SUPPORT_TURN_OFF | SUPPORT_SELECT_SOURCE | SUPPORT_PLAY | SUPPORT_PAUSE | SUPPORT_STOP | SUPPORT_VOLUME_SET | SUPPORT_SELECT_SOUND_MODE | SUPPORT_PREVIOUS_TRACK | SUPPORT_NEXT_TRACK
 

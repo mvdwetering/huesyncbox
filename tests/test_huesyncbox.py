@@ -4,7 +4,7 @@ import asyncio
 
 import aiohuesyncbox
 import pytest
-from custom_components.huesyncbox import errors, huesyncbox
+from custom_components.huesyncbox import huesyncbox
 from pytest_homeassistant_custom_component.common import patch
 
 from .helpers import mock_api
