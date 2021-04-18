@@ -1,0 +1,2 @@
+# "Linked" to HA 2021.4.4
+pytest-homeassistant-custom-component==0.3.1
