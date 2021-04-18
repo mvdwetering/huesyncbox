@@ -104,11 +104,9 @@ class HueSyncBox:
                 sw_version=self.api.device.firmware_version,
             )
 
-            # Title formatting is actually in the translation file, but don't know how to get it from here.
-            # Actually it being in the translation is a bit weird anyway since the frontend can be different language
             self.hass.config_entries.async_update_entry(
                 self.config_entry,
-                title=f"{self.api.device.name} ({self.api.device.unique_id})",
+                title=self.api.device.name,
             )
 
         return True

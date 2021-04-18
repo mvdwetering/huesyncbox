@@ -85,8 +85,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.context["registration_id"] = entry_info.get("registration_id")
 
         self.context["title_placeholders"] = {
-            "name": self.context["name"],
-            "unique_id": self.context["unique_id"],
+            "name": self.context["name"]
         }
 
         api = await async_get_aiohuesyncbox_from_entry_data(entry_info)
@@ -114,7 +113,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
         return self.async_create_entry(
-            # Title should identify this entry, so use device name and lets include unique_id in case of multiple devices with the same name
-            title=f"{entry_data['name']} ({entry_data['unique_id']})",
+            title=entry_data['name'],
             data=entry_data,
         )
