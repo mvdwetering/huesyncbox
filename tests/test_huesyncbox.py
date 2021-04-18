@@ -14,7 +14,6 @@ from .helpers import mock_api
 # )
 
 
-
 # TODO: move device registry code from huesyncbox class to async_setup_entry in  __init__.py
 # async def test_huesyncbox_setup(hass, mock_api):
 #     """Test a successful setup."""
@@ -29,6 +28,7 @@ from .helpers import mock_api
 #     assert syncbox.api is mock_api
 #     assert mock_api.initialize.call_count == 1
 
+
 async def test_register_authentication_required(hass, mock_api):
     """Test exception if we cannot connect."""
     with patch.object(
@@ -40,6 +40,7 @@ async def test_register_authentication_required(hass, mock_api):
         mock_api, "register", side_effect=aiohuesyncbox.Unauthorized
     ), pytest.raises(huesyncbox.AuthenticationRequired):
         await huesyncbox.async_register_aiohuesyncbox(hass, mock_api)
+
 
 async def test_register_cannot_connect(hass, mock_api):
     """Test cannot connect exception."""
