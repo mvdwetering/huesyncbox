@@ -10,7 +10,7 @@
       },
       "link": {
         "title": "Link Philips Hue Play HDMI Sync Box",
-        "description": "Press 'Submit' on this dialog to start the linking procedure. Then walk to the Philips Hue Play HDMI Sync Box and hold the button for 3 seconds until it blinks green to register it with Home Assistant."
+        "description": "Press 'Submit' on this dialog to start the linking procedure. Then walk to the Philips Hue Play HDMI Sync Box and hold the button for a few seconds until it blinks green to register it with Home Assistant."
       }
     },
     "error": {
