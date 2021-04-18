@@ -1,8 +1,6 @@
 """The Philips Hue Play HDMI Sync Box integration."""
 import asyncio
-import json
-import logging
-import os
+import textwrap
 
 import voluptuous as vol
 from homeassistant.components.light import ATTR_BRIGHTNESS, ATTR_BRIGHTNESS_STEP
@@ -37,6 +35,7 @@ from .const import (
     SERVICE_SET_SYNC_STATE,
 )
 from .huesyncbox import HueSyncBox, async_remove_entry_from_huesyncbox
+from .helpers import log_config_entry, redacted
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
 
@@ -99,8 +98,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up a config entry for Philips Hue Play HDMI Sync Box."""
 
     LOGGER.debug(
-        "%s async_setup_entry\nentry:\n%s\nhass.data\n%s"
-        % (__name__, str(entry), hass.data[DOMAIN])
+        "%s async_setup_entry\nconfigentry:\n%s\nhass.data\n%s"
+        % (
+            __name__,
+            textwrap.indent(log_config_entry(entry), "  "),
+            [redacted(v) for v in hass.data[DOMAIN].keys()],
+        )
     )
 
     huesyncbox = HueSyncBox(hass, entry)

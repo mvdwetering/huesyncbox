@@ -1,4 +1,5 @@
 import asyncio
+import textwrap
 
 import aiohuesyncbox
 import async_timeout
@@ -38,6 +39,8 @@ from .const import (
     MODES,
 )
 
+from .helpers import log_config_entry, redacted
+
 SUPPORT_HUESYNCBOX = (
     SUPPORT_TURN_ON
     | SUPPORT_TURN_OFF
@@ -63,7 +66,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Setup from config_entry."""
     LOGGER.debug(
         "%s async_setup_entry\nconfig_entry:\n%s\nhass.data\n%s"
-        % (__name__, config_entry, str(hass.data[DOMAIN]))
+        % (
+            __name__,
+            textwrap.indent(log_config_entry(config_entry), "  "),
+            [redacted(v) for v in hass.data[DOMAIN].keys()],
+        )
     )
     entity = HueSyncBoxMediaPlayerEntity(
         hass.data[DOMAIN][config_entry.data["unique_id"]]

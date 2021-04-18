@@ -1,5 +1,6 @@
 """Code to handle a Philips Hue Play HDMI Sync Box."""
 import asyncio
+import textwrap
 
 import aiohuesyncbox
 import async_timeout
@@ -8,6 +9,7 @@ from homeassistant.exceptions import ConfigEntryNotReady
 
 from .const import DOMAIN, LOGGER, MANUFACTURER_NAME
 from .errors import AuthenticationRequired, CannotConnect
+from .helpers import log_entry_data, redacted
 
 
 class HueSyncBox:
@@ -43,7 +45,7 @@ class HueSyncBox:
         except (aiohuesyncbox.InvalidState, aiohuesyncbox.Unauthorized):
             LOGGER.error(
                 "Authorization data for Philips Hue Play HDMI Sync Box %s is invalid. Delete and setup the integration again.",
-                self.config_entry.data["unique_id"],
+                redacted(self.config_entry.data["unique_id"]),
             )
             return False
         except (asyncio.TimeoutError, aiohuesyncbox.RequestError):
@@ -143,7 +145,7 @@ async def async_get_aiohuesyncbox_from_entry_data(entry_data):
 
     LOGGER.debug(
         "%s async_get_aiohuesyncbox_from_entry_data\nentry_data:\n%s"
-        % (__name__, str(entry_data))
+        % (__name__, textwrap.indent(log_entry_data(entry_data), "  "))
     )
 
     return aiohuesyncbox.HueSyncBox(

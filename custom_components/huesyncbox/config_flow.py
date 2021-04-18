@@ -1,9 +1,11 @@
 """Config flow for Philips Hue Play HDMI Sync Box integration."""
+import textwrap
 from homeassistant import config_entries
 from homeassistant.core import callback
 
 from .const import DOMAIN, LOGGER  # pylint:disable=unused-import
 from .errors import AuthenticationRequired, CannotConnect
+from .helpers import log_entry_data, redacted
 from .huesyncbox import (
     async_get_aiohuesyncbox_from_entry_data,
     async_register_aiohuesyncbox,
@@ -48,8 +50,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors["base"] = "cannot_connect"
         except Exception:  # pylint: disable=broad-except
             LOGGER.exception(
-                "Unknown error connecting to the Phlips Hue Play HDMI Sync Box %s at %s",
-                self.context["unique_id"],
+                "Unknown error connecting to the Phlips Hue Play HDMI Sync Box '%s' at %s",
+                redacted(self.context["unique_id"]),
                 self.context["host"],
             )
             errors["base"] = "unknown"
@@ -84,9 +86,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.context["access_token"] = entry_info.get("access_token")
         self.context["registration_id"] = entry_info.get("registration_id")
 
-        self.context["title_placeholders"] = {
-            "name": self.context["name"]
-        }
+        self.context["title_placeholders"] = {"name": self.context["name"]}
 
         api = await async_get_aiohuesyncbox_from_entry_data(entry_info)
         if await api.is_registered():
@@ -109,10 +109,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         LOGGER.debug(
             "%s _async_create_entry_from_context\nentry_data:\n%s\n"
-            % (__name__, entry_data)
+            % (__name__, textwrap.indent(log_entry_data(entry_data), "  "))
         )
 
         return self.async_create_entry(
-            title=entry_data['name'],
+            title=entry_data["name"],
             data=entry_data,
         )
