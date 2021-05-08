@@ -40,6 +40,7 @@ from .const import (
 )
 
 from .helpers import log_config_entry, redacted
+from .huesyncbox import PhilipsHuePlayHdmiSyncBox
 
 SUPPORT_HUESYNCBOX = (
     SUPPORT_TURN_ON
@@ -87,7 +88,7 @@ async def async_unload_entry(hass, config_entry):
 class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     """Representation of a HueSyncBox as mediaplayer."""
 
-    def __init__(self, huesyncbox):
+    def __init__(self, huesyncbox: PhilipsHuePlayHdmiSyncBox) -> None:
         self._huesyncbox = huesyncbox
         self._available = False
         huesyncbox.entity = self

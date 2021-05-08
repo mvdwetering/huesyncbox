@@ -12,7 +12,7 @@ from .errors import AuthenticationRequired, CannotConnect
 from .helpers import log_entry_data, redacted
 
 
-class HueSyncBox:
+class PhilipsHuePlayHdmiSyncBox:
     """Manages a single Philips Hue Play HDMI Sync Box."""
 
     def __init__(self, hass, config_entry):

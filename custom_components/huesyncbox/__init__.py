@@ -34,7 +34,7 @@ from .const import (
     SERVICE_SET_MODE,
     SERVICE_SET_SYNC_STATE,
 )
-from .huesyncbox import HueSyncBox, async_remove_entry_from_huesyncbox
+from .huesyncbox import PhilipsHuePlayHdmiSyncBox, async_remove_entry_from_huesyncbox
 from .helpers import log_config_entry, redacted
 
 CONFIG_SCHEMA = vol.Schema({DOMAIN: vol.Schema({})}, extra=vol.ALLOW_EXTRA)
@@ -106,7 +106,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         )
     )
 
-    huesyncbox = HueSyncBox(hass, entry)
+    huesyncbox = PhilipsHuePlayHdmiSyncBox(hass, entry)
     hass.data[DOMAIN][entry.data["unique_id"]] = huesyncbox
 
     if not await huesyncbox.async_setup():
