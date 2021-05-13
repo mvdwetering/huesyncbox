@@ -41,6 +41,14 @@ class PhilipsHuePlayHdmiSyncBox:
             with async_timeout.timeout(10):
                 await self.api.initialize()
                 await self.async_update_registered_device_info()  # Info might have changed while HA was not running
+                if self.api.hue.connection_state not in [
+                    "connected",
+                    "streaming",
+                    "busy",
+                ]:
+                    LOGGER.warning(
+                        "There seems to be an issue with the Hue bridge that is connected to the Philips Hue Play HDMI Sync Box. Use the Hue Sync app to fix the issue."
+                    )
                 initialized = True
         except (aiohuesyncbox.InvalidState, aiohuesyncbox.Unauthorized):
             LOGGER.error(
