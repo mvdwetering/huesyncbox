@@ -37,12 +37,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         try:
-            api = await async_get_aiohuesyncbox_from_entry_data(self.context)
-            result = await async_register_aiohuesyncbox(self.hass, api)
-            self.context["access_token"] = result["access_token"]
-            self.context["registration_id"] = result["registration_id"]
-            await api.close()
-
+            async with await async_get_aiohuesyncbox_from_entry_data(
+                self.context
+            ) as api:
+                result = await async_register_aiohuesyncbox(self.hass, api)
+                self.context["access_token"] = result["access_token"]
+                self.context["registration_id"] = result["registration_id"]
             return await self._async_create_entry_from_context()
         except AuthenticationRequired:
             errors["base"] = "register_failed"
@@ -50,7 +50,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors["base"] = "cannot_connect"
         except Exception:  # pylint: disable=broad-except
             LOGGER.exception(
-                "Unknown error connecting to the Phlips Hue Play HDMI Sync Box '%s' at %s",
+                "Unknown error connecting to the Philips Hue Play HDMI Sync Box '%s' at %s",
                 redacted(self.context["unique_id"]),
                 self.context["host"],
             )
@@ -88,10 +88,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         self.context["title_placeholders"] = {"name": self.context["name"]}
 
-        api = await async_get_aiohuesyncbox_from_entry_data(entry_info)
-        if await api.is_registered():
-            await api.close()
-            return await self._async_create_entry_from_context()
+        async with await async_get_aiohuesyncbox_from_entry_data(entry_info) as api:
+            if await api.is_registered():
+                return await self._async_create_entry_from_context()
 
         return await self.async_step_link()
 
