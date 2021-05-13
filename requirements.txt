@@ -1,2 +1,2 @@
 # Must be same as in the manifest
-aiohuesyncbox==0.0.19
+aiohuesyncbox==0.0.20
