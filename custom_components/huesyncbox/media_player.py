@@ -240,8 +240,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
         )  # note that this is a string like "groups/123"
         selected_area = None
         try:
-            parts = hue_target.split("/")
-            id = parts[1]
+            id = hue_target.replace("groups/", "")
             for group in self._huesyncbox.api.hue.groups:
                 if group.id == id:
                     selected_area = group.name
