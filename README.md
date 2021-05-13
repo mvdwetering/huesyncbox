@@ -2,8 +2,6 @@
 
 Custom integration for the Philips Hue Play HDMI Sync Box.
 
-> Since HA 0.114 it is not needed to have `huesyncbox:` in your `configuration.yaml` anymore. Please remove it to avoid possible issues in the future.
-
 ## Installation
 
 Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hue Sync app before adding it to Home Assistant.
@@ -24,7 +22,7 @@ Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hu
 
 There have been reports from people where Home Assistant was not able to find the Philips Hue Play HDMI Sync Box.
 It is unclear why it happens, but for some people powercycling the Philips Hue Play HDMI Sync Box and/or restarting
-Home Assistant helped.
+Home Assistant seemed to help.
 
 ## TODO
 
