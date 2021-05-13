@@ -40,7 +40,10 @@ from .const import (
 )
 
 from .helpers import log_config_entry, redacted
-from .huesyncbox import PhilipsHuePlayHdmiSyncBox
+from .huesyncbox import (
+    PhilipsHuePlayHdmiSyncBox,
+    async_retry_if_someone_else_is_syncing,
+)
 
 SUPPORT_HUESYNCBOX = (
     SUPPORT_TURN_ON
@@ -158,17 +161,10 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
 
     async def async_media_play(self):
         """Send play command."""
-        try:
-            await self._huesyncbox.api.execution.set_state(sync_active=True)
-        except aiohuesyncbox.InvalidState:
-            # Most likely another application is already syncing to the bridge
-            # Since there is no way to ask the user what to do just
-            # stop the active application and try to activate again
-            for id, info in self._huesyncbox.api.hue.groups.items():
-                if info["active"]:
-                    LOGGER.info(f'Deactivating syncing for {info["owner"]}')
-                    await self._huesyncbox.api.hue.set_group_state(id, active=False)
-            await self._huesyncbox.api.execution.set_state(sync_active=True)
+        await async_retry_if_someone_else_is_syncing(
+            self._huesyncbox,
+            lambda: self._huesyncbox.api.execution.set_state(sync_active=True),
+        )
 
         self.async_schedule_update_ha_state(True)
 
@@ -329,12 +325,18 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
             "hue_target": hue_target,
         }
 
-        await self._huesyncbox.api.execution.set_state(**state)
+        await async_retry_if_someone_else_is_syncing(
+            self._huesyncbox, lambda: self._huesyncbox.api.execution.set_state(**state)
+        )
+
         self.async_schedule_update_ha_state(True)
 
     async def async_set_sync_mode(self, sync_mode):
         """Select sync mode."""
-        await self._huesyncbox.api.execution.set_state(mode=sync_mode)
+        await async_retry_if_someone_else_is_syncing(
+            self._huesyncbox, self._huesyncbox.api.execution.set_state(mode=sync_mode)
+        )
+
         self.async_schedule_update_ha_state(True)
 
     async def async_set_intensity(self, intensity, mode):

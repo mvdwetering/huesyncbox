@@ -122,7 +122,7 @@ class PhilipsHuePlayHdmiSyncBox:
         return True
 
 
-async def async_register_aiohuesyncbox(hass, api):
+async def async_register_aiohuesyncbox(hass, api: aiohuesyncbox.HueSyncBox):
     try:
         with async_timeout.timeout(60):
             registration_info = None
@@ -169,3 +169,19 @@ async def async_remove_entry_from_huesyncbox(entry):
     with async_timeout.timeout(10):
         async with await async_get_aiohuesyncbox_from_entry_data(entry.data) as api:
             await api.unregister(entry.data["registration_id"])
+
+
+async def async_retry_if_someone_else_is_syncing(hsb: PhilipsHuePlayHdmiSyncBox, func):
+    try:
+        await func()
+    except aiohuesyncbox.InvalidState:
+        # Most likely another application is already syncing to the bridge
+        # Since there is no way to ask the user what to do just
+        # stop the active application and try again
+        for group in hsb.api.hue.groups:
+            if group.active:
+                LOGGER.info(
+                    f"Deactivating syncing on '{hsb.api.device.name}' for entertainment area '{group.id}' with name '{group.name}' in use by '{group.owner}'"
+                )
+                await hsb.api.hue.set_group_active(group.id, active=False)
+        await func()
