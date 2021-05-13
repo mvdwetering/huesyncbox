@@ -10,5 +10,6 @@
     "@mvdwetering"
   ],
   "zeroconf": ["_huesync._tcp.local."],
+  "iot_class": "local_polling",
   "version": "1.10.0"
 }
