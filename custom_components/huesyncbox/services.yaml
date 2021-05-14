@@ -1,93 +1,196 @@
 # Describes the format for available huesync services
 
 set_sync_state:
-  description: Set sync state of the syncbox
+  name: Set sync state
+  description: Control the complete sync state of the syncbox. This is an advanced service and contains potential conflicting fields. Use responsibly!
+  target:
+    entity:
+      integration: huesyncbox
+      domain: media_player
   fields:
-    entity_id:
-      description: Name(s) of entities to set state.
-      example: 'media_player.huesyncbox'
     sync:
-      description: Set sync state on/off.
+      name: Sync
+      description: Set sync state on or off.
       example: true
+      selector:
+        boolean:
     sync_toggle:
-      description: Toggle sync state.
+      name: Sync toggle
+      description: Toggle sync state between on/off.
       example: true
+      selector:
+        boolean:
     brightness:
+      name: Brightness
       description: Brightness value to set [0,1].
-      example: 0.47
+      example: 0.42
+      selector:
+        number:
+          min: 0.0
+          max: 1.0
+          mode: slider
     brightness_step:
-      description: Change brightness. Should be between -1..1.
-      example: -0.1
+      name: Brightness step
+      description: Change brightness relative to the current state. Should be between -1..1.
+      example: -0.2
+      selector:
+        number:
+          min: -1.0
+          max: 1.0
+          mode: slider
     mode:
-      description: Mode to set. One of 'video', 'music', 'game'
-      example: 'video'
+      name: Mode
+      description: Mode to set. One of 'video', 'music', 'game'.
+      example: video
+      selector:
+        select:
+          options:
+            - video
+            - music
+            - game
     mode_next:
-      description: Select next mode
+      name: Next mode
+      description: Select next mode, will wrap around.
       example: true
+      selector:
+        boolean:
     mode_prev:
-      description: Select previous mode
+      name: Previous mode
+      description: Select previous mode, will wrap around.
       example: true
+      selector:
+        boolean:
     intensity:
+      name: Intensity
       description: Intensity to set. One of 'subtle', 'moderate', 'high', 'intense'.
-      example: 'moderate'
+      example: high
+      selector:
+        select:
+          options:
+            - subtle
+            - moderate
+            - high
+            - intense
     intensity_next:
-      description: Select next intensity
+      name: Next intensity
+      description: Select next intensity.
       example: true
+      selector:
+        boolean:
     intensity_prev:
-      description: Select previous intensity
+      name: Previous intensity
+      description: Select previous intensity.
       example: true
+      selector:
+        boolean:
     input:
-      description: Input to select. One of 'hdmi1', 'hdmi2', 'hdmi3', 'hdmi4'.
-      example: 'hdmi3'
+      name: Input
+      description: Input to select. One of 'input1', 'input2', 'input3', 'input4'.
+      example: input1
+      selector:
+        select:
+          options:
+            - input1
+            - input2
+            - input3
+            - input4
     input_next:
-      description: Select next input
+      name: Next input
+      description: Select next input, wraps around.
       example: true
+      selector:
+        boolean:
     input_prev:
-      description: Select previous input
+      name: Previous input
+      description: Select previous input, wraps around.
       example: true
+      selector:
+        boolean:
     entertainment_area:
-      description: Entertainment area to select. Can be one of the names available in "entertainment_area_list" attribute.
-      example: 'TV Area'
+      name: Entertainment area
+      description: Entertainment area to select. Can be one of the names available in 'entertainment_area_list' attribute.
+      example: TV Area
+      selector:
+        text:
 
 set_brightness:
-  description: Set the brightnes on the sync box
+  name: Set brightness
+  target:
+    entity:
+      integration: huesyncbox
+      domain: media_player
   fields:
-    entity_id:
-      description: Name(s) of entities to set brightness.
-      example: 'media_player.huesyncbox'
     brightness:
+      name: Brightness
       description: Brightness value to set [0,1].
-      example: 0.5
+      example: 0.42
+      required: true
+      selector:
+        number:
+          min: 0.0
+          max: 1.0
+          mode: slider
 
 set_sync_mode:
-  description: Set sync mode to activate on the sync box
+  name: Set sync mode
+  target:
+    entity:
+      integration: huesyncbox
+      domain: media_player
   fields:
-    entity_id:
-      description: Name(s) of entities to activate sync on.
-      example: 'media_player.huesyncbox'
     mode:
-      description: Mode to set. One of 'video', 'music', 'game'
-      example: 'video'
+      name: Mode
+      description: Mode to set. One of 'video', 'music', 'game'.
+      example: video
+      required: true
+      selector:
+        select:
+          options:
+            - video
+            - music
+            - game
 
 set_intensity:
-  description: Set intensity for current mode
+  name: Set intensity
+  target:
+    entity:
+      integration: huesyncbox
+      domain: media_player
   fields:
-    entity_id:
-      description: Name(s) of entities to set intensity on.
-      example: 'media_player.huesyncbox'
     intensity:
+      name: Intensity
       description: Intensity to set. One of 'subtle', 'moderate', 'high', 'intense'.
-      example: 'moderate'
+      example: high
+      required: true
+      selector:
+        select:
+          options:
+            - subtle
+            - moderate
+            - high
+            - intense
     mode:
-      description: Optional mode to apply intensity to. If not set intensity is applied to current or last used mode.
-      example: 'video'
+      name: Mode
+      description: Optional mode to apply intensity to. If not set intensity is applied to current/last used mode.
+      example: video
+      selector:
+        select:
+          options:
+            - video
+            - music
+            - game
 
 set_entertainment_area:
-  description: Select entertainment area
+  name: Select entertainment area
+  target:
+    entity:
+      integration: huesyncbox
+      domain: media_player
   fields:
-    entity_id:
-      description: Name(s) of entities to select entertainment area for.
-      example: 'media_player.huesyncbox'
     entertainment_area:
-      description: Entertainment area to select. Can be one of the names available in "entertainment_area_list" attribute.
-      example: 'TV Area'
+      name: Entertainment area
+      description: Entertainment area to select. Must be one of the names available in 'entertainment_area_list' attribute.
+      example: TV Area
+      required: true
+      selector:
+        text:
