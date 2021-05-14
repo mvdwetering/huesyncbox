@@ -205,13 +205,20 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
                 self.async_schedule_update_ha_state()
                 break
 
+    @staticmethod
+    def get_hue_target_from_id(id: str):
+        try:
+            return f"groups/{int(id)}"
+        except ValueError:
+            return id
+
     async def async_select_entertainment_area(self, area_name):
         """Select entertainmentarea."""
         # Area is the user given name, so needs to be mapped back to a valid API value."""
         group = self._get_group_from_area_name(area_name)
         if group:
             await self._huesyncbox.api.execution.set_state(
-                hue_target=f"groups/{group.id}"
+                hue_target=self.get_hue_target_from_id(group.id)
             )
             self.async_schedule_update_ha_state()
 
@@ -283,7 +290,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
         group = self._get_group_from_area_name(
             sync_state.get(ATTR_ENTERTAINMENT_AREA, None)
         )
-        hue_target = f"groups/{group.id}" if group else None
+        hue_target = self.get_hue_target_from_id(group.id) if group else None
 
         state = {
             "sync_active": sync_state.get(ATTR_SYNC, None),
