@@ -332,16 +332,27 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
             "hue_target": hue_target,
         }
 
-        await async_retry_if_someone_else_is_syncing(
-            self._huesyncbox, lambda: self._huesyncbox.api.execution.set_state(**state)
-        )
+        try:
+            await async_retry_if_someone_else_is_syncing(
+                self._huesyncbox,
+                lambda: self._huesyncbox.api.execution.set_state(**state),
+            )
+        except aiohuesyncbox.RequestError as e:
+            if "13: Invalid Key" in e.args[0]:
+                # Clarify this specific case as people will run into it
+                # Use a warning so it is visually separated from the actual error
+                LOGGER.warning(
+                    "This error most likely occured because the service call resulted in an empty message to the syncbox. Make sure that the selected options would result in an action on the syncbox (e.g. requesting only `sync_toggle:false` would cause such an error)."
+                )
+            raise
 
         self.async_schedule_update_ha_state(True)
 
     async def async_set_sync_mode(self, sync_mode):
         """Select sync mode."""
         await async_retry_if_someone_else_is_syncing(
-            self._huesyncbox, self._huesyncbox.api.execution.set_state(mode=sync_mode)
+            self._huesyncbox,
+            lambda: self._huesyncbox.api.execution.set_state(mode=sync_mode),
         )
 
         self.async_schedule_update_ha_state(True)
