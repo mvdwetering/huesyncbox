@@ -52,3 +52,16 @@ async def test_device_state_attributes():
         "entertainment_area_list": ["A", "B"],
         "entertainment_area": "B",
     } == mpe.device_state_attributes
+
+
+async def test_id_formats():
+    """Test devicestate attribute values."""
+    # Old format
+    assert HueSyncBoxMediaPlayerEntity.get_hue_target_from_id("1") == "groups/1"
+    # New format
+    assert (
+        HueSyncBoxMediaPlayerEntity.get_hue_target_from_id(
+            "47XX285f-XXXX-492e-XXXX-51bXXXXa590c"
+        )
+        == "47XX285f-XXXX-492e-XXXX-51bXXXXa590c"
+    )
