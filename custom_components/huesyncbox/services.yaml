@@ -2,7 +2,7 @@
 
 set_sync_state:
   name: Set sync state
-  description: Control the complete sync state of the syncbox. This is an advanced service and contains potential conflicting fields. Use responsibly!
+  description: Control the complete sync state of the Philips Hue Play HDMI Syncbox. This is an advanced service and contains potential conflicting fields. Use responsibly!
   target:
     entity:
       integration: huesyncbox
@@ -115,6 +115,7 @@ set_sync_state:
 
 set_brightness:
   name: Set brightness
+  description: Set brightness for the Philips Hue Play HDMI Syncbox.
   target:
     entity:
       integration: huesyncbox
@@ -133,6 +134,7 @@ set_brightness:
 
 set_sync_mode:
   name: Set sync mode
+  description: Set syncmode for the Philips Hue Play HDMI Syncbox.
   target:
     entity:
       integration: huesyncbox
@@ -152,6 +154,7 @@ set_sync_mode:
 
 set_intensity:
   name: Set intensity
+  description: Set intensity for the Philips Hue Play HDMI Syncbox.
   target:
     entity:
       integration: huesyncbox
@@ -182,6 +185,7 @@ set_intensity:
 
 set_entertainment_area:
   name: Select entertainment area
+  description: Set entertainment area to be used for the Philips Hue Play HDMI Syncbox.
   target:
     entity:
       integration: huesyncbox
