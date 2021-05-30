@@ -6,6 +6,7 @@ import aiohuesyncbox
 import async_timeout
 from homeassistant.const import EVENT_HOMEASSISTANT_STOP
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 
 from .const import DOMAIN, LOGGER, MANUFACTURER_NAME
 from .errors import AuthenticationRequired, CannotConnect
@@ -112,6 +113,9 @@ class PhilipsHuePlayHdmiSyncBox:
                 manufacturer=MANUFACTURER_NAME,
                 model=self.api.device.device_type,
                 sw_version=self.api.device.firmware_version,
+                # Uniqueid seems to be the mac. Adding the connection allows other integrations
+                # like e.g. Mikrotik Router to link their entities to this device
+                connections={(CONNECTION_NETWORK_MAC, self.api.device.unique_id)},
             )
 
             self.hass.config_entries.async_update_entry(
