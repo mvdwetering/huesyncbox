@@ -1,4 +1,5 @@
 import asyncio
+from datetime import timedelta
 import textwrap
 
 import aiohuesyncbox
@@ -57,6 +58,8 @@ SUPPORT_HUESYNCBOX = (
     | SUPPORT_PREVIOUS_TRACK
     | SUPPORT_NEXT_TRACK
 )
+
+SCAN_INTERVAL = timedelta(seconds=1)
 
 MAX_BRIGHTNESS = 200
 
