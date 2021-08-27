@@ -263,6 +263,9 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
             "entertainment_area": self._get_selected_entertainment_area(),
         }
 
+        for index in range(len(api.hdmi.inputs)):
+            attributes[f"hdmi{index+1}.status"] = api.hdmi.inputs[index].status
+
         if mode != "powersave":
             attributes["brightness"] = self.scale(
                 api.execution.brightness, [0, MAX_BRIGHTNESS], [0, 1]
