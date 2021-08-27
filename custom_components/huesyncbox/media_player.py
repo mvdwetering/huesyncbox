@@ -59,7 +59,7 @@ SUPPORT_HUESYNCBOX = (
     | SUPPORT_NEXT_TRACK
 )
 
-SCAN_INTERVAL = timedelta(seconds=1)
+SCAN_INTERVAL = timedelta(seconds=2)
 
 MAX_BRIGHTNESS = 200
 
@@ -267,7 +267,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
         }
 
         for index in range(len(api.hdmi.inputs)):
-            attributes[f"hdmi{index+1}.status"] = api.hdmi.inputs[index].status
+            attributes[f"hdmi{index+1}_status"] = api.hdmi.inputs[index].status
 
         if mode != "powersave":
             attributes["brightness"] = self.scale(
