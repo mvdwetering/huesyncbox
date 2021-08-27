@@ -31,6 +31,12 @@
    }
   },
   "device_automation": {
+    "trigger_type": {
+      "hdmi1_status_changed": "HDMI1 status changed",
+      "hdmi2_status_changed": "HDMI2 status changed",
+      "hdmi3_status_changed": "HDMI3 status changed",
+      "hdmi4_status_changed": "HDMI4 status changed"
+    },
     "action_type": {
       "brightness_decrease": "Decrease brightness",
       "brightness_increase": "Increase brightness",
@@ -51,10 +57,10 @@
       "sync_game_on": "Start game mode light sync",
       "input_next": "Select next input",
       "input_previous": "Select previous input",
-      "input_hdmi1": "Set input HDMI1",
-      "input_hdmi2": "Set input HDMI2",
-      "input_hdmi3": "Set input HDMI3",
-      "input_hdmi4": "Set input HDMI4",
+      "input_hdmi1": "Select HDMI1",
+      "input_hdmi2": "Select HDMI2",
+      "input_hdmi3": "Select HDMI3",
+      "input_hdmi4": "Select HDMI4",
       "mode_next": "Select next mode",
       "mode_previous": "Select previous mode",
       "mode_game": "Set mode game",
