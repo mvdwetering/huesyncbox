@@ -10,17 +10,18 @@ from custom_components.huesyncbox.media_player import HueSyncBoxMediaPlayerEntit
 import aiohuesyncbox
 
 
-class GroupMock(Mock, aiohuesyncbox.hue.Group):
-    def __init__(self, id, name, active):
-        self.id.return_value = id
-        self.name.return_value = name
-        self.active.return_value = active
-
-
 class HueGroup(NamedTuple):
     name: str
     id: str
     active: bool
+
+
+class HueInput(NamedTuple):
+    id: str
+    name: str
+    type: str
+    status: str
+    last_sync_mode: str
 
 
 async def test_device_state_attributes():
@@ -52,6 +53,26 @@ async def test_device_state_attributes():
         "entertainment_area_list": ["A", "B"],
         "entertainment_area": "B",
     } == mpe.device_state_attributes
+
+
+async def test_device_state_attributes_hdmi_status():
+    """Test devicestate attribute values."""
+    hsb = AsyncMock()
+    mpe = HueSyncBoxMediaPlayerEntity(hsb)
+
+    # API setup
+    hsb.api.execution.mode = "powersave"
+    hsb.api.execution.hue_target = ""
+    hsb.api.hdmi.inputs = [
+        HueInput(id="a", name="A", type="1", status="unplugged", last_sync_mode="game"),
+        HueInput(id="b", name="B", type="2", status="plugged", last_sync_mode="video"),
+        HueInput(id="c", name="C", type="3", status="linked", last_sync_mode="music"),
+    ]
+
+    attributes = mpe.device_state_attributes
+    assert attributes["hdmi1_status"] == "unplugged"
+    assert attributes["hdmi2_status"] == "plugged"
+    assert attributes["hdmi3_status"] == "linked"
 
 
 async def test_id_formats():
