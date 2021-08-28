@@ -24,11 +24,11 @@ Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hu
 ## Known issues
 
 There have been reports where Home Assistant was not able to find the Philips Hue Play HDMI Sync Box.
-It is unclear why it happens for some people.
+It is unclear why it happens for some people. So far I have not been able to reproduce it which makes solving it hard.
 
 Some workarounds that have been reported to work.
 
-* Powercycling the Philips Hue Play HDMI Sync Box and/or restart Home Assistant and give it some time.
+* Powercycling the Philips Hue Play HDMI Sync Box and/or restart Home Assistant and give it some time (say half an hour).
 * Add `huesyncbox:` to the `configuration.yaml` file as was needed for HA versions <= 0.114.0. This should not work, but it is what users report...
 
 
@@ -41,7 +41,7 @@ Things that can be done to improve the integration.
 * ~~Add component to HACS default list (currently does not meet requirements)~~
 * ~~Implement custom service to set all sync parameters at once? Could be usefull for automations~~
 * ~~Add support for device actions~~
-* Add support for device conditions
+* ~~Add support for device conditions~~
 * Add support for reproduce state (HA scene support)
 * Extend translation for everything relevant (e.g. intensities and modes) << Doesn't seem possible right now in HA
 * Find someone to make a custom card that supports the sync specific stuff
