@@ -37,6 +37,12 @@
       "hdmi3_status_changed": "HDMI3 status changed",
       "hdmi4_status_changed": "HDMI4 status changed"
     },
+    "condition_type": {
+      "hdmi1_status_linked": "HDMI1 has link",
+      "hdmi2_status_linked": "HDMI2 has link",
+      "hdmi3_status_linked": "HDMI3 has link",
+      "hdmi4_status_linked": "HDMI4 has link"
+    },
     "action_type": {
       "brightness_decrease": "Decrease brightness",
       "brightness_increase": "Increase brightness",
@@ -69,11 +75,6 @@
       "toggle": "Toggle on/off",
       "turn_on": "Turn on",
       "turn_off": "Turn off"
-    },
-    "condition_type": {
-      "is_on": "{entity_name} is on",
-      "is_off": "{entity_name} is off",
-      "is_syncing": "{entity_name} is syncing"
     }
   }
 }
