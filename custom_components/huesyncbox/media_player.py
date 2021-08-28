@@ -155,12 +155,10 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     async def async_turn_off(self):
         """Turn off media player."""
         await self._huesyncbox.api.execution.set_state(mode="powersave")
-        self.async_schedule_update_ha_state(True)
 
     async def async_turn_on(self):
         """Turn the media player on."""
         await self._huesyncbox.api.execution.set_state(mode="passthrough")
-        self.async_schedule_update_ha_state(True)
 
     async def async_media_play(self):
         """Send play command."""
@@ -168,8 +166,6 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
             self._huesyncbox,
             lambda: self._huesyncbox.api.execution.set_state(sync_active=True),
         )
-
-        self.async_schedule_update_ha_state(True)
 
     async def async_media_pause(self):
         """Send pause command."""
@@ -181,7 +177,6 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     async def async_media_stop(self):
         """Send stop command."""
         await self._huesyncbox.api.execution.set_state(sync_active=False)
-        self.async_schedule_update_ha_state(True)
 
     @property
     def source(self):
@@ -205,7 +200,6 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
         for input in self._huesyncbox.api.hdmi.inputs:
             if input.name == source:
                 await self._huesyncbox.api.execution.set_state(hdmi_source=input.id)
-                self.async_schedule_update_ha_state()
                 break
 
     @staticmethod
@@ -223,7 +217,6 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
             await self._huesyncbox.api.execution.set_state(
                 hue_target=self.get_hue_target_from_id(group.id)
             )
-            self.async_schedule_update_ha_state()
 
     def _get_group_from_area_name(self, area_name):
         """Get the group object by entertainment area name."""
@@ -352,16 +345,12 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
                 )
             raise
 
-        self.async_schedule_update_ha_state(True)
-
     async def async_set_sync_mode(self, sync_mode):
         """Select sync mode."""
         await async_retry_if_someone_else_is_syncing(
             self._huesyncbox,
             lambda: self._huesyncbox.api.execution.set_state(mode=sync_mode),
         )
-
-        self.async_schedule_update_ha_state(True)
 
     async def async_set_intensity(self, intensity, mode):
         """Set intensity for sync mode."""
@@ -371,13 +360,11 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
         # Intensity is per mode so update accordingly
         state = {mode: {"intensity": intensity}}
         await self._huesyncbox.api.execution.set_state(**state)
-        self.async_schedule_update_ha_state(True)
 
     async def async_set_brightness(self, brightness):
         """Set brightness"""
         api_brightness = self.scale(brightness, [0, 1], [0, MAX_BRIGHTNESS])
         await self._huesyncbox.api.execution.set_state(brightness=api_brightness)
-        self.async_schedule_update_ha_state(True)
 
     def get_mode(self):
         mode = self._huesyncbox.api.execution.mode
@@ -448,9 +435,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     async def async_media_previous_track(self):
         """Send previous track command, abuse to cycle modes for now."""
         await self._huesyncbox.api.execution.cycle_sync_mode(False)
-        self.async_schedule_update_ha_state(True)
 
     async def async_media_next_track(self):
         """Send next track command, abuse to cycle modes for now."""
         await self._huesyncbox.api.execution.cycle_sync_mode(True)
-        self.async_schedule_update_ha_state(True)
