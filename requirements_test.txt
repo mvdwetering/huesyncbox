@@ -1,2 +1,2 @@
-# "Linked" to HA 2021.5.x
-pytest-homeassistant-custom-component==0.3.2
+# Linked with 2021.8.0b
+pytest-homeassistant-custom-component==0.4.3
