@@ -28,6 +28,7 @@ set_sync_state:
         number:
           min: 0.0
           max: 1.0
+          step: 0.01
           mode: slider
     brightness_step:
       name: Brightness step
@@ -37,6 +38,7 @@ set_sync_state:
         number:
           min: -1.0
           max: 1.0
+          step: 0.01
           mode: slider
     mode:
       name: Mode
@@ -130,6 +132,7 @@ set_brightness:
         number:
           min: 0.0
           max: 1.0
+          step: 0.01
           mode: slider
 
 set_sync_mode:
