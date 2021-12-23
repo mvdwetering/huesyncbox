@@ -5,7 +5,7 @@ import voluptuous as vol
 
 from homeassistant.components.automation import AutomationActionType
 from homeassistant.components.device_automation import DEVICE_TRIGGER_BASE_SCHEMA
-from homeassistant.components.homeassistant.triggers import state
+from homeassistant.components.homeassistant.triggers import state as state_trigger
 from homeassistant.const import (
     CONF_DEVICE_ID,
     CONF_DOMAIN,
@@ -72,13 +72,13 @@ async def async_attach_trigger(
 ) -> CALLBACK_TYPE:
     """Attach a trigger."""
     state_config = {
-        state.CONF_PLATFORM: "state",
+        state_trigger.CONF_PLATFORM: "state",
         CONF_ENTITY_ID: config[CONF_ENTITY_ID],
         CONF_ATTRIBUTE: config[CONF_TYPE][
             : -len("_changed")
         ],  # Trigger names are attribute + _changed. Bit hacky, TODO: replace with removesuffix in Python 3.9
     }
-    state_config = state.TRIGGER_SCHEMA(state_config)
-    return await state.async_attach_trigger(
+    state_config = await state_trigger.async_validate_trigger_config(hass, state_config)
+    return await state_trigger.async_attach_trigger(
         hass, state_config, action, automation_info, platform_type="device"
     )
