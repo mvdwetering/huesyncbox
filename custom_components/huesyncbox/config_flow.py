@@ -1,7 +1,12 @@
 """Config flow for Philips Hue Play HDMI Sync Box integration."""
+from __future__ import annotations
+
 import textwrap
 from homeassistant import config_entries
 from homeassistant.core import callback
+from homeassistant.components import zeroconf
+from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers.typing import ConfigType
 
 from .const import DOMAIN, LOGGER  # pylint:disable=unused-import
 from .errors import AuthenticationRequired, CannotConnect
@@ -22,11 +27,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Initialize the config flow."""
         pass
 
-    async def async_step_user(self, user_input=None):
+    async def async_step_user(self, user_input: ConfigType | None = None) -> FlowResult:
         """Handle a flow initialized by the user."""
         return self.async_abort(reason="manual_not_supported")
 
-    async def async_step_link(self, user_input=None):
+    async def async_step_link(self, user_input: ConfigType | None = None) -> FlowResult:
         """
         Attempt to link with the huesyncbox.
         We will only end up in this step when the token is invalid.
@@ -58,21 +63,23 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(step_id="link", errors=errors)
 
-    async def async_step_zeroconf(self, discovery_info):
+    async def async_step_zeroconf(
+        self, discovery_info: zeroconf.ZeroconfServiceInfo
+    ) -> FlowResult:
         """Handle zeroconf discovery."""
 
         entry_info = {
-            "host": discovery_info["host"],
-            "port": discovery_info["port"],
-            "path": discovery_info["properties"]["path"],
-            "unique_id": discovery_info["properties"]["uniqueid"],
-            "name": discovery_info["properties"]["name"],
-            "devicetype": discovery_info["properties"]["devicetype"],
+            "host": discovery_info.host,
+            "port": discovery_info.port,
+            "path": discovery_info.properties["path"],
+            "unique_id": discovery_info.properties["uniqueid"],
+            "name": discovery_info.properties["name"],
+            "devicetype": discovery_info.properties["devicetype"],
         }
 
         return await self.async_step_check(entry_info)
 
-    async def async_step_check(self, entry_info):
+    async def async_step_check(self, entry_info: dict) -> FlowResult:
         """Perform some checks and create entry if OK."""
 
         await self.async_set_unique_id(entry_info["unique_id"])
@@ -107,8 +114,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         }
 
         LOGGER.debug(
-            "%s _async_create_entry_from_context\nentry_data:\n%s\n"
-            % (__name__, textwrap.indent(log_entry_data(entry_data), "  "))
+            "%s _async_create_entry_from_context\nentry_data:\n%s\n",
+            __name__,
+            textwrap.indent(log_entry_data(entry_data), "  "),
         )
 
         return self.async_create_entry(
