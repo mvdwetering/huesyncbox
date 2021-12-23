@@ -24,8 +24,8 @@ class HueInput(NamedTuple):
     last_sync_mode: str
 
 
-async def test_device_state_attributes():
-    """Test devicestate attribute values."""
+async def test_extra_state_attributes():
+    """Test extra state attribute values."""
     # PhilipsHuePlayHdmiSyncBox
     hsb = AsyncMock()
     mpe = HueSyncBoxMediaPlayerEntity(hsb)
@@ -39,7 +39,7 @@ async def test_device_state_attributes():
         "mode": "powersave",
         "entertainment_area_list": [],
         "entertainment_area": None,
-    } == mpe.device_state_attributes
+    } == mpe.extra_state_attributes
 
     # Multiple groups
     hsb.api.execution.hue_target = "groups/id2"
@@ -52,11 +52,11 @@ async def test_device_state_attributes():
         "mode": "powersave",
         "entertainment_area_list": ["A", "B"],
         "entertainment_area": "B",
-    } == mpe.device_state_attributes
+    } == mpe.extra_state_attributes
 
 
-async def test_device_state_attributes_hdmi_status():
-    """Test devicestate attribute values."""
+async def test_extra_state_attributes_hdmi_status():
+    """Test extra state attribute values."""
     hsb = AsyncMock()
     mpe = HueSyncBoxMediaPlayerEntity(hsb)
 
@@ -69,7 +69,7 @@ async def test_device_state_attributes_hdmi_status():
         HueInput(id="c", name="C", type="3", status="linked", last_sync_mode="music"),
     ]
 
-    attributes = mpe.device_state_attributes
+    attributes = mpe.extra_state_attributes
     assert attributes["hdmi1_status"] == "unplugged"
     assert attributes["hdmi2_status"] == "plugged"
     assert attributes["hdmi3_status"] == "linked"

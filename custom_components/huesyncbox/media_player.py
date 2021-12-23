@@ -249,7 +249,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
         return selected_area
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         api = self._huesyncbox.api
         mode = api.execution.mode
 
@@ -402,7 +402,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     @property
     def sound_mode(self):
         """Return the current sound mode (actually intensity)."""
-        attributes = self.device_state_attributes
+        attributes = self.extra_state_attributes
         if "intensity" in attributes:
             return attributes["intensity"]
         return None
