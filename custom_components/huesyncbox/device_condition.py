@@ -10,8 +10,6 @@ from homeassistant.const import (
     CONF_DOMAIN,
     CONF_ENTITY_ID,
     CONF_TYPE,
-    STATE_OFF,
-    STATE_ON,
 )
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import condition, config_validation as cv, entity_registry

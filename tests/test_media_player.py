@@ -3,20 +3,22 @@
 # import pytest
 
 from typing import NamedTuple
-from unittest.mock import MagicMock, Mock
 from pytest_homeassistant_custom_component.common import AsyncMock
 
 from custom_components.huesyncbox.media_player import HueSyncBoxMediaPlayerEntity
-import aiohuesyncbox
 
 
 class HueGroup(NamedTuple):
+    """Class to emulate Hue Group from aiohuesyncbox"""
+
     name: str
     id: str
     active: bool
 
 
 class HueInput(NamedTuple):
+    """Class to emulate Hue Input from aiohuesyncbox"""
+
     id: str
     name: str
     type: str

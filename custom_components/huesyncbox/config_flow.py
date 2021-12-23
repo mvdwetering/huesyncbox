@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import textwrap
 from homeassistant import config_entries
-from homeassistant.core import callback
 from homeassistant.components import zeroconf
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.typing import ConfigType
@@ -25,7 +24,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def __init__(self):
         """Initialize the config flow."""
-        pass
 
     async def async_step_user(self, user_input: ConfigType | None = None) -> FlowResult:
         """Handle a flow initialized by the user."""

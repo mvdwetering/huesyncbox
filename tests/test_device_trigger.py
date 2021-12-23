@@ -3,10 +3,10 @@
 import pytest
 
 from homeassistant.components import automation
-from custom_components.huesyncbox import DOMAIN
-
 from homeassistant.helpers import device_registry
 from homeassistant.setup import async_setup_component
+from custom_components.huesyncbox import DOMAIN
+
 
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
@@ -18,20 +18,20 @@ from pytest_homeassistant_custom_component.common import (
 )
 
 
-@pytest.fixture
-def device_reg(hass):
+@pytest.fixture(name="device_reg")
+def fixture_device_reg(hass):
     """Return an empty, loaded, registry."""
     return mock_device_registry(hass)
 
 
-@pytest.fixture
-def entity_reg(hass):
+@pytest.fixture(name="entity_reg")
+def fixture_entity_reg(hass):
     """Return an empty, loaded, registry."""
     return mock_registry(hass)
 
 
-@pytest.fixture
-def calls(hass):
+@pytest.fixture(name="calls")
+def fixture_calls(hass):
     """Track calls to a mock service."""
     return async_mock_service(hass, "test", "automation")
 

@@ -57,17 +57,17 @@ class PhilipsHuePlayHdmiSyncBox:
                 redacted(self.config_entry.data["unique_id"]),
             )
             return False
-        except (asyncio.TimeoutError, aiohuesyncbox.RequestError):
+        except (asyncio.TimeoutError, aiohuesyncbox.RequestError) as ex:
             LOGGER.error(
                 "Error connecting to the Philips Hue Play HDMI Sync Box at %s",
                 self.config_entry.data["host"],
             )
-            raise ConfigEntryNotReady
-        except aiohuesyncbox.AiohuesyncboxException:
+            raise ConfigEntryNotReady from ex
+        except aiohuesyncbox.AiohuesyncboxException as ex:
             LOGGER.exception(
                 "Unknown Philips Hue Play HDMI Sync Box API error occurred"
             )
-            raise ConfigEntryNotReady
+            raise ConfigEntryNotReady from ex
         except Exception:  # pylint: disable=broad-except
             LOGGER.exception(
                 "Unknown error connecting with Philips Hue Play HDMI Sync Box at %s",
@@ -127,6 +127,7 @@ class PhilipsHuePlayHdmiSyncBox:
 
 
 async def async_register_aiohuesyncbox(hass, api: aiohuesyncbox.HueSyncBox):
+    """Try to register HA with the syncbox"""
     try:
         with async_timeout.timeout(60):
             registration_info = None
@@ -140,24 +141,25 @@ async def async_register_aiohuesyncbox(hass, api: aiohuesyncbox.HueSyncBox):
                     pass
                 await asyncio.sleep(1)
             return registration_info
-    except asyncio.TimeoutError:
+    except asyncio.TimeoutError as ex:
         LOGGER.warning("Registration timed out")
-        raise AuthenticationRequired
-    except aiohuesyncbox.Unauthorized:
-        raise AuthenticationRequired
-    except aiohuesyncbox.RequestError:
-        raise CannotConnect
-    except aiohuesyncbox.AiohuesyncboxException:
+        raise AuthenticationRequired from ex
+    except aiohuesyncbox.Unauthorized as ex:
+        raise AuthenticationRequired from ex
+    except aiohuesyncbox.RequestError as ex:
+        raise CannotConnect from ex
+    except aiohuesyncbox.AiohuesyncboxException as ex:
         LOGGER.exception("Unknown Philips Hue Play HDMI Sync Box error occurred")
-        raise CannotConnect
+        raise CannotConnect from ex
 
 
 async def async_get_aiohuesyncbox_from_entry_data(entry_data):
     """Create a huesyncbox object from entry data."""
 
     LOGGER.debug(
-        "%s async_get_aiohuesyncbox_from_entry_data\nentry_data:\n%s"
-        % (__name__, textwrap.indent(log_entry_data(entry_data), "  "))
+        "%s async_get_aiohuesyncbox_from_entry_data\nentry_data:\n%s",
+        __name__,
+        textwrap.indent(log_entry_data(entry_data), "  "),
     )
 
     return aiohuesyncbox.HueSyncBox(
@@ -170,12 +172,14 @@ async def async_get_aiohuesyncbox_from_entry_data(entry_data):
 
 
 async def async_remove_entry_from_huesyncbox(entry):
+    """Remove registration entry from syncbox"""
     with async_timeout.timeout(10):
         async with await async_get_aiohuesyncbox_from_entry_data(entry.data) as api:
             await api.unregister(entry.data["registration_id"])
 
 
 async def async_retry_if_someone_else_is_syncing(hsb: PhilipsHuePlayHdmiSyncBox, func):
+    """Decorator to retry a request is something else is already syncing on the connected bridge"""
     try:
         await func()
     except aiohuesyncbox.InvalidState:
@@ -185,7 +189,11 @@ async def async_retry_if_someone_else_is_syncing(hsb: PhilipsHuePlayHdmiSyncBox,
         for group in hsb.api.hue.groups:
             if group.active:
                 LOGGER.info(
-                    f"Deactivating syncing on '{hsb.api.device.name}' for entertainment area '{group.id}' with name '{group.name}' in use by '{group.owner}'"
+                    "Deactivating syncing on '%s' for entertainment area '%s' with name '%s' in use by '%s'",
+                    hsb.api.device.name,
+                    group.id,
+                    group.name,
+                    group.owner,
                 )
                 await hsb.api.hue.set_group_active(group.id, active=False)
         await func()

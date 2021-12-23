@@ -1,3 +1,4 @@
+"""Support of Philips Hue Play HDMI Sync Box as mediaplayer"""
 import asyncio
 from datetime import timedelta
 import textwrap
@@ -66,18 +67,15 @@ MAX_BRIGHTNESS = 200
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Setup from configuration.yaml, not supported, only through integration."""
-    pass
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Setup from config_entry."""
     LOGGER.debug(
-        "%s async_setup_entry\nconfig_entry:\n%s\nhass.data\n%s"
-        % (
-            __name__,
-            textwrap.indent(log_config_entry(config_entry), "  "),
-            [redacted(v) for v in hass.data[DOMAIN].keys()],
-        )
+        "%s async_setup_entry\nconfig_entry:\n%s\nhass.data\n%s",
+        __name__,
+        textwrap.indent(log_config_entry(config_entry), "  "),
+        [redacted(v) for v in hass.data[DOMAIN].keys()],
     )
     entity = HueSyncBoxMediaPlayerEntity(
         hass.data[DOMAIN][config_entry.data["unique_id"]]
@@ -86,9 +84,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 async def async_unload_entry(hass, config_entry):
+    """Unload entity"""
     # Not sure what to do, entities seem to disappear by themselves
     # No other de-initialization seems needed
-    pass
 
 
 class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
@@ -109,6 +107,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
         }
 
     async def async_update(self):
+        """Update the entity"""
         try:
             with async_timeout.timeout(5):
                 # Since we need to update multiple endpoints just update all in one call
@@ -182,32 +181,33 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     def source(self):
         """Return the current input source."""
         selected_source = self._huesyncbox.api.execution.hdmi_source
-        for input in self._huesyncbox.api.hdmi.inputs:
-            if input.id == selected_source:
-                return input.name
+        for input_ in self._huesyncbox.api.hdmi.inputs:
+            if input_.id == selected_source:
+                return input_.name
 
     @property
     def source_list(self):
         """List of available input sources."""
         sources = []
-        for input in self._huesyncbox.api.hdmi.inputs:
-            sources.append(input.name)
+        for input_ in self._huesyncbox.api.hdmi.inputs:
+            sources.append(input_.name)
         return sorted(sources)
 
     async def async_select_source(self, source):
         """Select input source."""
         # Source is the user given name, so needs to be mapped back to a valid API value."""
-        for input in self._huesyncbox.api.hdmi.inputs:
-            if input.name == source:
-                await self._huesyncbox.api.execution.set_state(hdmi_source=input.id)
+        for input_ in self._huesyncbox.api.hdmi.inputs:
+            if input_.name == source:
+                await self._huesyncbox.api.execution.set_state(hdmi_source=input_.id)
                 break
 
     @staticmethod
-    def get_hue_target_from_id(id: str):
+    def get_hue_target_from_id(id_: str):
+        """Determine API target from id"""
         try:
-            return f"groups/{int(id)}"
+            return f"groups/{int(id_)}"
         except ValueError:
-            return id
+            return id_
 
     async def async_select_entertainment_area(self, area_name):
         """Select entertainmentarea."""
@@ -239,9 +239,9 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
         )  # note that this is a string like "groups/123"
         selected_area = None
         try:
-            id = hue_target.replace("groups/", "")
+            id_ = hue_target.replace("groups/", "")
             for group in self._huesyncbox.api.hue.groups:
-                if group.id == id:
+                if group.id == id_:
                     selected_area = group.name
                     break
         except KeyError:
@@ -259,8 +259,8 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
             "entertainment_area": self._get_selected_entertainment_area(),
         }
 
-        for index in range(len(api.hdmi.inputs)):
-            attributes[f"hdmi{index+1}_status"] = api.hdmi.inputs[index].status
+        for index, input_ in enumerate(api.hdmi.inputs):
+            attributes[f"hdmi{index+1}_status"] = input_.status
 
         if mode != "powersave":
             attributes["brightness"] = self.scale(
@@ -336,8 +336,8 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
                 self._huesyncbox,
                 lambda: self._huesyncbox.api.execution.set_state(**state),
             )
-        except aiohuesyncbox.RequestError as e:
-            if "13: Invalid Key" in e.args[0]:
+        except aiohuesyncbox.RequestError as ex:
+            if "13: Invalid Key" in ex.args[0]:
                 # Clarify this specific case as people will run into it
                 # Use a warning so it is visually separated from the actual error
                 LOGGER.warning(
@@ -354,7 +354,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
 
     async def async_set_intensity(self, intensity, mode):
         """Set intensity for sync mode."""
-        if mode == None:
+        if mode is None:
             mode = self.get_mode()
 
         # Intensity is per mode so update accordingly
@@ -367,6 +367,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
         await self._huesyncbox.api.execution.set_state(brightness=api_brightness)
 
     def get_mode(self):
+        """Get mode"""
         mode = self._huesyncbox.api.execution.mode
         if not self._huesyncbox.api.execution.mode in MODES:
             mode = self._huesyncbox.api.execution.last_sync_mode
@@ -374,6 +375,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
 
     @staticmethod
     def scale(input_value, input_range, output_range):
+        """Scale value from one range to another"""
         input_min = input_range[0]
         input_max = input_range[1]
         input_spread = input_max - input_min
