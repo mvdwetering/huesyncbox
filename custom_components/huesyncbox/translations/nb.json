@@ -29,7 +29,6 @@
       "cannot_connect": "Kan ikke koble til enheten",
       "already_configured": "Enheten er allerede konfigurert",
       "already_in_progress": "Konfigurasjonsflyt for enheten pågår allerede.",
-      "manual_not_supported": "Manuell konfigurasjon støttes ikke. Enheter bør oppdages automatisk."
    }
   },
   "device_automation": {
