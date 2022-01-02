@@ -1,6 +1,8 @@
 """Config flow for Philips Hue Play HDMI Sync Box integration."""
 from __future__ import annotations
 
+import textwrap
+
 from voluptuous import Required, Schema
 
 from homeassistant import config_entries
