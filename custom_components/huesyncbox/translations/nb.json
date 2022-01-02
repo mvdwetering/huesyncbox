@@ -28,7 +28,7 @@
       "unknown": "Det oppstod en ukjent feil",
       "cannot_connect": "Kan ikke koble til enheten",
       "already_configured": "Enheten er allerede konfigurert",
-      "already_in_progress": "Konfigurasjonsflyt for enheten pågår allerede.",
+      "already_in_progress": "Konfigurasjonsflyt for enheten pågår allerede."
    }
   },
   "device_automation": {
