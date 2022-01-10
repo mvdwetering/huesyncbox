@@ -1,0 +1,80 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Verbind met het apparaat",
+        "data": {
+          "host": "Host"
+        }
+      },
+      "link": {
+        "title": "Koppel Philips Hue Play HDMI Sync Box",
+        "description": "Druk op 'Opslaan' om het koppelen te starten. Druk daarna de knop van de Philips Hue Play HDMI Sync Box een paar seconde in tot het lampje groen knippert."
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbinding mislukt, probeer opnieuw",
+      "invalid_auth": "Verkeerde autorisatie",
+      "unknown": "Onverwachte fout",
+      "register_failed": "Koppelen mislukt, probeer opnieuw",
+      "linking": "Onbekende fout tijdens koppelen."
+    },
+    "abort": {
+      "no_huesyncboxes": "Geen Philips Hue Play HDMI Sync Boxes gevonden",
+      "all_configured": "Alle Philips Hue Play HDMI Sync Boxes zijn al geconfigureerd",
+      "unknown": "Onverwachte fout",
+      "cannot_connect": "Verbinding met apparaat niet gelukt",
+      "already_configured": "Dit apparaat is al geconfigureerd",
+      "already_in_progress": "Dit apparaat wordt al geconfigureerd.",
+      "manual_not_supported": "Handmatig toevoegen is niet ondersteund. Het apparaat zal automatisch gevonden worden."
+   }
+  },
+  "device_automation": {
+    "trigger_type": {
+      "hdmi1_status_changed": "HDMI1 status veranderd",
+      "hdmi2_status_changed": "HDMI2 status veranderd",
+      "hdmi3_status_changed": "HDMI3 status veranderd",
+      "hdmi4_status_changed": "HDMI4 status veranderd"
+    },
+    "condition_type": {
+      "hdmi1_status_linked": "HDMI1 heeft verbinding",
+      "hdmi2_status_linked": "HDMI2 heeft verbinding",
+      "hdmi3_status_linked": "HDMI3 heeft verbinding",
+      "hdmi4_status_linked": "HDMI4 heeft verbinding"
+    },
+    "action_type": {
+      "brightness_decrease": "Verlaag helderheid",
+      "brightness_increase": "Verhoog helderheid",
+      "intensity_down": "Verlaag intensiteit",
+      "intensity_up": "Verhoog intensiteit",
+      "intensity_subtle": "Stel intensiteit in op subtiel",
+      "intensity_moderate": "Stel intensiteit in op gemiddeld",
+      "intensity_high": "Stel intensiteit in op hoog",
+      "intensity_intense": "Stel intensiteit in op extreem",
+      "sync_on": "Start synchronisatie",
+      "sync_off": "Stop synchronisatie",
+      "sync_toggle": "Schakel synchronisatie aan/uit",
+      "sync_video_toggle": "Schakel video mode synchronisatie",
+      "sync_music_toggle": "Schakel music mode synchronisatie",
+      "sync_game_toggle": "Schakel game mode synchronisatie",
+      "sync_video_on": "Start video mode synchronisatie",
+      "sync_music_on": "Start music mode synchronisatie",
+      "sync_game_on": "Start game mode synchronisatie",
+      "input_next": "Selecteer volgende input",
+      "input_previous": "Selecteer vorige input",
+      "input_hdmi1": "Selecteer HDMI1",
+      "input_hdmi2": "Selecteer HDMI2",
+      "input_hdmi3": "Selecteer HDMI3",
+      "input_hdmi4": "Selecteer HDMI4",
+      "mode_next": "Selecteer volgende modus",
+      "mode_previous": "Selecteer vorige modus",
+      "mode_game": "Stel mode in op game",
+      "mode_music": "Stel mode in op music",
+      "mode_video": "Stel mode in op video",
+      "toggle": "Schakel aan/uit",
+      "turn_on": "Zet aan",
+      "turn_off": "Zet uit"
+    }
+  }
+}
