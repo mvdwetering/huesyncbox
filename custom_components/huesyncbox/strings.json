@@ -28,7 +28,7 @@
       "unknown": "Unknown error occurred",
       "cannot_connect": "Unable to connect to the device",
       "already_configured": "Device is already configured",
-      "already_in_progress": "Config flow for device is already in progress.",
+      "already_in_progress": "Config flow for device is already in progress."
    }
   },
   "device_automation": {
