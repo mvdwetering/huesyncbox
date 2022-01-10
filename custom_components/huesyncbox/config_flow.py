@@ -49,7 +49,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "port": 443,
             "path": "/api",
             "unique_id": user_input[CONF_UNIQUE_ID],
-            "name": "unknown_name",
+            "name": "Hue Sync Box",
             "devicetype": "HSB1",
         }
 
