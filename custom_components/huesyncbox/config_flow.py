@@ -2,8 +2,12 @@
 from __future__ import annotations
 
 import textwrap
+
+from voluptuous import Required, Schema
+
 from homeassistant import config_entries
 from homeassistant.components import zeroconf
+from homeassistant.const import CONF_IP_ADDRESS, CONF_UNIQUE_ID
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.typing import ConfigType
 
@@ -27,7 +31,29 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input: ConfigType | None = None) -> FlowResult:
         """Handle a flow initialized by the user."""
-        return self.async_abort(reason="manual_not_supported")
+
+        if user_input is None:
+            return self.async_show_form(
+                step_id="user",
+                data_schema=Schema(
+                    {
+                        Required(CONF_IP_ADDRESS): str,
+                        Required(CONF_UNIQUE_ID): str,
+                    }
+                ),
+                errors=None,
+            )
+
+        entry_info = {
+            "host": user_input[CONF_IP_ADDRESS],
+            "port": 443,
+            "path": "/api",
+            "unique_id": user_input[CONF_UNIQUE_ID],
+            "name": "Hue Sync Box",
+            "devicetype": "HSB1",
+        }
+
+        return await self.async_step_check(entry_info)
 
     async def async_step_link(self, user_input: ConfigType | None = None) -> FlowResult:
         """

@@ -3,9 +3,11 @@
     "flow_title": "{name}",
     "step": {
       "user": {
-        "title": "Connect to the device",
+        "title": "Enter device information",
+        "description": "Details can be found in the Hue Sync Box App under 'Network and Device information'.",
         "data": {
-          "host": "Host"
+          "ip_address": "IP Address",
+          "unique_id": "Identifier (eg. C42996000000)"
         }
       },
       "link": {
@@ -26,8 +28,7 @@
       "unknown": "Unknown error occurred",
       "cannot_connect": "Unable to connect to the device",
       "already_configured": "Device is already configured",
-      "already_in_progress": "Config flow for device is already in progress.",
-      "manual_not_supported": "Manual configuration not supported. Devices should be discovered automatically."
+      "already_in_progress": "Config flow for device is already in progress."
    }
   },
   "device_automation": {
