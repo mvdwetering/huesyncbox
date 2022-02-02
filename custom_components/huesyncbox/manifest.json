@@ -11,5 +11,5 @@
   ],
   "zeroconf": ["_huesync._tcp.local."],
   "iot_class": "local_polling",
-  "version": "1.16.0"
+  "version": "1.17.0"
 }
