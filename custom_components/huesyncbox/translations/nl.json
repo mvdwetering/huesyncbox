@@ -3,10 +3,10 @@
     "flow_title": "{name}",
     "step": {
       "user": {
-        "title": "Vul apparaatgegevebs in",
-        "description": "Gegevens kunnen gevonden worden in de Hue Sync Box App bij 'Netwerk en apparaatinfo'.",
+        "title": "Vul apparaatgegevens in",
+        "description": "Gegevens kunnen gevonden worden in de Hue Sync App bij onder Instellingen > Apparaten > Je Syncbox.",
         "data": {
-          "ip_address": "IP Adres",
+          "ip_address": "IP-adres (bijvoorbeeld: 192.168.1.123)",
           "unique_id": "Identificatie (bijvoorbeeld: C42996000000)"
         }
       },
