@@ -257,6 +257,8 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
             "mode": mode,
             "entertainment_area_list": self._get_entertainment_areas(),
             "entertainment_area": self._get_selected_entertainment_area(),
+            "bridge_unique_id": api.hue.bridge_unique_id,
+            "bridge_connection_state": api.hue.connection_state,
         }
 
         for index, input_ in enumerate(api.hdmi.inputs):
@@ -365,6 +367,15 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
         """Set brightness"""
         api_brightness = self.scale(brightness, [0, 1], [0, MAX_BRIGHTNESS])
         await self._huesyncbox.api.execution.set_state(brightness=api_brightness)
+
+    async def async_set_bridge(self, bridge_id, username, clientkey):
+        """
+        Set bridge, note that this change is not instant.
+        After calling you will have to wait until the `bridge_unique_id` matches the new bridge id
+        and the bridge_connection_state is `connected`, `invalidgroup` or `streaming`, other status means it is connecting.
+        I have seen the bridge change to take around 15 seconds.
+        """
+        await self._huesyncbox.api.hue.set_bridge(bridge_id, username, clientkey)
 
     def get_mode(self):
         """Get mode"""

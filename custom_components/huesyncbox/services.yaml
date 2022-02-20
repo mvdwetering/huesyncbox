@@ -201,3 +201,33 @@ set_entertainment_area:
       required: true
       selector:
         text:
+
+set_bridge:
+  name: Set bridge
+  description: Set the bridge to be used by the Philips Hue Play HDMI Syncbox. Keep in mind that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to select the `entertainment_area` if connectionstate is `invalidgroup` instead of `connected`.
+  target:
+    entity:
+      integration: huesyncbox
+      domain: media_player
+  fields:
+    bridge_id:
+      name: Bridge ID
+      description: ID of the bridge. A hexadecimal code of 16 characters.
+      example: 001788FFFE123456
+      required: true
+      selector:
+        text:
+    bridge_username:
+      name: Username
+      description: Username (a.k.a. application key) valid for the bridge. A long code of random characters.
+      example: WB9xS1t0Baw-8ZqYKMcEhOaKRU42E84-NZBXwcIL
+      required: true
+      selector:
+        text:
+    bridge_clientkey:
+      name: Clientkey
+      description: Clientkey corresponeding with the username. A hexadecimal code of 32 characters.
+      example: 00112233445566778899AABBCCDDEEFF
+      required: true
+      selector:
+        text:

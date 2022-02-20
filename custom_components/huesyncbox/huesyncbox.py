@@ -48,7 +48,7 @@ class PhilipsHuePlayHdmiSyncBox:
                     "busy",
                 ]:
                     LOGGER.warning(
-                        "The Philips Hue Play HDMI Sync Box does not seems to have a connection to the Hue Bridge. Use the Hue Sync app to diagnose/fix the issue."
+                        "Syncing might not work because there seems to be an issue with the connection to the Hue Bridge used by the Philips Hue Play HDMI Sync Box. Use the Hue Sync app to diagnose/fix the issue."
                     )
                 initialized = True
         except (aiohuesyncbox.InvalidState, aiohuesyncbox.Unauthorized):
