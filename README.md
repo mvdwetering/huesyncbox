@@ -61,6 +61,7 @@ The integration also exposes some services to control the box.
 | set_intensity | Set intensity |
 | set_entertainment_area | Set entertainment area |
 | set_sync_state | Control all aspects of the syncbox state. Allows setting multiple paramters at once, e.g. intensity and syncmode |
+| set_bridge | Set the bridge to be used by the Philips Hue Play HDMI Syncbox. Keep in mind that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to select the `entertainment_area` if connectionstate is `invalidgroup` instead of `connected`. |
 
 For the most up-to-date list and parameter descriptions use the Services tab in the Developer tools and search for `huesyncbox` in the services list.
 

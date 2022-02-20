@@ -204,7 +204,7 @@ set_entertainment_area:
 
 set_bridge:
   name: Set bridge
-  description: Set the bridge to be used by the Philips Hue Play HDMI Syncbox. Keep in mind that changing the bridge by the box takes a while. After the bridge has changed you need to select the entertainmentarea as that can not be done in one API call.
+  description: Set the bridge to be used by the Philips Hue Play HDMI Syncbox. Keep in mind that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to select the `entertainment_area` if connectionstate is `invalidgroup` instead of `connected`.
   target:
     entity:
       integration: huesyncbox
