@@ -12,6 +12,7 @@ SERVICE_SET_BRIGHTNESS = "set_brightness"
 SERVICE_SET_INTENSITY = "set_intensity"
 SERVICE_SET_MODE = "set_sync_mode"
 SERVICE_SET_ENTERTAINMENT_AREA = "set_entertainment_area"
+SERVICE_SET_BRIDGE = "set_bridge"
 
 ATTR_SYNC = "sync"
 ATTR_SYNC_TOGGLE = "sync_toggle"
@@ -49,3 +50,7 @@ INPUT_HDMI4 = "input4"
 INPUTS = [INPUT_HDMI1, INPUT_HDMI2, INPUT_HDMI3, INPUT_HDMI4]
 
 ATTR_ENTERTAINMENT_AREA = "entertainment_area"
+
+ATTR_BRIDGE_ID = "bridge_id"
+ATTR_BRIDGE_USERNAME = "bridge_username"
+ATTR_BRIDGE_CLIENTKEY = "bridge_clientkey"
