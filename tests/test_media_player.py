@@ -32,15 +32,19 @@ async def test_extra_state_attributes():
     hsb = AsyncMock()
     mpe = HueSyncBoxMediaPlayerEntity(hsb)
 
-    # No bridge connected
+    # No groups on bridge
     hsb.api.execution.mode = "powersave"
     hsb.api.execution.hue_target = ""
     hsb.api.hue.groups = []
+    hsb.api.hue.bridge_unique_id = "bridge_unique_id"
+    hsb.api.hue.connection_state = "connection_state"
 
     assert {
         "mode": "powersave",
         "entertainment_area_list": [],
         "entertainment_area": None,
+        "bridge_unique_id": "bridge_unique_id",
+        "bridge_connection_state": "connection_state",
     } == mpe.extra_state_attributes
 
     # Multiple groups
@@ -54,6 +58,8 @@ async def test_extra_state_attributes():
         "mode": "powersave",
         "entertainment_area_list": ["A", "B"],
         "entertainment_area": "B",
+        "bridge_unique_id": "bridge_unique_id",
+        "bridge_connection_state": "connection_state",
     } == mpe.extra_state_attributes
 
 

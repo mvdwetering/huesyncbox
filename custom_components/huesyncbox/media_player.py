@@ -257,6 +257,8 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
             "mode": mode,
             "entertainment_area_list": self._get_entertainment_areas(),
             "entertainment_area": self._get_selected_entertainment_area(),
+            "bridge_unique_id": api.hue.bridge_unique_id,
+            "bridge_connection_state": api.hue.connection_state,
         }
 
         for index, input_ in enumerate(api.hdmi.inputs):
