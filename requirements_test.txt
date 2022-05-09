@@ -1,2 +1,2 @@
-# Linked with 2021.12.4
-pytest-homeassistant-custom-component==0.5.8
+# Linked with 2022.5.2
+pytest-homeassistant-custom-component==0.9.0

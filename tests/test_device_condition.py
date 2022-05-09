@@ -4,6 +4,7 @@ from __future__ import annotations
 import pytest
 
 from homeassistant.components import automation
+from homeassistant.components.device_automation import DeviceAutomationType
 from custom_components.huesyncbox import DOMAIN
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import device_registry, entity_registry
@@ -57,6 +58,7 @@ async def test_get_conditions(
             "type": "hdmi1_status_linked",
             "device_id": device_entry.id,
             "entity_id": f"{DOMAIN}.test_5678",
+            "metadata": {"secondary": False},
         },
         {
             "condition": "device",
@@ -64,6 +66,7 @@ async def test_get_conditions(
             "type": "hdmi2_status_linked",
             "device_id": device_entry.id,
             "entity_id": f"{DOMAIN}.test_5678",
+            "metadata": {"secondary": False},
         },
         {
             "condition": "device",
@@ -71,6 +74,7 @@ async def test_get_conditions(
             "type": "hdmi3_status_linked",
             "device_id": device_entry.id,
             "entity_id": f"{DOMAIN}.test_5678",
+            "metadata": {"secondary": False},
         },
         {
             "condition": "device",
@@ -78,9 +82,12 @@ async def test_get_conditions(
             "type": "hdmi4_status_linked",
             "device_id": device_entry.id,
             "entity_id": f"{DOMAIN}.test_5678",
+            "metadata": {"secondary": False},
         },
     ]
-    conditions = await async_get_device_automations(hass, "condition", device_entry.id)
+    conditions = await async_get_device_automations(
+        hass, DeviceAutomationType.CONDITION, device_entry.id
+    )
     assert_lists_same(conditions, expected_conditions)
 
 
