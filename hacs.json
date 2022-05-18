@@ -2,6 +2,6 @@
     "name": "Philips Hue Play HDMI Sync Box",
     "render_readme": true,
     "domains": ["media_player"],
-    "homeassistant": "2021.12.0",
+    "homeassistant": "2022.5.0",
     "iot_class": "Local Polling"
 }
