@@ -102,9 +102,7 @@ class PhilipsHuePlayHdmiSyncBox:
         Update device registry with info from the API
         """
         if self.api is not None:
-            device_registry = (
-                await self.hass.helpers.device_registry.async_get_registry()
-            )
+            device_registry = self.hass.helpers.device_registry.async_get()
             # Get or create also updates existing entries
             device_registry.async_get_or_create(
                 config_entry_id=self.config_entry.entry_id,

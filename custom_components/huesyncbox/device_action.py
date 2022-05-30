@@ -175,7 +175,7 @@ async def async_get_actions(hass: HomeAssistant, device_id: str) -> List[dict]:
     actions = []
 
     # Get all the integrations entities for this device
-    registry = await entity_registry.async_get_registry(hass)
+    registry = entity_registry.async_get(hass)
     for entry in entity_registry.async_entries_for_device(registry, device_id):
 
         # 1 Mediaplayer per device, no additional checks needed for now
