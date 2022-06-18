@@ -99,8 +99,7 @@ In case manual addition also does not work here are some workarounds that have b
 
 ### HACS
 
-> **Note**
-> Recommended because you will get notified of updates
+> **Recommended because you will get notified of updates**
 
 * Install the integration from within HACS (you can use the search box to find it)
 * Restart Home Assistant
