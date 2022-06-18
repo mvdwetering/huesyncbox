@@ -94,12 +94,13 @@ In case manual addition also does not work here are some workarounds that have b
 
 ## Installation
 
-> **Warning** 
+> **Warning**
 > Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hue Sync app before adding it to Home Assistant.
 
 ### HACS
 
-**Recommended because you will get notified of updates**
+> **Note**
+> Recommended because you will get notified of updates
 
 * Install the integration from within HACS (you can use the search box to find it)
 * Restart Home Assistant
@@ -107,7 +108,8 @@ In case manual addition also does not work here are some workarounds that have b
 
 ### Manually
 
-**when not using HACS**
+> **Note**
+> When not using HACS
 
 * Install the custom component
   * Download the zip from the releases section on Github
