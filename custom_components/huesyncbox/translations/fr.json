@@ -1,0 +1,81 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Entrer les informations de l'appareil",
+        "description": "Les informations peuvent être trouvées dans l'application Hue Sync dans Réglages > Appareils > Votre appareil.",
+        "data": {
+          "ip_address": "Adresse IP (ex. 192.168.1.123)",
+          "unique_id": "Identifiant (ex. C42996000000)"
+        }
+      },
+      "link": {
+        "title": "Connecter la Philips Hue Play HDMI Sync Box",
+        "description": "Appuyer sur le bouton 'Envoyer' sur cette page pour démarrer le processus de liaison. Ensuite, aller sur la Philips Hue Play HDMI Sync Box et maintenir le bouton enfoncé pendant quelques secondes jusqu'à ce qu'il clignote en vert pour l'enregistrer avec Home Assistant."
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de se connecter, veuillez réessayer",
+      "invalid_auth": "Authentification invalide",
+      "unknown": "Une erreur inconnue s'est produite",
+      "register_failed": "Impossible de s'enregistrer, veuillez réessayer",
+      "linking": "Une erreur inconnue pendant la connexion s'est produite."
+    },
+    "abort": {
+      "no_huesyncboxes": "Aucune Philips Hue Play HDMI Sync Boxes détectée",
+      "all_configured": "Toutes les Philips Hue Play HDMI Sync Boxes sont déjà configurées",
+      "unknown": "Une erreur inconnue s'est produite",
+      "cannot_connect": "Impossible de se connecter à l'appareil",
+      "already_configured": "L'appareil est déjà configuré",
+      "already_in_progress": "La configuration est en cours."
+   }
+  },
+  "device_automation": {
+    "trigger_type": {
+      "hdmi1_status_changed": "Le statut de HDMI1 à changé",
+      "hdmi2_status_changed": "Le statut de HDMI2 à changé",
+      "hdmi3_status_changed": "Le statut de HDMI3 à changé",
+      "hdmi4_status_changed": "Le statut de HDMI4 à changé"
+    },
+    "condition_type": {
+      "hdmi1_status_linked": "HDMI1 est connecté",
+      "hdmi2_status_linked": "HDMI2 est connecté",
+      "hdmi3_status_linked": "HDMI3 est connecté",
+      "hdmi4_status_linked": "HDMI4 est connecté"
+    },
+    "action_type": {
+      "brightness_decrease": "Diminuer la luminosité",
+      "brightness_increase": "Augmenter la luminosité",
+      "intensity_down": "Diminuer l'intensité",
+      "intensity_up": "Augmenter l'intensité",
+      "intensity_subtle": "Mettre l'intensité sur subtile",
+      "intensity_moderate": "Mettre l'intensité sur modérée",
+      "intensity_high": "Mettre l'intensité sur haute",
+      "intensity_intense": "Mettre l'intensité sur extrême",
+      "sync_on": "Démarrer la synchronisation des lumières",
+      "sync_off": "Arrêter la synchronisation des lumières",
+      "sync_toggle": "Basculer la synchronisation de la lumière",
+      "sync_video_toggle": "Basculer la synchronisation de la lumière en mode vidéo",
+      "sync_music_toggle": "Basculer la synchronisation de la lumière en mode musique",
+      "sync_game_toggle": "Basculer la synchronisation de la lumière en mode jeu",
+      "sync_video_on": "Démarrer la synchronisation de la lumière en mode vidéo",
+      "sync_music_on": "Démarrer la synchronisation de la lumière en mode musique",
+      "sync_game_on": "Démarrer la synchronisation de la lumière en mode jeu",
+      "input_next": "Sélectionner l'entrée suivante",
+      "input_previous": "Sélectionner l'entrée précédente",
+      "input_hdmi1": "Selectionner HDMI1",
+      "input_hdmi2": "Selectionner HDMI2",
+      "input_hdmi3": "Selectionner HDMI3",
+      "input_hdmi4": "Selectionner HDMI4",
+      "mode_next": "Selectionner le mode suivant",
+      "mode_previous": "Selectionner le mode précedent",
+      "mode_game": "Mettre le mode jeu",
+      "mode_music": "Mettre le mode musique",
+      "mode_video": "Mettre le mode video",
+      "toggle": "Basculer on/off",
+      "turn_on": "Activer",
+      "turn_off": "Désactiver"
+    }
+  }
+}
