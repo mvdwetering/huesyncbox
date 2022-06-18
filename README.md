@@ -1,6 +1,20 @@
 # Philips Hue Play HDMI Sync Box
 
+[![Downloads](https://img.shields.io/github/downloads/mvdwetering/huesyncbox/total.svg)](https://img.shields.io/github/downloads/mvdwetering/huesyncbox/total.svg)
+[![Contributors](https://img.shields.io/github/contributors/mvdwetering/huesyncbox.svg)](https://github.com/mvdwetering/huesyncbox/graphs/contributors)
+
 Custom integration for the Philips Hue Play HDMI Sync Box.
+
+- [About](#about)
+- [Device automations](#device-automations)
+- [Services](#services)
+- [Known issues](#known-issues)
+- [Installation](#installation)
+  - [HACS (recommended)](#hacs)
+  - [Manually](#manually)
+- [Debugging](#debugging)
+
+## About
 
 This integration exposes the Philips Hue Play HDMI Sync Box as a `media_player` in Home Assistant.
 Functionality for controlling the syncbox has been mapped on existing `media_player` features for easy access (no need for custom cards).
@@ -80,15 +94,20 @@ In case manual addition also does not work here are some workarounds that have b
 
 ## Installation
 
-Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hue Sync app before adding it to Home Assistant.
+> **Warning**
+> Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hue Sync app before adding it to Home Assistant.
 
-### HACS (recommended because you will get notified of updates)
+### HACS
+
+**Recommended because you will get notified of updates**
 
 * Install the integration from within HACS (you can use the search box to find it)
 * Restart Home Assistant
 * Devices will be found automatically or can be added manually from the Home Assistant integrations screen
 
-### Manually (when not using HACS)
+### Manually
+
+**when not using HACS**
 
 * Install the custom component
   * Download the zip from the releases section on Github
@@ -96,3 +115,15 @@ Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hu
   * Copy it to the custom_components directory of your Home Assistnat install as usual
 * Restart Home Assistant
 * Devices will be found automatically or can be added manually from the Home Assistant integrations screen
+
+## Debugging
+To enable debug logging for this integration, you can control this in your Home Assistant `configuration.yaml` file.
+
+For example : 
+```yaml
+logger: 
+  default: info
+  logs:
+    custom_components.huesyncbox: debug
+    aiohuesyncbox: debug
+```
