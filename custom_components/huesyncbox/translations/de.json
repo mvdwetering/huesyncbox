@@ -1,0 +1,81 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Geräteinformationen eingeben",
+        "description": "Details findest Du in der Hue Sync App unter Einstellungen > Geräte > Hue Sync Boxen.",
+        "data": {
+          "ip_address": "IP-Adresse (z.B. 192.168.1.123)",
+          "unique_id": "Kennung (z.B. C42996000000)"
+        }
+      },
+      "link": {
+        "title": "Verknüpfe Deine Philips Hue Play HDMI Sync Box",
+        "description": "Drücke auf 'Absenden' in diesem Fenster um den Verknüpfungsprozess zu starten. Anschließend drücke und halte den vorderen Knopf an Deiner Philips Hue Play HDMI Sync Box für ein paar Sekunden bis das grüne Licht anfängt zu blinken."
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung fehlgeschlagen, bitte probiere es erneut",
+      "invalid_auth": "Falsche Authentifizierung",
+      "unknown": "unbekannter Fehler",
+      "register_failed": "Registrierung mit der Box fehlgeschlagen, bitte probiere es erneut",
+      "linking": "Unbekannter Fehler bei der Verknüpfung."
+    },
+    "abort": {
+      "no_huesyncboxes": "Es wurden keine Philips Hue Play HDMI Sync Boxen gefunden",
+      "all_configured": "Alle Philips Hue Play HDMI Sync Boxen sind bereits eingerichtet",
+      "unknown": "Unbekannter Fehler",
+      "cannot_connect": "Verbindung zum Gerät nicht möglich",
+      "already_configured": "Gerät bereits eingerichtet",
+      "already_in_progress": "Einrichtung für dieses Gerät läuft bereits."
+   }
+  },
+  "device_automation": {
+    "trigger_type": {
+      "hdmi1_status_changed": "HDMI1 Status geändert",
+      "hdmi2_status_changed": "HDMI2 Status geändert",
+      "hdmi3_status_changed": "HDMI3 Status geändert",
+      "hdmi4_status_changed": "HDMI4 Status geändert"
+    },
+    "condition_type": {
+      "hdmi1_status_linked": "HDMI1 Videosignal erkannt",
+      "hdmi2_status_linked": "HDMI2 Videosignal erkannt",
+      "hdmi3_status_linked": "HDMI3 Videosignal erkannt",
+      "hdmi4_status_linked": "HDMI4 Videosignal erkannt"
+    },
+    "action_type": {
+      "brightness_decrease": "Helligkeit reduzieren",
+      "brightness_increase": "Helligkeit erhöhen",
+      "intensity_down": "Intensität reduzieren",
+      "intensity_up": "Intensität erhöhen",
+      "intensity_subtle": "Setze Intensität auf Subtil",
+      "intensity_moderate": "Setze Intensität auf Moderat",
+      "intensity_high": "Setze Intensität auf Hoch",
+      "intensity_intense": "Setze Intensität auf Extrem",
+      "sync_on": "Synchronisierung einschalten",
+      "sync_off": "Synchronisierung ausschalten",
+      "sync_toggle": "Synchronisierung umschalten",
+      "sync_video_toggle": "Synchronisierung mit Modus Video umschalten",
+      "sync_music_toggle": "Synchronisierung mit Modus Musik umschalten",
+      "sync_game_toggle": "Synchronisierung mit Modus Spiel umschalten",
+      "sync_video_on": "Synchronisierung mit Modus Video einschalten",
+      "sync_music_on": "Synchronisierung mit Modus Musik einschalten",
+      "sync_game_on": "Synchronisierung mit Modus Spiel einschalten",
+      "input_next": "Auf nächsten Eingang schalten",
+      "input_previous": "Auf vorherigen Eingang zurück",
+      "input_hdmi1": "HDMI1 auswählen",
+      "input_hdmi2": "HDMI2 auswählen",
+      "input_hdmi3": "HDMI3 auswählen",
+      "input_hdmi4": "HDMI4 auswählen",
+      "mode_next": "Auf nächsten Modus schalten",
+      "mode_previous": "Auf vorherigen Modus zurück",
+      "mode_game": "Setze Modus auf Spiel",
+      "mode_music": "Setze Modus auf Musik",
+      "mode_video": "Setze Modus auf Video",
+      "toggle": "Box umschalten",
+      "turn_on": "Box einschalten",
+      "turn_off": "Box ausschalten"
+    }
+  }
+}
