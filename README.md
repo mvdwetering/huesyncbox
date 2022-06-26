@@ -1,6 +1,5 @@
 # Philips Hue Play HDMI Sync Box
 
-[![Downloads](https://img.shields.io/github/downloads/mvdwetering/huesyncbox/total.svg)](https://img.shields.io/github/downloads/mvdwetering/huesyncbox/total.svg)
 [![Contributors](https://img.shields.io/github/contributors/mvdwetering/huesyncbox.svg)](https://github.com/mvdwetering/huesyncbox/graphs/contributors)
 
 Custom integration for the Philips Hue Play HDMI Sync Box.
