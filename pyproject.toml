@@ -1,7 +1,7 @@
 # This file is copied from Home Assistant and might be out of date
 
 [tool.black]
-target-version = ["py38"]
+target-version = ["py39"]
 exclude = 'generated'
 
 [tool.isort]
