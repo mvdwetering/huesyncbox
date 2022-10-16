@@ -124,10 +124,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     if not await huesyncbox.async_setup():
         return False
 
-    for platform in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, platform)
-        )
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     # Register services on first entry
     global services_registered
