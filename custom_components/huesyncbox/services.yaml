@@ -4,6 +4,8 @@ set_sync_state:
   name: Set sync state
   description: Control the complete sync state of the Philips Hue Play HDMI Syncbox. This is an advanced service and contains potential conflicting fields. Use responsibly!
   target:
+    device:
+      integration: huesyncbox
     entity:
       integration: huesyncbox
       domain: media_player
@@ -119,6 +121,8 @@ set_brightness:
   name: Set brightness
   description: Set brightness for the Philips Hue Play HDMI Syncbox.
   target:
+    device:
+      integration: huesyncbox
     entity:
       integration: huesyncbox
       domain: media_player
@@ -139,6 +143,8 @@ set_sync_mode:
   name: Set sync mode
   description: Set syncmode for the Philips Hue Play HDMI Syncbox.
   target:
+    device:
+      integration: huesyncbox
     entity:
       integration: huesyncbox
       domain: media_player
@@ -159,6 +165,8 @@ set_intensity:
   name: Set intensity
   description: Set intensity for the Philips Hue Play HDMI Syncbox.
   target:
+    device:
+      integration: huesyncbox
     entity:
       integration: huesyncbox
       domain: media_player
@@ -190,6 +198,8 @@ set_entertainment_area:
   name: Select entertainment area
   description: Set entertainment area to be used for the Philips Hue Play HDMI Syncbox.
   target:
+    device:
+      integration: huesyncbox
     entity:
       integration: huesyncbox
       domain: media_player
@@ -206,6 +216,8 @@ set_bridge:
   name: Set bridge
   description: Set the bridge to be used by the Philips Hue Play HDMI Syncbox. Keep in mind that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to select the `entertainment_area` if connectionstate is `invalidgroup` instead of `connected`.
   target:
+    device:
+      integration: huesyncbox
     entity:
       integration: huesyncbox
       domain: media_player
