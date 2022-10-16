@@ -9,9 +9,9 @@ from homeassistant.components.light import ATTR_BRIGHTNESS, ATTR_BRIGHTNESS_STEP
 from homeassistant.components.media_player import (
     MediaPlayerEntity,
     MediaPlayerEntityFeature,
+    MediaPlayerState,
+    MediaType,
 )
-from homeassistant.components.media_player.const import MEDIA_TYPE_MUSIC
-from homeassistant.const import STATE_IDLE, STATE_OFF, STATE_PLAYING
 
 from .const import (
     ATTR_ENTERTAINMENT_AREA,
@@ -134,12 +134,12 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     @property
     def state(self):
         """Return the state of the entity."""
-        state = STATE_PLAYING
+        state = MediaPlayerState.PLAYING
         device_state = self._huesyncbox.api.execution.mode
         if device_state == "powersave":
-            state = STATE_OFF
+            state = MediaPlayerState.OFF
         if device_state == "passthrough":
-            state = STATE_IDLE
+            state = MediaPlayerState.IDLE
         return state
 
     async def async_turn_off(self):
@@ -424,7 +424,7 @@ class HueSyncBoxMediaPlayerEntity(MediaPlayerEntity):
     def media_content_type(self):
         """Content type of current playing media."""
         # Pretend we are playing music to expose additional data (e.g. mode and intensity) to the player
-        return MEDIA_TYPE_MUSIC
+        return MediaType.MUSIC
 
     @property
     def media_title(self):
