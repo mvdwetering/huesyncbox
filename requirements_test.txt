@@ -1,2 +1,4 @@
-# homeassistant version: 2022.10.4
-pytest-homeassistant-custom-component==0.12.9
+-r requirements_dev.txt
+# homeassistant version: 2023.2.0
+pytest-homeassistant-custom-component==0.12.52
+
