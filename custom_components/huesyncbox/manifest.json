@@ -1,0 +1,17 @@
+{
+  "domain": "huesyncbox",
+  "name": "Philips Hue Play HDMI Sync Box",
+  "config_flow": true,
+  "documentation": "https://www.home-assistant.io/integrations/huesyncbox",
+  "requirements": [
+    "aiohuesyncbox==0.0.21"
+  ],
+  "ssdp": [],
+  "zeroconf": [],
+  "homekit": {},
+  "dependencies": [],
+  "codeowners": [
+    "@mvdwetering"
+  ],
+  "iot_class": "local_polling"
+}
