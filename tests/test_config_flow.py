@@ -2,10 +2,11 @@
 from unittest.mock import patch
 
 from homeassistant import config_entries
-from homeassistant.components.huesyncbox.config_flow import CannotConnect, InvalidAuth
-from homeassistant.components.huesyncbox.const import DOMAIN
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
+
+from custom_components.huesyncbox.config_flow import CannotConnect, InvalidAuth
+from custom_components.huesyncbox.const import DOMAIN
 
 
 async def test_form(hass: HomeAssistant) -> None:
@@ -17,10 +18,10 @@ async def test_form(hass: HomeAssistant) -> None:
     assert result["errors"] is None
 
     with patch(
-        "homeassistant.components.huesyncbox.config_flow.PlaceholderHub.authenticate",
+        "custom_components.huesyncbox.config_flow.PlaceholderHub.authenticate",
         return_value=True,
     ), patch(
-        "homeassistant.components.huesyncbox.async_setup_entry",
+        "custom_components.huesyncbox.async_setup_entry",
         return_value=True,
     ) as mock_setup_entry:
         result2 = await hass.config_entries.flow.async_configure(
@@ -50,7 +51,7 @@ async def test_form_invalid_auth(hass: HomeAssistant) -> None:
     )
 
     with patch(
-        "homeassistant.components.huesyncbox.config_flow.PlaceholderHub.authenticate",
+        "custom_components.huesyncbox.config_flow.PlaceholderHub.authenticate",
         side_effect=InvalidAuth,
     ):
         result2 = await hass.config_entries.flow.async_configure(
@@ -73,7 +74,7 @@ async def test_form_cannot_connect(hass: HomeAssistant) -> None:
     )
 
     with patch(
-        "homeassistant.components.huesyncbox.config_flow.PlaceholderHub.authenticate",
+        "custom_components.huesyncbox.config_flow.PlaceholderHub.authenticate",
         side_effect=CannotConnect,
     ):
         result2 = await hass.config_entries.flow.async_configure(
