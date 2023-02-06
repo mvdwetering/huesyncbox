@@ -10,34 +10,20 @@ from homeassistant import config_entries
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.const import CONF_IP_ADDRESS, CONF_UNIQUE_ID
+
+import aiohuesyncbox
 
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO adjust the data schema to the data that you need
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
-        vol.Required("host"): str,
-        vol.Required("username"): str,
-        vol.Required("password"): str,
+        vol.Required(CONF_IP_ADDRESS): str,
+        vol.Required(CONF_UNIQUE_ID): str,
     }
 )
-
-
-class PlaceholderHub:
-    """Placeholder class to make tests pass.
-
-    TODO Remove this placeholder class and replace with things from your PyPI package.
-    """
-
-    def __init__(self, host: str) -> None:
-        """Initialize."""
-        self.host = host
-
-    async def authenticate(self, username: str, password: str) -> bool:
-        """Test if we can authenticate with the host."""
-        return True
 
 
 async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str, Any]:
@@ -53,10 +39,25 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
     #     your_validate_func, data["username"], data["password"]
     # )
 
-    hub = PlaceholderHub(data["host"])
-
-    if not await hub.authenticate(data["username"], data["password"]):
-        raise InvalidAuth
+    async with aiohuesyncbox.HueSyncBox(
+        data[CONF_IP_ADDRESS], data[CONF_UNIQUE_ID], data.get("access_token")
+    ) as huesyncbox:
+        try:
+            # if not await huesyncbox.is_registered():
+            #     raise InvalidAuth
+            await huesyncbox.initialize()
+            # data = {
+            #     "host": data[CONF_IP_ADDRESS],
+            #     "name": huesyncbox.device.name,
+            #     "path": huesyncbox._path,
+            #     "port": huesyncbox._port,
+            #     "unique_id": huesyncbox.device.unique_id,
+            #     "access_token": huesyncbox.access_token,
+            # }
+        except aiohuesyncbox.Unauthorized:
+            raise InvalidAuth
+        except aiohuesyncbox.RequestError:
+            raise CannotConnect
 
     # If you cannot connect:
     # throw CannotConnect

@@ -8,6 +8,8 @@ from homeassistant.data_entry_flow import FlowResultType
 from custom_components.huesyncbox.config_flow import CannotConnect, InvalidAuth
 from custom_components.huesyncbox.const import DOMAIN
 
+import aiohuesyncbox
+
 
 async def test_form(hass: HomeAssistant) -> None:
     """Test we get the form."""
@@ -18,8 +20,8 @@ async def test_form(hass: HomeAssistant) -> None:
     assert result["errors"] is None
 
     with patch(
-        "custom_components.huesyncbox.config_flow.PlaceholderHub.authenticate",
-        return_value=True,
+        "aiohuesyncbox.HueSyncBox.initialize",
+        # return_value=True,
     ), patch(
         "custom_components.huesyncbox.async_setup_entry",
         return_value=True,
@@ -27,9 +29,8 @@ async def test_form(hass: HomeAssistant) -> None:
         result2 = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {
-                "host": "1.1.1.1",
-                "username": "test-username",
-                "password": "test-password",
+                "ip_address": "1.1.1.1",
+                "unique_id": "test-unique_id",
             },
         )
         await hass.async_block_till_done()
@@ -37,9 +38,8 @@ async def test_form(hass: HomeAssistant) -> None:
     assert result2["type"] == FlowResultType.CREATE_ENTRY
     assert result2["title"] == "Name of the device"
     assert result2["data"] == {
-        "host": "1.1.1.1",
-        "username": "test-username",
-        "password": "test-password",
+        "ip_address": "1.1.1.1",
+        "unique_id": "test-unique_id",
     }
     assert len(mock_setup_entry.mock_calls) == 1
 
@@ -51,15 +51,16 @@ async def test_form_invalid_auth(hass: HomeAssistant) -> None:
     )
 
     with patch(
-        "custom_components.huesyncbox.config_flow.PlaceholderHub.authenticate",
-        side_effect=InvalidAuth,
+        # "aiohuesyncbox.HueSyncBox.is_registered",
+        # return_value=False,
+        "aiohuesyncbox.HueSyncBox.initialize",
+        side_effect=aiohuesyncbox.Unauthorized,
     ):
         result2 = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {
-                "host": "1.1.1.1",
-                "username": "test-username",
-                "password": "test-password",
+                "ip_address": "1.1.1.1",
+                "unique_id": "test-unique_id",
             },
         )
 
@@ -74,15 +75,15 @@ async def test_form_cannot_connect(hass: HomeAssistant) -> None:
     )
 
     with patch(
-        "custom_components.huesyncbox.config_flow.PlaceholderHub.authenticate",
-        side_effect=CannotConnect,
+        # "aiohuesyncbox.HueSyncBox.is_registered",
+        "aiohuesyncbox.HueSyncBox.initialize",
+        side_effect=aiohuesyncbox.RequestError,
     ):
         result2 = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {
-                "host": "1.1.1.1",
-                "username": "test-username",
-                "password": "test-password",
+                "ip_address": "1.1.1.1",
+                "unique_id": "test-unique_id",
             },
         )
 
