@@ -1,21 +1,25 @@
 {
   "config": {
-    "step": {
-      "user": {
-        "data": {
-          "host": "[%key:common::config_flow::data::host%]",
-          "username": "[%key:common::config_flow::data::username%]",
-          "password": "[%key:common::config_flow::data::password%]"
-        }
+      "abort": {
+          "already_configured": "Device is already configured"
+      },
+      "error": {
+          "cannot_connect": "Failed to connect",
+          "invalid_auth": "Invalid authentication",
+          "unknown": "Unexpected error"
+      },
+      "step": {
+          "user": {
+              "title": "Enter device information",
+              "description": "Details can be found in the main Hue App.\n\nSelect the Sync tab and make sure the Philips Hue Play HDMI Syncbox is selected. After that tap the … menu at the top, select Device and then NetworkInfo for the IP address and DeviceInfo for the Identifier.",
+              "data": {
+                "ip_address": "IP address or hostname",
+                "unique_id": "Identifier (eg. C42996000000)"
+              }
+          }
+      },
+      "progress": {
+        "wait_for_button": "Press and hold the button on the Philips Hue Play HDMI Sync Box for a few seconds until it blinks green to link it."
       }
-    },
-    "error": {
-      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
-      "unknown": "[%key:common::config_flow::error::unknown%]"
-    },
-    "abort": {
-      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
-    }
-  }
+   }
 }
