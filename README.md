@@ -9,7 +9,7 @@ Custom integration for the Philips Hue Play HDMI Sync Box.
 - [Services](#services)
 - [Known issues](#known-issues)
 - [Installation](#installation)
-  - [HACS (recommended)](#hacs)
+  - [Home Assistant Community Store (recommended)](#home-assistant-community-store-hacs)
   - [Manually](#manually)
 - [Debugging](#debugging)
 
@@ -96,9 +96,12 @@ In case manual addition also does not work here are some workarounds that have b
 > **Warning**
 > Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hue Sync app before adding it to Home Assistant.
 
-### HACS
+### Home Assistant Community Store (HACS)
 
-> **Note** Recommended because you will get notified of updates
+> **Note** This is the recommended method because you will get notified of updates.
+
+HACS is a 3rd party downloader for Home Assistant to easily install and update custom integrations made by the community. More information and installation instructions can be found on their site https://hacs.xyz/
+
 
 * Install the integration from within HACS (you can use the search box to find it)
 * Restart Home Assistant
