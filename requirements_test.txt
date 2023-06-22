@@ -1,3 +1,8 @@
 -r requirements_dev.txt
 # homeassistant version: 2023.6.0
 pytest-homeassistant-custom-component==0.13.36
+
+# Not entirely clear why it is needed as not a requirement for huesyncbox directly
+# but the tests fail because HA seems to initialize the zeroconf component which fails due to missing lib.
+# Not sure why it started showing up now :/
+zeroconf
