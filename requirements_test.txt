@@ -1,4 +1,3 @@
 -r requirements_dev.txt
-# homeassistant version: 2023.2.0
-pytest-homeassistant-custom-component==0.12.52
-
+# homeassistant version: 2023.6.0
+pytest-homeassistant-custom-component==0.13.36
