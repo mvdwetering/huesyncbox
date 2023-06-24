@@ -20,7 +20,7 @@ from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 
-from .const import DOMAIN
+from .const import DEFAULT_PORT, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -151,7 +151,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         connection_info = ConnectionInfo(
             discovery_info.host,
             discovery_info.properties["uniqueid"],
-            port=discovery_info.port,
+            port=discovery_info.port or DEFAULT_PORT,
             path=discovery_info.properties["path"],
         )
         # TODO: Also available, do we need it?
@@ -238,6 +238,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_finish(self, user_input=None) -> FlowResult:
         """Finish flow"""
+        assert self.connection_info
         return self.async_create_entry(
             title=self.device_name, data=asdict(self.connection_info)
         )
