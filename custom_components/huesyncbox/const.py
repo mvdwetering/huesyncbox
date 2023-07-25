@@ -3,3 +3,6 @@
 DOMAIN = "huesyncbox"
 
 DEFAULT_PORT = 443
+
+
+MANUFACTURER_NAME = "Signify"
