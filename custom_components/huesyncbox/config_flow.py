@@ -68,7 +68,7 @@ async def try_connection(connection_info: ConnectionInfo):
         connection_info.path,
     ) as huesyncbox:
         try:
-            # Not interested in the result
+            # Just see if the connection works
             await huesyncbox.is_registered()
         # Is registered should not throw Unauthorized
         except aiohuesyncbox.Unauthorized:
