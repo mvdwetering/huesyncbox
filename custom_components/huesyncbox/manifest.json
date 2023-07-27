@@ -5,7 +5,7 @@
   "config_flow": true,
   "documentation": "https://github.com/mvdwetering/huesyncbox",
   "issue_tracker": "https://github.com/mvdwetering/huesyncbox/issues",
-  "requirements": ["aiohuesyncbox==0.0.21"],
+  "requirements": ["aiohuesyncbox==0.0.22"],
   "zeroconf": ["_huesync._tcp.local."],
   "codeowners": ["@mvdwetering"],
   "iot_class": "local_polling",
