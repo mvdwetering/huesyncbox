@@ -21,5 +21,18 @@
       "progress": {
         "wait_for_button": "Press and hold the button on the Philips Hue Play HDMI Sync Box for a few seconds until it blinks green to link it."
       }
-   }
+   },
+   "entity": {
+    "switch": {
+      "power": {
+        "name": "Power"
+      },
+      "light_sync": {
+        "name": "Light Sync"
+      },
+      "dolby_vision_compatibility": {
+        "name": "Dolby Vision compatibility"
+      }
+    }
+  }
 }
