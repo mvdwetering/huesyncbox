@@ -11,6 +11,7 @@
   "integration_type": "device",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/mvdwetering/huesyncbox/issues",
+  "loggers": ["aiohuesyncbox"],
   "requirements": ["aiohuesyncbox==0.0.22"],
   "version": "0.0.0",
   "zeroconf": ["_huesync._tcp.local."]
