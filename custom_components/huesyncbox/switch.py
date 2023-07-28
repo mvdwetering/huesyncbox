@@ -38,6 +38,7 @@ ENTITY_DESCRIPTIONS = [
     HueSyncBoxSwitchEntityDescription(  # type: ignore
         key="dolby_vision_compatibility", # type: ignore
         icon="mdi:hdr", # type: ignore
+        entity_category=EntityCategory.CONFIG, # type: ignore
         is_on=lambda api: api.behavior.force_dovi_native == 1,
         turn_on=lambda api: api.behavior.set_force_dovi_native(1),
         turn_off=lambda api: api.behavior.set_force_dovi_native(0),
