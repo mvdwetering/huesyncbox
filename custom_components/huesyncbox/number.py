@@ -30,6 +30,7 @@ ENTITY_DESCRIPTIONS = [
         key="brightness",  # type: ignore
         icon="mdi:brightness-5",  # type: ignore
         native_step=0.5,  # type: ignore
+        native_unit_of_measurement="%",  # type: ignore
         get_value=lambda api: api.execution.brightness / 2,
         set_value_fn=set_brightness,
     ),
