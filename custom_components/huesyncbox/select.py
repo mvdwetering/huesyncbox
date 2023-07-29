@@ -87,7 +87,7 @@ async def select_intensity(api:aiohuesyncbox.HueSyncBox, intensity):
 
         # Intensity is per mode so update accordingly
         state = {sync_mode: {"intensity": intensity}}
-        await api.execution.set_state(**state)
+        await api.execution.set_state(**state)  # type: ignore
 
 
 def current_sync_mode(api:aiohuesyncbox.HueSyncBox):
