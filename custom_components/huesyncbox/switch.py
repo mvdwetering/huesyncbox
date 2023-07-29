@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from enum import Enum
-from typing import Any, Callable, Coroutine, List
+from typing import Any, Callable, Coroutine
 
 import aiohuesyncbox
 

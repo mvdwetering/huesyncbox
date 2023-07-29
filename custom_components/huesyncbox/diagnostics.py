@@ -1,7 +1,7 @@
 """Diagnostics support for Philips Hue Play HDMI Sync Box integration."""
 from typing import Any
 
-from homeassistant.components.diagnostics import REDACTED, async_redact_data
+from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.const import CONF_ACCESS_TOKEN, CONF_UNIQUE_ID
