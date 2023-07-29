@@ -1,28 +1,81 @@
 {
   "config": {
-      "abort": {
-          "already_configured": "Device is already configured"
-      },
-      "error": {
-          "cannot_connect": "Failed to connect",
-          "invalid_auth": "Invalid authentication",
-          "unknown": "Unexpected error"
-      },
-      "step": {
-          "user": {
-              "title": "Enter device information",
-              "description": "Details can be found in the main Hue App.\n\nSelect the Sync tab and make sure the Philips Hue Play HDMI Syncbox is selected. After that tap the … menu at the top, select Device and then NetworkInfo for the IP address and DeviceInfo for the Identifier.",
-              "data": {
-                "ip_address": "IP address or hostname",
-                "unique_id": "Identifier (eg. C42996000000)"
-              }
-          }
-      },
-      "progress": {
-        "wait_for_button": "Press and hold the button on the Philips Hue Play HDMI Sync Box for a few seconds until it blinks green to link it."
+    "abort": {
+      "already_configured": "Device is already configured"
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error"
+    },
+    "step": {
+      "user": {
+        "title": "Enter device information",
+        "description": "Details can be found in the main Hue App.\n\nSelect the Sync tab and make sure the Philips Hue Play HDMI Syncbox is selected. After that tap the … menu at the top, select Device and then NetworkInfo for the IP address and DeviceInfo for the Identifier.",
+        "data": {
+          "ip_address": "IP address or hostname",
+          "unique_id": "Identifier (eg. C42996000000)"
+        }
       }
-   },
-   "entity": {
+    },
+    "progress": {
+      "wait_for_button": "Press and hold the button on the Philips Hue Play HDMI Sync Box for a few seconds until it blinks green to link it."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "bridge_unique_id": {
+        "name": "Bridge ID"
+      },
+      "bridge_connection_state": {
+        "name": "Bridge state",
+        "state": {
+          "uninitialized": "Uninitialized",
+          "disconnected": "Disconnected",
+          "connecting": "Connecting",
+          "unauthorized": "Unauthorized",
+          "connected": "Connected",
+          "invalidgroup": "Invalid group",
+          "streaming": "Streaming"
+        }
+      },
+      "hdmi1_status": {
+        "name": "HDMI1 status",
+        "state": {
+          "unplugged": "Unplugged",
+          "plugged": "Plugged",
+          "linked": "Linked",
+          "unknown": "Unknown"
+        }
+      },
+      "hdmi2_status": {
+        "name": "HDMI2 status",
+        "state": {
+          "unplugged": "Unplugged",
+          "plugged": "Plugged",
+          "linked": "Linked",
+          "unknown": "Unknown"
+        }
+      },
+      "hdmi3_status": {
+        "name": "HDMI3 status",
+        "state": {
+          "unplugged": "Unplugged",
+          "plugged": "Plugged",
+          "linked": "Linked",
+          "unknown": "Unknown"
+        }
+      },
+      "hdmi4_status": {
+        "name": "HDMI4 status",
+        "state": {
+          "unplugged": "Unplugged",
+          "plugged": "Plugged",
+          "linked": "Linked",
+          "unknown": "Unknown"
+        }
+      }
+    },
     "switch": {
       "power": {
         "name": "Power"
