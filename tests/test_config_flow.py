@@ -19,19 +19,19 @@ async def test_user_happy_flow(hass: HomeAssistant) -> None:
     assert result["type"] == FlowResultType.FORM
     assert result["errors"] is None
 
-    with patch(
-        "aiohuesyncbox.HueSyncBox",
-    ) as huesyncbox_api, patch(
+    with patch("aiohuesyncbox.HueSyncBox",) as huesyncbox_api, patch(
         "custom_components.huesyncbox.async_setup_entry",
         return_value=True,
     ) as mock_setup_entry:
         # __aenter__ stuff needed because used as context manager
-        huesyncbox_api.return_value.__aenter__.return_value.device.name = "HueSyncBoxName"
+        huesyncbox_api.return_value.__aenter__.return_value.device.name = (
+            "HueSyncBoxName"
+        )
         huesyncbox_api.return_value.__aenter__.return_value.register.return_value = {
-                "registration_id": "registrationId",
-                "access_token": "accessToken",
-            }
-        
+            "registration_id": "registrationId",
+            "access_token": "accessToken",
+        }
+
         result2 = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {
@@ -45,7 +45,6 @@ async def test_user_happy_flow(hass: HomeAssistant) -> None:
         assert result2["step_id"] == "link"
         assert result2["progress_action"] == "wait_for_button"
 
-
         result2 = await hass.config_entries.flow.async_configure(
             result["flow_id"],
         )
@@ -58,8 +57,8 @@ async def test_user_happy_flow(hass: HomeAssistant) -> None:
         "unique_id": "test-unique_id",
         "access_token": "accessToken",
         "registration_id": "registrationId",
-        "port" : 443,
-        "path" : "/api",
+        "port": 443,
+        "path": "/api",
     }
     assert len(mock_setup_entry.mock_calls) == 1
 
