@@ -30,7 +30,7 @@ ENTITY_DESCRIPTIONS = [
     ),
     HueSyncBoxSwitchEntityDescription(  # type: ignore
         key="light_sync", # type: ignore
-        icon="mdi:motion-play", # type: ignore
+        icon="mdi:television-ambient-light", # type: ignore
         is_on=lambda api: api.execution.mode not in ["powersave", "passthrough"],
         turn_on=lambda api: api.execution.set_state(sync_active=True),
         turn_off=lambda api: api.execution.set_state(sync_active=False),
