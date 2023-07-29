@@ -61,7 +61,8 @@
           "unauthorized": "Unauthorized",
           "connected": "Connected",
           "invalidgroup": "Invalid group",
-          "streaming": "Streaming"
+          "streaming": "Streaming",
+          "busy": "Busy"
         }
       },
       "hdmi1_status": {

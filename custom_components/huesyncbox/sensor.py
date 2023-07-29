@@ -31,7 +31,7 @@ ENTITY_DESCRIPTIONS = [
         key="bridge_connection_state",  # type: ignore
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         device_class=SensorDeviceClass.ENUM,  # type: ignore
-        options=["uninitialized", "disconnected", "connecting", "unauthorized", "connected", "invalidgroup", "streaming"],  # type: ignore
+        options=["uninitialized", "disconnected", "connecting", "unauthorized", "connected", "invalidgroup", "streaming", "busy"],  # type: ignore
         get_value=lambda api: api.hue.connection_state,
     ),
     HueSyncBoxSensorEntityDescription(  # type: ignore
