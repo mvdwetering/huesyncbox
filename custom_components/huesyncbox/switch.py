@@ -14,10 +14,10 @@ from .const import DOMAIN
 
 @dataclass
 class HueSyncBoxSwitchEntityDescription(SwitchEntityDescription):
-    is_on: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda x: False
+    is_on: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda _: False
     turn_on: Callable[[aiohuesyncbox.HueSyncBox], Coroutine] = None # type: ignore
     turn_off: Callable[[aiohuesyncbox.HueSyncBox], Coroutine] = None # type: ignore
-    is_supported: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda x: True
+    is_supported: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda _: True
 
 
 ENTITY_DESCRIPTIONS = [
