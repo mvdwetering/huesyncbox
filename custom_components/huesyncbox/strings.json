@@ -23,6 +23,11 @@
     }
   },
   "entity": {
+    "number": {
+      "brightness": {
+        "name": "Brightness"
+      }
+    },
     "select": {
       "hdmi_input": {
         "name": "HDMI Input"

@@ -4,16 +4,15 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryError
-from homeassistant.helpers import device_registry
 
 
-from .const import DOMAIN, MANUFACTURER_NAME
+from .const import DOMAIN
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import update_device_registry
 
 import aiohuesyncbox
 
-PLATFORMS: list[Platform] = [Platform.SELECT, Platform.SENSOR, Platform.SWITCH]
+PLATFORMS: list[Platform] = [Platform.NUMBER, Platform.SELECT, Platform.SENSOR, Platform.SWITCH]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
