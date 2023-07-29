@@ -4,11 +4,10 @@ from typing import Callable,Coroutine
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.util import slugify
 
 from custom_components.huesyncbox.coordinator import HueSyncBoxCoordinator
 
-from .const import DOMAIN, INTENSITY_HIGH, INTENSITY_INTENSE, INTENSITY_MODERATE, INTENSITY_SUBTLE, MODES
+from .const import DOMAIN, INTENSITY_HIGH, INTENSITY_INTENSE, INTENSITY_MODERATE, INTENSITY_SUBTLE, SYNC_MODES
 
 import aiohuesyncbox
 
@@ -23,10 +22,10 @@ class NO_INPUT:
     name: None
 
 
-def get_mode(api:aiohuesyncbox.HueSyncBox):
+def get_sync_mode(api:aiohuesyncbox.HueSyncBox):
     """Get mode"""
     mode = api.execution.mode
-    if not api.execution.mode in MODES:
+    if not api.execution.mode in SYNC_MODES:
         mode = api.execution.last_sync_mode
     return mode
     
@@ -78,18 +77,25 @@ async def select_entertainment_area(api:aiohuesyncbox.HueSyncBox, name):
         )        
 
 
-
 def current_intensity(api:aiohuesyncbox.HueSyncBox):
-    mode = get_mode(api)
-    return getattr(api.execution, mode).intensity    
+    sync_mode = get_sync_mode(api)
+    return getattr(api.execution, sync_mode).intensity    
 
 async def select_intensity(api:aiohuesyncbox.HueSyncBox, intensity):
         """Set intensity for sync mode."""
-        mode = get_mode(api)
+        sync_mode = get_sync_mode(api)
 
         # Intensity is per mode so update accordingly
-        state = {mode: {"intensity": intensity}}
+        state = {sync_mode: {"intensity": intensity}}
         await api.execution.set_state(**state)
+
+
+def current_sync_mode(api:aiohuesyncbox.HueSyncBox):
+    return get_sync_mode(api)
+
+async def select_sync_mode(api:aiohuesyncbox.HueSyncBox, sync_mode):
+        """Set sync mode."""
+        await api.execution.set_state(mode=sync_mode)
 
 
 ENTITY_DESCRIPTIONS = [
@@ -114,6 +120,12 @@ ENTITY_DESCRIPTIONS = [
         options=[INTENSITY_SUBTLE, INTENSITY_MODERATE, INTENSITY_HIGH, INTENSITY_INTENSE],  # type: ignore
         current_option_fn=current_intensity,
         select_option_fn=select_intensity,
+    ),
+    HueSyncBoxSelectEntityDescription(  # type: ignore
+        key="sync_mode",  # type: ignore
+        options=SYNC_MODES,  # type: ignore
+        current_option_fn=current_sync_mode,
+        select_option_fn=select_sync_mode,
     ),
 ]
 

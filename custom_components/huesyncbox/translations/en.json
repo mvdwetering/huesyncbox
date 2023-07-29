@@ -38,6 +38,14 @@
           "high": "High",
           "intense": "Intense"
         }
+      },
+      "sync_mode": {
+        "name": "Sync mode",
+        "state": {
+          "video": "Video",
+          "music": "Music",
+          "game": "Game"
+        }
       }
     },
     "sensor": {
