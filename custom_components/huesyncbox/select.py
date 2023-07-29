@@ -8,13 +8,13 @@ from homeassistant.util import slugify
 
 from custom_components.huesyncbox.coordinator import HueSyncBoxCoordinator
 
-from .const import DOMAIN, LOGGER
+from .const import DOMAIN, INTENSITY_HIGH, INTENSITY_INTENSE, INTENSITY_MODERATE, INTENSITY_SUBTLE, MODES
 
 import aiohuesyncbox
 
 @dataclass
 class HueSyncBoxSelectEntityDescription(SelectEntityDescription):
-    options_fn: Callable[[aiohuesyncbox.HueSyncBox], list[str]] = lambda x: []
+    options_fn: Callable[[aiohuesyncbox.HueSyncBox], list[str]]|None = None
     current_option_fn: Callable[[aiohuesyncbox.HueSyncBox], str] = lambda x: ""
     select_option_fn: Callable[[aiohuesyncbox.HueSyncBox, str], Coroutine] = None # type: ignore
 
@@ -22,12 +22,21 @@ class HueSyncBoxSelectEntityDescription(SelectEntityDescription):
 class NO_INPUT:
     name: None
 
+
+def get_mode(api:aiohuesyncbox.HueSyncBox):
+    """Get mode"""
+    mode = api.execution.mode
+    if not api.execution.mode in MODES:
+        mode = api.execution.last_sync_mode
+    return mode
+    
 def get_hue_target_from_id(id_: str):
     """Determine API target from id"""
     try:
         return f"groups/{int(id_)}"
     except ValueError:
         return id_    
+
 
 def available_inputs(api:aiohuesyncbox.HueSyncBox):
     return sorted(map(lambda input_: input_.name, api.hdmi.inputs))
@@ -69,6 +78,20 @@ async def select_entertainment_area(api:aiohuesyncbox.HueSyncBox, name):
         )        
 
 
+
+def current_intensity(api:aiohuesyncbox.HueSyncBox):
+    mode = get_mode(api)
+    return getattr(api.execution, mode).intensity    
+
+async def select_intensity(api:aiohuesyncbox.HueSyncBox, intensity):
+        """Set intensity for sync mode."""
+        mode = get_mode(api)
+
+        # Intensity is per mode so update accordingly
+        state = {mode: {"intensity": intensity}}
+        await api.execution.set_state(**state)
+
+
 ENTITY_DESCRIPTIONS = [
     HueSyncBoxSelectEntityDescription(  # type: ignore
         key="hdmi_input",  # type: ignore
@@ -84,6 +107,13 @@ ENTITY_DESCRIPTIONS = [
         options_fn=available_entertainment_areas,
         current_option_fn=current_entertainment_area,
         select_option_fn=select_entertainment_area,
+    ),
+    HueSyncBoxSelectEntityDescription(  # type: ignore
+        key="intensity",  # type: ignore
+        icon="mdi:sine-wave",  # type: ignore
+        options=[INTENSITY_SUBTLE, INTENSITY_MODERATE, INTENSITY_HIGH, INTENSITY_INTENSE],  # type: ignore
+        current_option_fn=current_intensity,
+        select_option_fn=select_intensity,
     ),
 ]
 
@@ -133,7 +163,9 @@ class HueSyncBoxSelect(CoordinatorEntity, SelectEntity):
 
     @property
     def options(self) -> list[str]:
-        return self.entity_description.options_fn(self.coordinator.api)
+        if self.entity_description.options_fn is not None:
+            return self.entity_description.options_fn(self.coordinator.api)
+        return super().options
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""

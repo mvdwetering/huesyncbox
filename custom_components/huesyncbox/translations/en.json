@@ -29,6 +29,15 @@
       },
       "entertainment_area": {
         "name": "Entertainment area"
+      },
+      "intensity": {
+        "name": "Intensity",
+        "state": {
+          "subtle": "Subtle",
+          "moderate": "Moderate",
+          "high": "High",
+          "intense": "Intense"
+        }
       }
     },
     "sensor": {
