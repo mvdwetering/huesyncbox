@@ -46,7 +46,13 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
             async with async_timeout.timeout(5):
+
+                old_device = self.api.device
                 await self.api.update()
+
+                if old_device != self.api.device:
+                    await update_device_registry(self.hass, self.config_entry, self.api)
+
                 return self.api
         except aiohuesyncbox.Unauthorized as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
