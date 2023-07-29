@@ -28,7 +28,7 @@
         "name": "Bridge ID"
       },
       "bridge_connection_state": {
-        "name": "Bridge state",
+        "name": "Bridge connection status",
         "state": {
           "uninitialized": "Uninitialized",
           "disconnected": "Disconnected",
