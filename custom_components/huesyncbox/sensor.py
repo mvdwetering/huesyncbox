@@ -25,11 +25,13 @@ ENTITY_DESCRIPTIONS = [
         key="bridge_unique_id",  # type: ignore
         icon="mdi:bridge",  # type: ignore
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
+        entity_registry_enabled_default=False,  # type: ignore
         get_value=lambda api: api.hue.bridge_unique_id,
     ),
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="bridge_connection_state",  # type: ignore
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
+        entity_registry_enabled_default=False,  # type: ignore
         device_class=SensorDeviceClass.ENUM,  # type: ignore
         options=["uninitialized", "disconnected", "connecting", "unauthorized", "connected", "invalidgroup", "streaming", "busy"],  # type: ignore
         get_value=lambda api: api.hue.connection_state,
@@ -65,6 +67,13 @@ ENTITY_DESCRIPTIONS = [
         device_class=SensorDeviceClass.ENUM,  # type: ignore
         options=["unplugged", "plugged", "linked", "unknown"],  # type: ignore
         get_value=lambda api: api.hdmi.inputs[3].status,
+    ),
+    HueSyncBoxSensorEntityDescription(  # type: ignore
+        key="ip_address",  # type: ignore
+        icon="mdi:ip-network",  # type: ignore
+        entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
+        entity_registry_enabled_default=False,  # type: ignore
+        get_value=lambda api: api.device.ip_address
     ),
 ]
 

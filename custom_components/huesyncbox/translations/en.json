@@ -57,6 +57,9 @@
       "bridge_unique_id": {
         "name": "Bridge ID"
       },
+      "ip_address": {
+        "name": "IP address"
+      },
       "bridge_connection_state": {
         "name": "Bridge connection status",
         "state": {
