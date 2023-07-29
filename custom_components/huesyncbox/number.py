@@ -18,11 +18,11 @@ from .const import DOMAIN
 @dataclass
 class HueSyncBoxNumberEntityDescription(NumberEntityDescription):
     get_value: Callable[[aiohuesyncbox.HueSyncBox], float] = lambda _: 0
-    set_value_fn: Callable[[aiohuesyncbox.HueSyncBox, float], Coroutine] = None # type: ignore
+    set_value_fn: Callable[[aiohuesyncbox.HueSyncBox, float], Coroutine] = None  # type: ignore
 
 
-async def set_brightness(api:aiohuesyncbox.HueSyncBox, brightness):
-    await api.execution.set_state(brightness=int(brightness*2))
+async def set_brightness(api: aiohuesyncbox.HueSyncBox, brightness):
+    await api.execution.set_state(brightness=int(brightness * 2))
 
 
 ENTITY_DESCRIPTIONS = [
@@ -75,4 +75,3 @@ class HueSyncBoxNumber(CoordinatorEntity, NumberEntity):
 
     async def async_set_native_value(self, value: float) -> None:
         await self.entity_description.set_value_fn(self.coordinator.api, value)
-        

@@ -39,10 +39,10 @@ def get_user_data_schema(connection_info: ConnectionInfo):
     return vol.Schema(
         {
             vol.Required(
-                CONF_IP_ADDRESS, default=connection_info.host or vol.UNDEFINED # type: ignore
+                CONF_IP_ADDRESS, default=connection_info.host or vol.UNDEFINED  # type: ignore
             ): str,
             vol.Required(
-                CONF_UNIQUE_ID, default=connection_info.unique_id or vol.UNDEFINED # type: ignore
+                CONF_UNIQUE_ID, default=connection_info.unique_id or vol.UNDEFINED  # type: ignore
             ): str,
         }
     )
@@ -87,7 +87,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     VERSION = 1
 
-    link_task:asyncio.Task|None = None
+    link_task: asyncio.Task | None = None
 
     connection_info: ConnectionInfo
     device_name = "Default syncbox name"

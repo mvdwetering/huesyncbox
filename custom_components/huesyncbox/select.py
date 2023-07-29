@@ -7,53 +7,67 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from custom_components.huesyncbox.coordinator import HueSyncBoxCoordinator
 
-from .const import DOMAIN, INTENSITY_HIGH, INTENSITY_INTENSE, INTENSITY_MODERATE, INTENSITY_SUBTLE, SYNC_MODES
+from .const import (
+    DOMAIN,
+    INTENSITY_HIGH,
+    INTENSITY_INTENSE,
+    INTENSITY_MODERATE,
+    INTENSITY_SUBTLE,
+    SYNC_MODES,
+)
 
 import aiohuesyncbox
 
+
 @dataclass
 class HueSyncBoxSelectEntityDescription(SelectEntityDescription):
-    options_fn: Callable[[aiohuesyncbox.HueSyncBox], list[str]]|None = None
+    options_fn: Callable[[aiohuesyncbox.HueSyncBox], list[str]] | None = None
     current_option_fn: Callable[[aiohuesyncbox.HueSyncBox], str] = lambda x: ""
-    select_option_fn: Callable[[aiohuesyncbox.HueSyncBox, str], Coroutine] = None # type: ignore
+    select_option_fn: Callable[[aiohuesyncbox.HueSyncBox, str], Coroutine] = None  # type: ignore
 
 
 class NO_INPUT:
     name: None
 
 
-def get_sync_mode(api:aiohuesyncbox.HueSyncBox):
+def get_sync_mode(api: aiohuesyncbox.HueSyncBox):
     """Get mode"""
     mode = api.execution.mode
     if not api.execution.mode in SYNC_MODES:
         mode = api.execution.last_sync_mode
     return mode
-    
+
+
 def get_hue_target_from_id(id_: str):
     """Determine API target from id"""
     try:
         return f"groups/{int(id_)}"
     except ValueError:
-        return id_    
+        return id_
 
 
-def available_inputs(api:aiohuesyncbox.HueSyncBox):
+def available_inputs(api: aiohuesyncbox.HueSyncBox):
     return sorted(map(lambda input_: input_.name, api.hdmi.inputs))
 
-def current_input(api:aiohuesyncbox.HueSyncBox):
-    return next(filter(lambda x: x.id == api.execution.hdmi_source, api.hdmi.inputs), NO_INPUT).name
 
-async def select_input(api:aiohuesyncbox.HueSyncBox, input_name):
+def current_input(api: aiohuesyncbox.HueSyncBox):
+    return next(
+        filter(lambda x: x.id == api.execution.hdmi_source, api.hdmi.inputs), NO_INPUT
+    ).name
+
+
+async def select_input(api: aiohuesyncbox.HueSyncBox, input_name):
     # Source is the user given name, so needs to be mapped back to a valid API value."""
     input_ = next(filter(lambda i: i.name == input_name, api.hdmi.inputs), None)
     if input_:
         await api.execution.set_state(hdmi_source=input_.id)
 
 
-def available_entertainment_areas(api:aiohuesyncbox.HueSyncBox):
+def available_entertainment_areas(api: aiohuesyncbox.HueSyncBox):
     return sorted(map(lambda group: group.name, api.hue.groups))
 
-def current_entertainment_area(api:aiohuesyncbox.HueSyncBox):
+
+def current_entertainment_area(api: aiohuesyncbox.HueSyncBox):
     hue_target = (
         api.execution.hue_target
     )  # this is a string like "groups/123" or a UUID
@@ -68,34 +82,35 @@ def current_entertainment_area(api:aiohuesyncbox.HueSyncBox):
 
     return selected_area
 
-async def select_entertainment_area(api:aiohuesyncbox.HueSyncBox, name):
+
+async def select_entertainment_area(api: aiohuesyncbox.HueSyncBox, name):
     # Source is the user given name, so needs to be mapped back to a valid API value."""
     group = next(filter(lambda g: g.name == name, api.hue.groups), None)
     if group:
-        await api.execution.set_state(
-            hue_target=get_hue_target_from_id(group.id)
-        )        
+        await api.execution.set_state(hue_target=get_hue_target_from_id(group.id))
 
 
-def current_intensity(api:aiohuesyncbox.HueSyncBox):
+def current_intensity(api: aiohuesyncbox.HueSyncBox):
     sync_mode = get_sync_mode(api)
-    return getattr(api.execution, sync_mode).intensity    
-
-async def select_intensity(api:aiohuesyncbox.HueSyncBox, intensity):
-        """Set intensity for sync mode."""
-        sync_mode = get_sync_mode(api)
-
-        # Intensity is per mode so update accordingly
-        state = {sync_mode: {"intensity": intensity}}
-        await api.execution.set_state(**state)  # type: ignore
+    return getattr(api.execution, sync_mode).intensity
 
 
-def current_sync_mode(api:aiohuesyncbox.HueSyncBox):
+async def select_intensity(api: aiohuesyncbox.HueSyncBox, intensity):
+    """Set intensity for sync mode."""
+    sync_mode = get_sync_mode(api)
+
+    # Intensity is per mode so update accordingly
+    state = {sync_mode: {"intensity": intensity}}
+    await api.execution.set_state(**state)  # type: ignore
+
+
+def current_sync_mode(api: aiohuesyncbox.HueSyncBox):
     return get_sync_mode(api)
 
-async def select_sync_mode(api:aiohuesyncbox.HueSyncBox, sync_mode):
-        """Set sync mode."""
-        await api.execution.set_state(mode=sync_mode)
+
+async def select_sync_mode(api: aiohuesyncbox.HueSyncBox, sync_mode):
+    """Set sync mode."""
+    await api.execution.set_state(mode=sync_mode)
 
 
 ENTITY_DESCRIPTIONS = [
@@ -182,4 +197,3 @@ class HueSyncBoxSelect(CoordinatorEntity, SelectEntity):
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
         await self.entity_description.select_option_fn(self.coordinator.api, option)
-

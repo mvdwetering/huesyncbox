@@ -12,7 +12,12 @@ from .helpers import update_device_registry
 
 import aiohuesyncbox
 
-PLATFORMS: list[Platform] = [Platform.NUMBER, Platform.SELECT, Platform.SENSOR, Platform.SWITCH]
+PLATFORMS: list[Platform] = [
+    Platform.NUMBER,
+    Platform.SELECT,
+    Platform.SENSOR,
+    Platform.SWITCH,
+]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -26,15 +31,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         access_token=entry.data.get("access_token"),
         port=entry.data["port"],
         path=entry.data["path"],
-    )        
-    
+    )
+
     try:
         await api.initialize()
     except aiohuesyncbox.Unauthorized as err:
         raise ConfigEntryAuthFailed(err) from err
     except aiohuesyncbox.RequestError as err:
         raise ConfigEntryError(err) from err
-
 
     await update_device_registry(hass, entry, api)
 
