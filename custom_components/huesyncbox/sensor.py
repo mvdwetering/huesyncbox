@@ -17,7 +17,7 @@ from .const import DOMAIN
 
 @dataclass
 class HueSyncBoxSensorEntityDescription(SensorEntityDescription):
-    get_value: Callable[[aiohuesyncbox.HueSyncBox], str] = lambda x: ""
+    get_value: Callable[[aiohuesyncbox.HueSyncBox], str] = lambda _: ""
 
 
 ENTITY_DESCRIPTIONS = [

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable,Coroutine
+from typing import Callable, Coroutine
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.helpers.entity import DeviceInfo, EntityCategory
