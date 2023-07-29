@@ -23,6 +23,11 @@
     }
   },
   "entity": {
+    "select": {
+      "hdmi_input": {
+        "name": "HDMI Input"
+      }
+    },
     "sensor": {
       "bridge_unique_id": {
         "name": "Bridge ID"
