@@ -8,7 +8,7 @@ from homeassistant.util import slugify
 
 from custom_components.huesyncbox.coordinator import HueSyncBoxCoordinator
 
-from .const import DOMAIN
+from .const import DOMAIN, LOGGER
 
 import aiohuesyncbox
 
@@ -22,11 +22,18 @@ class HueSyncBoxSelectEntityDescription(SelectEntityDescription):
 class NO_INPUT:
     name: None
 
-def current_input(api:aiohuesyncbox.HueSyncBox):
-    return next(filter(lambda x: x.id == api.execution.hdmi_source, api.hdmi.inputs), NO_INPUT).name
+def get_hue_target_from_id(id_: str):
+    """Determine API target from id"""
+    try:
+        return f"groups/{int(id_)}"
+    except ValueError:
+        return id_    
 
 def available_inputs(api:aiohuesyncbox.HueSyncBox):
     return sorted(map(lambda input_: input_.name, api.hdmi.inputs))
+
+def current_input(api:aiohuesyncbox.HueSyncBox):
+    return next(filter(lambda x: x.id == api.execution.hdmi_source, api.hdmi.inputs), NO_INPUT).name
 
 async def select_input(api:aiohuesyncbox.HueSyncBox, input_name):
     # Source is the user given name, so needs to be mapped back to a valid API value."""
@@ -35,15 +42,48 @@ async def select_input(api:aiohuesyncbox.HueSyncBox, input_name):
         await api.execution.set_state(hdmi_source=input_.id)
 
 
+def available_entertainment_areas(api:aiohuesyncbox.HueSyncBox):
+    return sorted(map(lambda group: group.name, api.hue.groups))
+
+def current_entertainment_area(api:aiohuesyncbox.HueSyncBox):
+    hue_target = (
+        api.execution.hue_target
+    )  # this is a string like "groups/123" or a UUID
+    id_ = hue_target.replace("groups/", "")
+
+    selected_area = None
+
+    for group in api.hue.groups:
+        if group.id == id_:
+            selected_area = group.name
+            break
+
+    return selected_area
+
+async def select_entertainment_area(api:aiohuesyncbox.HueSyncBox, name):
+    # Source is the user given name, so needs to be mapped back to a valid API value."""
+    group = next(filter(lambda g: g.name == name, api.hue.groups), None)
+    if group:
+        await api.execution.set_state(
+            hue_target=get_hue_target_from_id(group.id)
+        )        
+
+
 ENTITY_DESCRIPTIONS = [
-    # Suppress following mypy message, which seems to be not an issue as other values have defaults:
-    # custom_components/yamaha_ynca/number.py:19: error: Missing positional arguments "entity_registry_enabled_default", "entity_registry_visible_default", "force_update", "icon", "has_entity_name", "unit_of_measurement", "max_value", "min_value", "step" in call to "NumberEntityDescription"  [call-arg]
     HueSyncBoxSelectEntityDescription(  # type: ignore
         key="hdmi_input",  # type: ignore
         icon="mdi:hdmi-port",  # type: ignore
         options_fn=available_inputs,
         current_option_fn=current_input,
         select_option_fn=select_input,
+    ),
+    HueSyncBoxSelectEntityDescription(  # type: ignore
+        key="entertainment_area",  # type: ignore
+        icon="mdi:lamps",  # type: ignore
+        entity_category=EntityCategory.CONFIG,  # type: ignore
+        options_fn=available_entertainment_areas,
+        current_option_fn=current_entertainment_area,
+        select_option_fn=select_entertainment_area,
     ),
 ]
 

@@ -26,6 +26,9 @@
     "select": {
       "hdmi_input": {
         "name": "HDMI Input"
+      },
+      "entertainment_area": {
+        "name": "Entertainment area"
       }
     },
     "sensor": {
