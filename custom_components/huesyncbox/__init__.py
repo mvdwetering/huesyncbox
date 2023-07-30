@@ -72,8 +72,6 @@ async def async_unregister_services(hass: HomeAssistant):
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Philips Hue Play HDMI Sync Box from a config entry."""
 
-    hass.data.setdefault(DOMAIN, {})
-
     api = aiohuesyncbox.HueSyncBox(
         entry.data["host"],
         entry.data["unique_id"],
@@ -93,6 +91,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     coordinator = HueSyncBoxCoordinator(hass, api)
 
+    hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
