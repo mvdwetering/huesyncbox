@@ -70,16 +70,10 @@ async def try_connection(connection_info: ConnectionInfo):
         try:
             # Just see if the connection works
             await huesyncbox.is_registered()
-        # Is registered should not throw Unauthorized
         except aiohuesyncbox.Unauthorized:
             raise InvalidAuth
         except aiohuesyncbox.RequestError:
             raise CannotConnect
-
-    # If you cannot connect:
-    # throw CannotConnect
-    # If the authentication is wrong:
-    # InvalidAuth
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
