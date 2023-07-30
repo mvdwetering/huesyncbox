@@ -5,7 +5,8 @@ from homeassistant.components.select import SelectEntity, SelectEntityDescriptio
 from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from custom_components.huesyncbox.coordinator import HueSyncBoxCoordinator
+from .coordinator import HueSyncBoxCoordinator
+from .helpers import stop_sync_and_retry_on_invalid_state
 
 from .const import (
     DOMAIN,
@@ -196,4 +197,5 @@ class HueSyncBoxSelect(CoordinatorEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        await self.entity_description.select_option_fn(self.coordinator.api, option)
+        await stop_sync_and_retry_on_invalid_state(self.entity_description.select_option_fn, self.coordinator.api, option)
+        await self.coordinator.async_request_refresh()

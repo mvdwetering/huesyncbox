@@ -4,15 +4,15 @@ from typing import Callable, Coroutine
 import aiohuesyncbox
 
 from homeassistant.components.number import (
-    NumberDeviceClass,
     NumberEntity,
     NumberEntityDescription,
 )
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import HueSyncBoxCoordinator
 from .const import DOMAIN
+from .coordinator import HueSyncBoxCoordinator
+from .helpers import stop_sync_and_retry_on_invalid_state
 
 
 @dataclass
@@ -75,4 +75,5 @@ class HueSyncBoxNumber(CoordinatorEntity, NumberEntity):
         return self.entity_description.get_value(self.coordinator.api)
 
     async def async_set_native_value(self, value: float) -> None:
-        await self.entity_description.set_value_fn(self.coordinator.api, value)
+        await stop_sync_and_retry_on_invalid_state(self.entity_description.set_value_fn, self.coordinator.api, value)
+        await self.coordinator.async_request_refresh()

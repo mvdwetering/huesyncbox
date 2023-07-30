@@ -7,9 +7,9 @@ from homeassistant.components.switch import SwitchEntity, SwitchEntityDescriptio
 from homeassistant.helpers.entity import EntityCategory, DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import HueSyncBoxCoordinator
-
 from .const import DOMAIN
+from .coordinator import HueSyncBoxCoordinator
+from .helpers import stop_sync_and_retry_on_invalid_state
 
 
 @dataclass
@@ -90,10 +90,10 @@ class HueSyncBoxSwitch(CoordinatorEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs):
         """Turn the entity on."""
-        await self.entity_description.turn_on(self.coordinator.api)
+        await stop_sync_and_retry_on_invalid_state(self.entity_description.turn_on, self.coordinator.api)
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any):
         """Turn the entity off."""
-        await self.entity_description.turn_off(self.coordinator.api)
+        await stop_sync_and_retry_on_invalid_state(self.entity_description.turn_off, self.coordinator.api)
         await self.coordinator.async_request_refresh()
