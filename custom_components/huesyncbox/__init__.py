@@ -1,5 +1,6 @@
 """The Philips Hue Play HDMI Sync Box integration."""
 import aiohuesyncbox
+import async_timeout
 import voluptuous as vol  # type: ignore
 
 from homeassistant.config_entries import ConfigEntry
@@ -15,6 +16,7 @@ from .const import (
     ATTR_BRIDGE_ID,
     ATTR_BRIDGE_USERNAME,
     DOMAIN,
+    LOGGER,
     SERVICE_SET_BRIDGE,
 )
 from .coordinator import HueSyncBoxCoordinator
@@ -111,3 +113,22 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             await async_unregister_services(hass)
 
     return unload_ok
+
+
+async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    # Best effort cleanup. User might not even have the device anymore or had it factory reset.
+    # Note that the entry already has been unloaded, so need to create API again
+    try:
+        async with async_timeout.timeout(10):
+            async with aiohuesyncbox.HueSyncBox(
+                entry.data["host"],
+                entry.data["unique_id"],
+                access_token=entry.data.get("access_token"),
+                port=entry.data["port"],
+                path=entry.data["path"],
+            ) as api:
+                await api.unregister(entry.data["registration_id"])
+    except Exception as e:
+        LOGGER.info(
+            "Removing registration from Philips Hue Play HDMI Sync Box failed: %s ", e
+        )
