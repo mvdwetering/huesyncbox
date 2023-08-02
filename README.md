@@ -5,96 +5,84 @@
 Custom integration for the Philips Hue Play HDMI Sync Box.
 
 - [About](#about)
-- [Device automations](#device-automations)
 - [Services](#services)
 - [Known issues](#known-issues)
+- [Updating from before version 2](#updating-from-before-version-2.0)
 - [Installation](#installation)
   - [HACS (recommended)](#hacs)
   - [Manually](#manually)
-- [Debugging](#debugging)
 
 ## About
 
-This integration exposes the Philips Hue Play HDMI Sync Box as a `media_player` in Home Assistant.
-Functionality for controlling the syncbox has been mapped on existing `media_player` features for easy access (no need for custom cards).
-For more info on how to control syncbox specific functionality not exposed through the standard `media_player` see the [Services](#services) section in this document.
+This integration exposes functionality of the Philips Hue Play HDMI Sync Box as entities in Home Assistant so it can be used in automation or from the dashboard.
 
-The mapping is:
+Exposed entities:
 
-| Mediaplayer feature | Syncbox feature |
-|---|---|
-| On / Off  | On / Off  |
-| Play  | Start syncing  |
-| Pause  | Stop syncing  |
-| Previous / Next track | Cycle syncmodes Game, Music, Video |
-| Volume | Brightness |
-| Source | Source |
-| Sound mode  | Intensity  |
+* Power on/off
+* Light sync on/off
+* Intensity subtle/moderate/high/intense
+* Mode video/music/game
+* Brightness
+* Dolby Vision compatibility on/off
+* HDMI1-4 connection status
+* Bridge connection status
+* Bridge ID
+* IP address
 
-Next to this some attributes have different meaning than standard `media_player` or are explicitly added for this integration.
-Note that the table below _only_ mentions differences with standard `media_player`.
-
-| Mediaplayer attribute | Description |
-|---|---|
-| media_title | Shows syncmode and intensity |
-| media_artist | Shows selected source |
-| entertainment_area | Name of currently selected entertainment areas |
-| entertainment_area_list | List with names of available entertainment areas |
-| hdmi#_status | Shows status of hdmi ports. Can be unplugged, plugged, linked |
-| brightness | brightness setting for the box |
-| intensity | intensity setting for the box, can be subtle, moderate, high, intense |
-
-## Device automations
-
-A lot of features are exposed in Device automation triggers, conditions and actions.
-Some examples below.
-
-* Triggers
-  * HDMI status change
-  * Syncing starting/stopping (a.k.a. playing/paused)
-* Conditions
-  * HDMI has link
-  * Is syncing (a.k.a. playing)
-* Actions
-  * Change brightness
-  * Set intensity
-  * Start sync in a specific mode
-  * Select input
-
-For complete and up-to-date list create an automation and explore the options.
 
 ## Services
 
-The integration also exposes some services to control the box.
+The integration exposes some services to control functionality that can not be exposed on entities.
 
 | Service name | Description |
 |---|---|
-| set_brightness | Set brightness |
-| set_syncmode | Set syncmode |
-| set_intensity | Set intensity |
-| set_entertainment_area | Set entertainment area |
-| set_sync_state | Control all aspects of the syncbox state. Allows setting multiple paramters at once, e.g. intensity and syncmode |
-| set_bridge | Set the bridge to be used by the Philips Hue Play HDMI Syncbox. Keep in mind that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to select the `entertainment_area` if connectionstate is `invalidgroup` instead of `connected`. |
+| set_bridge | Set the bridge to be used by the Philips Hue Play HDMI Syncbox. Keep in mind that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to select an entertainment area if Bridge connection state is `invalidgroup` instead of `connected`. |
+| set_sync_state | Control all aspects of the syncbox state. Allows setting multiple paramters at once, e.g. intensity and syncmode. Intended for advanced use cases. |
 
 For the most up-to-date list and parameter descriptions use the Services tab in the Developer tools and search for `huesyncbox` in the services list.
+
 
 ## Known issues
 
 There have been reports where Home Assistant was not able to find the Philips Hue Play HDMI Sync Box automatically.
 It is unclear why it happens for some people. So far I have not been able to reproduce it which makes solving it hard.
 
-However it is now possible to add the syncbox manually through the "Add Integration" button where you can input the IP and ID of the box.
+Powercycling the Philips Hue Play HDMI Sync Box and/or restart Home Assistant sometimes helps.
 
-In case manual addition also does not work here are some workarounds that have been reported to work.
+If still not found automatically it is possible to add the syncbox manually through the "Add Integration" button and follow the instructions.
 
-* Powercycling the Philips Hue Play HDMI Sync Box and/or restart Home Assistant and give it some time (say half an hour).
-* Add `huesyncbox:` to the `configuration.yaml` file as was needed for HA versions <= 0.114.0. This should not work, but it is what users report...
+
+## Updating from before version 2.0
+
+Before 2.0 the functionality of the Philips Hue Play HDMI Sync Box was all exposed through one single mediaplayer entity. Several features of the media_player were abused to control things on the box. E.g. brightness was controlled by the volume slider. This turned out to be confusing and quite limiting. Next to that the way the integration was built did not allow for more entities so it was not possible to extend it. 
+
+The 2.0 version is a complete rewrite to allow for multiple entities and modernize the integration in general. Having multiple entities should make it clear what entity does what.
+
+> **Warning**
+> This change means that existing automations will need to be updated to use the new entities!
+> Home Assistant will create repairs when using the obsolete stuff which should help in finding the relevant automations.
+
+With the transition to the new entities most custom services that were offered became obsolete as native Home Assistant services of the entities can be used now. 
+Information exposed by additional attributes on the `media_player` is available on the new entities.
+
+No functionality is lost it just moved to a different place.
+
+Below is a list of old services and the replacement to help with the transition.
+
+| Old service name | Replaced by |
+|---|---|
+| set_brightness | Use services of the brightness entity |
+| set_syncmode | Use services of the sync mode entity |
+| set_intensity | Use services of the intensity entity |
+| set_entertainment_area | Use services of the entertainment area entity |
+| set_sync_state | Unchanged |
+| set_bridge | Unchanged |
 
 
 ## Installation
 
-> **Warning**
-> Make sure the Philips Hue Play HDMI Sync Box has been setup with the official Hue Sync app before adding it to Home Assistant.
+> **Note**
+> The Philips Hue Play HDMI Sync Box has to be setup with the official Hue  app before adding it to Home Assistant.
 
 ### HACS
 
@@ -116,14 +104,3 @@ In case manual addition also does not work here are some workarounds that have b
 * Restart Home Assistant
 * Devices will be found automatically or can be added manually from the Home Assistant integrations screen
 
-## Debugging
-To enable debug logging for this integration, you can control this in your Home Assistant `configuration.yaml` file.
-
-For example : 
-```yaml
-logger: 
-  default: info
-  logs:
-    custom_components.huesyncbox: debug
-    aiohuesyncbox: debug
-```
