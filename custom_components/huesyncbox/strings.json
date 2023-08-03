@@ -116,6 +116,16 @@
           "linked": "Linked",
           "unknown": "Unknown"
         }
+      },
+      "wifi_strength": {
+        "name": "Wifi quality",
+        "state": {
+          "not_connected": "Not connected",
+          "weak": "Weak",
+          "fair": "Fair",
+          "good": "Good",
+          "excellent": "Excellent"
+        }
       }
     },
     "switch": {
