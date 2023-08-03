@@ -20,6 +20,8 @@ from .const import (
 import aiohuesyncbox
 
 
+LED_INDICATOR_MODES = ["off", "normal", "dimmed"]
+
 @dataclass
 class HueSyncBoxSelectEntityDescription(SelectEntityDescription):
     options_fn: Callable[[aiohuesyncbox.HueSyncBox], list[str]] | None = None
@@ -114,6 +116,15 @@ async def select_sync_mode(api: aiohuesyncbox.HueSyncBox, sync_mode):
     await api.execution.set_state(mode=sync_mode)
 
 
+def current_led_indicator_mode(api: aiohuesyncbox.HueSyncBox):
+    return LED_INDICATOR_MODES[api.device.led_mode]
+
+
+async def select_led_indicator_mode(api: aiohuesyncbox.HueSyncBox, mode):
+    """Set led indicator mode."""
+    await api.device.set_led_mode(LED_INDICATOR_MODES.index(mode))
+
+
 ENTITY_DESCRIPTIONS = [
     HueSyncBoxSelectEntityDescription(  # type: ignore
         key="hdmi_input",  # type: ignore
@@ -142,6 +153,14 @@ ENTITY_DESCRIPTIONS = [
         options=SYNC_MODES,  # type: ignore
         current_option_fn=current_sync_mode,
         select_option_fn=select_sync_mode,
+    ),
+    HueSyncBoxSelectEntityDescription(  # type: ignore
+        key="led_indicator_mode",  # type: ignore
+        icon="mdi:led-variant-on",  # type: ignore
+        entity_category=EntityCategory.CONFIG,  # type: ignore
+        options=sorted(LED_INDICATOR_MODES),  # type: ignore
+        current_option_fn=current_led_indicator_mode,
+        select_option_fn=select_led_indicator_mode,
     ),
 ]
 

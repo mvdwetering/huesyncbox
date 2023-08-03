@@ -44,6 +44,14 @@
           "intense": "Intense"
         }
       },
+      "led_indicator_mode": {
+        "name": "Led indicator",
+        "state": {
+          "normal": "Normal",
+          "off": "Off",
+          "dimmed": "Dimmed"
+        }
+      },
       "sync_mode": {
         "name": "Sync mode",
         "state": {
