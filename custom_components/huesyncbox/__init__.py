@@ -1,23 +1,17 @@
 """The Philips Hue Play HDMI Sync Box integration."""
 import aiohuesyncbox
 import async_timeout
-import voluptuous as vol  # type: ignore
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryError
-from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers.config_validation import make_entity_service_schema
-from homeassistant.helpers.service import async_extract_config_entry_ids
+
+from .services import async_register_services, async_unregister_services
 
 from .const import (
-    ATTR_BRIDGE_CLIENTKEY,
-    ATTR_BRIDGE_ID,
-    ATTR_BRIDGE_USERNAME,
     DOMAIN,
     LOGGER,
-    SERVICE_SET_BRIDGE,
 )
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import update_device_registry
@@ -28,48 +22,6 @@ PLATFORMS: list[Platform] = [
     Platform.SENSOR,
     Platform.SWITCH,
 ]
-
-
-HUESYNCBOX_SET_BRIDGE_SCHEMA = make_entity_service_schema(
-    {
-        vol.Required(ATTR_BRIDGE_ID): cv.string,
-        vol.Required(ATTR_BRIDGE_USERNAME): cv.string,
-        vol.Required(ATTR_BRIDGE_CLIENTKEY): cv.string,
-    }
-)
-
-
-async def async_register_services(hass: HomeAssistant):
-    async def async_set_bridge(call):
-        """
-        Set bridge, note that this change is not instant.
-        After calling you will have to wait until the `bridge_unique_id` matches the new bridge id
-        and the bridge_connection_state is `connected`, `invalidgroup` or `streaming`, other status means it is connecting.
-        I have seen the bridge change to take around 15 seconds.
-        """
-
-        config_entry_ids = await async_extract_config_entry_ids(hass, call)
-        for config_entry_id in config_entry_ids:
-            coordinator = hass.data[DOMAIN][config_entry_id]
-
-            bridge_id = call.data.get(ATTR_BRIDGE_ID)
-            username = call.data.get(ATTR_BRIDGE_USERNAME)
-            clientkey = call.data.get(ATTR_BRIDGE_CLIENTKEY)
-
-            await coordinator.api.hue.set_bridge(bridge_id, username, clientkey)
-
-    if not hass.services.has_service(DOMAIN, SERVICE_SET_BRIDGE):
-        hass.services.async_register(
-            DOMAIN,
-            SERVICE_SET_BRIDGE,
-            async_set_bridge,
-            schema=HUESYNCBOX_SET_BRIDGE_SCHEMA,
-        )
-
-
-async def async_unregister_services(hass: HomeAssistant):
-    hass.services.async_remove(DOMAIN, SERVICE_SET_BRIDGE)
-
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Philips Hue Play HDMI Sync Box from a config entry."""

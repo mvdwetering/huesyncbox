@@ -145,6 +145,31 @@
       }
     }
   },
+  "selector": {
+    "modes": {
+      "options": {
+        "video": "Video",
+        "music": "Music",
+        "game": "Game"
+      }
+    },
+    "intensities": {
+      "options": {
+        "subtle": "Subtle",
+        "moderate": "Moderate",
+        "high": "High",
+        "intense": "Intense"
+      }
+    },
+    "inputs": {
+      "options": {
+        "input1": "Input 1",
+        "input2": "Input 2",
+        "input3": "Input 3",
+        "input4": "Input 4"
+      }
+    }
+  },
   "services": {
     "set_bridge": {
       "name": "Set bridge",
@@ -161,6 +186,68 @@
         "bridge_clientkey": {
           "name": "Clientkey",
           "description": "Clientkey that belongs with the username. A hexadecimal code of 32 characters."
+        }
+      }
+    },
+    "set_sync_state": {
+      "name": "Set sync state",
+      "description": "Control the complete sync state of the Philips Hue Play HDMI Syncbox. This is an advanced service and contains potential conflicting fields. Use responsibly!",
+      "fields": {
+        "sync": {
+          "name": "Sync",
+          "description": "Set sync state on or off."
+        },
+        "sync_toggle": {
+          "name": "Sync toggle",
+          "description": "Toggle light sync state between on/off."
+        },
+        "brightness": {
+          "name": "Brightness",
+          "description": "Brightness value to set."
+        },
+        "brightness_step": {
+          "name": "Brightness step",
+          "description": "Change brightness relative to the current state."
+        },
+        "mode": {
+          "name": "Mode",
+          "description": "Mode to set."
+        },
+        "mode_next": {
+          "name": "Next mode",
+          "description": "Select next mode, will wrap around."
+        },
+        "mode_prev": {
+          "name": "Previous mode",
+          "description": "Select previous mode, will wrap around."
+        },
+        "intensity": {
+          "name": "Intensity",
+          "description": "Intensity to set."
+        },
+        "intensity_next": {
+          "name": "Increase intensity",
+          "description": "Select higher intensity."
+        },
+        "intensity_prev": {
+          "name": "Lower intensity",
+          "description": "Select lower intensity."
+        },
+        "input": {
+          "name": "Input",
+          "description": "Input to select."
+        },
+        "input_next": {
+          "name": "Next input",
+          "description": "Select next input, wraps around."
+        },
+        "input_prev": {
+          "name": "Previous input",
+          "description": "Select previous input, wraps around."
+        },
+        "entertainment_area": {
+          "name": "Entertainment area",
+          "description": "Entertainment area to select. Name must match _exactly_"
         }
       }
     }
