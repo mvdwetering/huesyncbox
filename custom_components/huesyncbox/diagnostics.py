@@ -26,8 +26,10 @@ async def async_get_config_entry_diagnostics(
 
     coordinator: HueSyncBoxCoordinator = hass.data[DOMAIN].get(entry.entry_id, None)
     if coordinator:
-        data["api"] = async_redact_data(
-            coordinator.api.last_response, KEYS_TO_REDACT_API
-        )
+        data["api"] = {}
+        if coordinator.api.last_response is not None:
+            data["api"] = async_redact_data(
+                coordinator.api.last_response, KEYS_TO_REDACT_API
+            ) 
 
     return data
