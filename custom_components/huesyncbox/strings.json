@@ -1,7 +1,8 @@
 {
   "config": {
     "abort": {
-      "already_configured": "Device is already configured"
+      "already_configured": "Device is already configured",
+      "reauth_successful": "Successfully re-linked the Philips Hue Play HDMI Sync Box"
     },
     "error": {
       "cannot_connect": "Failed to connect",
@@ -16,6 +17,10 @@
           "ip_address": "IP address or hostname",
           "unique_id": "Identifier (eg. C42996000000)"
         }
+      },
+      "reauth_confirm": {
+        "title": "Reauthenticate Integration",
+        "description": "The Philips Hue Play HDMI Sync Box needs to be re-linked"
       }
     },
     "progress": {
@@ -155,7 +160,7 @@
         },
         "bridge_clientkey": {
           "name": "Clientkey",
-          "description": "Clientkey corresponeding with the username. A hexadecimal code of 32 characters."
+          "description": "Clientkey that belongs with the username. A hexadecimal code of 32 characters."
         }
       }
     }

@@ -82,12 +82,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         path=entry.data["path"],
     )
 
+    initialized = False
     try:
         await api.initialize()
+        initialized = True
     except aiohuesyncbox.Unauthorized as err:
         raise ConfigEntryAuthFailed(err) from err
     except aiohuesyncbox.RequestError as err:
         raise ConfigEntryError(err) from err
+    finally:
+        if not initialized:
+            await api.close()
 
     await update_device_registry(hass, entry, api)
 

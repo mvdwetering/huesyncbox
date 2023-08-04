@@ -9,6 +9,7 @@ DEFAULT_PORT = 443
 
 MANUFACTURER_NAME = "Signify"
 
+REGISTRATION_ID = "registration_id"
 
 INTENSITY_SUBTLE = "subtle"
 INTENSITY_MODERATE = "moderate"

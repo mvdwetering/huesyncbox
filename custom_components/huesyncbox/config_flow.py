@@ -10,6 +10,7 @@ import voluptuous as vol  # type: ignore
 from homeassistant import config_entries
 from homeassistant.components import zeroconf
 from homeassistant.const import (
+    CONF_ACCESS_TOKEN,
     CONF_HOST,
     CONF_IP_ADDRESS,
     CONF_PATH,
@@ -20,7 +21,7 @@ from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 
-from .const import DEFAULT_PORT, DOMAIN
+from .const import DEFAULT_PORT, DOMAIN, REGISTRATION_ID
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -82,6 +83,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     link_task: asyncio.Task | None = None
+    reauth_entry: config_entries.ConfigEntry | None = None
 
     connection_info: ConnectionInfo
     device_name = "Default syncbox name"
@@ -184,10 +186,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         pass
                     await asyncio.sleep(1)
 
-                self.connection_info.access_token = registration_info["access_token"]
-                self.connection_info.registration_id = registration_info[
-                    "registration_id"
-                ]
+                self.connection_info.access_token = registration_info[CONF_ACCESS_TOKEN]
+                self.connection_info.registration_id = registration_info[REGISTRATION_ID]
 
                 await huesyncbox.initialize()
                 self.device_name = huesyncbox.device.name
@@ -233,9 +233,42 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_finish(self, user_input=None) -> FlowResult:
         """Finish flow"""
         assert self.connection_info
+
+        if self.reauth_entry:
+            self.hass.config_entries.async_update_entry(self.reauth_entry, data=asdict(self.connection_info))
+            await self.hass.config_entries.async_reload(self.reauth_entry.entry_id)
+            return self.async_abort(reason="reauth_successful")            
+
         return self.async_create_entry(
             title=self.device_name, data=asdict(self.connection_info)
         )
+
+    
+    async def async_step_reauth(self, user_input=None):
+        """Reauth is triggered when token is not valid anymore, retrigger link flow."""
+        self.reauth_entry = self.hass.config_entries.async_get_entry(
+            self.context["entry_id"]
+        )
+
+        assert self.reauth_entry is not None
+
+        self.connection_info = ConnectionInfo(
+            self.reauth_entry.data[CONF_HOST],
+            self.reauth_entry.data[CONF_UNIQUE_ID],
+            self.reauth_entry.data[CONF_ACCESS_TOKEN],
+            self.reauth_entry.data[REGISTRATION_ID],
+            self.reauth_entry.data[CONF_PORT],
+            self.reauth_entry.data[CONF_PATH],
+        )
+
+        return await self.async_step_reauth_confirm()
+    
+
+    async def async_step_reauth_confirm(self, user_input=None) -> FlowResult:
+        """Dialog that informs the user that reauth is required."""
+        if user_input is None:
+            return self.async_show_form(step_id="reauth_confirm", last_step=False)
+        return await self.async_step_link()    
 
 
 class CannotConnect(HomeAssistantError):
