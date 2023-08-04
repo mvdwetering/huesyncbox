@@ -6,11 +6,14 @@ from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .coordinator import HueSyncBoxCoordinator
-from .helpers import get_hue_target_from_id, stop_sync_and_retry_on_invalid_state
+from .helpers import stop_sync_and_retry_on_invalid_state
 
 from .const import (
     DOMAIN,
-    INTENSITIES,
+    INTENSITY_HIGH,
+    INTENSITY_INTENSE,
+    INTENSITY_MODERATE,
+    INTENSITY_SUBTLE,
     SYNC_MODES,
 )
 
@@ -36,6 +39,14 @@ def get_sync_mode(api: aiohuesyncbox.HueSyncBox):
     if not api.execution.mode in SYNC_MODES:
         mode = api.execution.last_sync_mode
     return mode
+
+
+def get_hue_target_from_id(id_: str):
+    """Determine API target from id"""
+    try:
+        return f"groups/{int(id_)}"
+    except ValueError:
+        return id_
 
 
 def available_inputs(api: aiohuesyncbox.HueSyncBox):
@@ -133,7 +144,7 @@ ENTITY_DESCRIPTIONS = [
     HueSyncBoxSelectEntityDescription(  # type: ignore
         key="intensity",  # type: ignore
         icon="mdi:sine-wave",  # type: ignore
-        options=INTENSITIES,  # type: ignore
+        options=[INTENSITY_SUBTLE, INTENSITY_MODERATE, INTENSITY_HIGH, INTENSITY_INTENSE],  # type: ignore
         current_option_fn=current_intensity,
         select_option_fn=select_intensity,
     ),
