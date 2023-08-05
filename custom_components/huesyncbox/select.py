@@ -145,7 +145,7 @@ ENTITY_DESCRIPTIONS = [
     ),
     HueSyncBoxSelectEntityDescription(  # type: ignore
         key="led_indicator_mode",  # type: ignore
-        icon="mdi:led-variant-on",  # type: ignore
+        icon="mdi:alarm-light",  # type: ignore
         entity_category=EntityCategory.CONFIG,  # type: ignore
         options=sorted(LED_INDICATOR_MODES),  # type: ignore
         current_option_fn=current_led_indicator_mode,
