@@ -30,6 +30,6 @@ async def async_get_config_entry_diagnostics(
         if coordinator.api.last_response is not None:
             data["api"] = async_redact_data(
                 coordinator.api.last_response, KEYS_TO_REDACT_API
-            ) 
+            )
 
     return data

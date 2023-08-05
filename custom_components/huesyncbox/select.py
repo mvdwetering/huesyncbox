@@ -22,6 +22,7 @@ import aiohuesyncbox
 
 LED_INDICATOR_MODES = ["off", "normal", "dimmed"]
 
+
 @dataclass
 class HueSyncBoxSelectEntityDescription(SelectEntityDescription):
     options_fn: Callable[[aiohuesyncbox.HueSyncBox], list[str]] | None = None
@@ -216,5 +217,7 @@ class HueSyncBoxSelect(CoordinatorEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        await stop_sync_and_retry_on_invalid_state(self.entity_description.select_option_fn, self.coordinator.api, option)
+        await stop_sync_and_retry_on_invalid_state(
+            self.entity_description.select_option_fn, self.coordinator.api, option
+        )
         await self.coordinator.async_request_refresh()

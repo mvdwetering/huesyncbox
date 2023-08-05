@@ -90,10 +90,14 @@ class HueSyncBoxSwitch(CoordinatorEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs):
         """Turn the entity on."""
-        await stop_sync_and_retry_on_invalid_state(self.entity_description.turn_on, self.coordinator.api)
+        await stop_sync_and_retry_on_invalid_state(
+            self.entity_description.turn_on, self.coordinator.api
+        )
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs: Any):
         """Turn the entity off."""
-        await stop_sync_and_retry_on_invalid_state(self.entity_description.turn_off, self.coordinator.api)
+        await stop_sync_and_retry_on_invalid_state(
+            self.entity_description.turn_off, self.coordinator.api
+        )
         await self.coordinator.async_request_refresh()

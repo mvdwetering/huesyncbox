@@ -18,7 +18,8 @@ from .const import DOMAIN
 @dataclass
 class HueSyncBoxSensorEntityDescription(SensorEntityDescription):
     get_value: Callable[[aiohuesyncbox.HueSyncBox], str] = lambda _: ""
-    icons: dict[str,str] | None = None
+    icons: dict[str, str] | None = None
+
 
 WIFI_STRENGTH_STATES = {
     0: "not_connected",
@@ -90,7 +91,7 @@ ENTITY_DESCRIPTIONS = [
         icon="mdi:ip-network",  # type: ignore
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         entity_registry_enabled_default=False,  # type: ignore
-        get_value=lambda api: api.device.ip_address
+        get_value=lambda api: api.device.ip_address,
     ),
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="wifi_strength",  # type: ignore
@@ -98,7 +99,7 @@ ENTITY_DESCRIPTIONS = [
         icons=WIFI_STRENGTH_ICONS,
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         entity_registry_enabled_default=False,  # type: ignore
-        get_value=lambda api: WIFI_STRENGTH_STATES[api.device.wifi.strength]
+        get_value=lambda api: WIFI_STRENGTH_STATES[api.device.wifi.strength],
     ),
 ]
 
@@ -144,6 +145,7 @@ class HueSyncBoxSensor(CoordinatorEntity, SensorEntity):
     def icon(self) -> str | None:
         """Return the icon."""
         if self.entity_description.icons is not None:
-            return self.entity_description.icons[self.entity_description.get_value(self.coordinator.api)]
+            return self.entity_description.icons[
+                self.entity_description.get_value(self.coordinator.api)
+            ]
         return super().icon
-

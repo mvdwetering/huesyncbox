@@ -187,7 +187,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     await asyncio.sleep(1)
 
                 self.connection_info.access_token = registration_info[CONF_ACCESS_TOKEN]
-                self.connection_info.registration_id = registration_info[REGISTRATION_ID]
+                self.connection_info.registration_id = registration_info[
+                    REGISTRATION_ID
+                ]
 
                 await huesyncbox.initialize()
                 self.device_name = huesyncbox.device.name
@@ -235,15 +237,16 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         assert self.connection_info
 
         if self.reauth_entry:
-            self.hass.config_entries.async_update_entry(self.reauth_entry, data=asdict(self.connection_info))
+            self.hass.config_entries.async_update_entry(
+                self.reauth_entry, data=asdict(self.connection_info)
+            )
             await self.hass.config_entries.async_reload(self.reauth_entry.entry_id)
-            return self.async_abort(reason="reauth_successful")            
+            return self.async_abort(reason="reauth_successful")
 
         return self.async_create_entry(
             title=self.device_name, data=asdict(self.connection_info)
         )
 
-    
     async def async_step_reauth(self, user_input=None):
         """Reauth is triggered when token is not valid anymore, retrigger link flow."""
         self.reauth_entry = self.hass.config_entries.async_get_entry(
@@ -262,13 +265,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
         return await self.async_step_reauth_confirm()
-    
 
     async def async_step_reauth_confirm(self, user_input=None) -> FlowResult:
         """Dialog that informs the user that reauth is required."""
         if user_input is None:
             return self.async_show_form(step_id="reauth_confirm", last_step=False)
-        return await self.async_step_link()    
+        return await self.async_step_link()
 
 
 class CannotConnect(HomeAssistantError):

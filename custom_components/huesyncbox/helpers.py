@@ -32,7 +32,7 @@ async def stop_sync_and_retry_on_invalid_state(async_func, *args, **kwargs):
         # Most likely another application is already syncing to the bridge
         # Since there is no way to ask the user what to do just
         # stop the active application and try again
-        api:aiohuesyncbox.HueSyncBox = args[0]
+        api: aiohuesyncbox.HueSyncBox = args[0]
         for group in api.hue.groups:
             if group.active:
                 LOGGER.info(
