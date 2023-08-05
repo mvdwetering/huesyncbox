@@ -7,7 +7,10 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryError
-from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import (
+    config_validation as cv,
+    entity_registry,
+)
 from homeassistant.helpers.config_validation import make_entity_service_schema
 from homeassistant.helpers.service import async_extract_config_entry_ids
 
@@ -137,3 +140,35 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
         LOGGER.info(
             "Removing registration from Philips Hue Play HDMI Sync Box failed: %s ", e
         )
+
+
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+    """Migrate old entry."""
+    from_version = config_entry.version
+    LOGGER.debug("Migrating from version %s", from_version)
+
+    if config_entry.version == 1:
+        migrate_v1_to_v2(hass, config_entry)
+
+    LOGGER.info(
+        "Migration of ConfigEntry from version %s to version %s successful",
+        from_version,
+        config_entry.version,
+    )
+
+    return True
+
+
+def migrate_v1_to_v2(hass: HomeAssistant, config_entry: ConfigEntry):
+    # Mediaplayer entities are obsolete
+    # cleanup so the user does not have to
+    registry = entity_registry.async_get(hass)
+    entities = entity_registry.async_entries_for_config_entry(
+        registry, config_entry.entry_id
+    )
+    for entity in entities:
+        if entity.domain == Platform.MEDIA_PLAYER:
+            registry.async_remove(entity.entity_id)
+
+    config_entry.version = 2
+    hass.config_entries.async_update_entry(config_entry)

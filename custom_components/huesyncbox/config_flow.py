@@ -80,7 +80,7 @@ async def try_connection(connection_info: ConnectionInfo):
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Philips Hue Play HDMI Sync Box."""
 
-    VERSION = 1
+    VERSION = 2
 
     link_task: asyncio.Task | None = None
     reauth_entry: config_entries.ConfigEntry | None = None
