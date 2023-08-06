@@ -5,8 +5,9 @@
 Custom integration for the Philips Hue Play HDMI Sync Box.
 
 - [About](#about)
-- [Services](#services)
-- [Known issues](#known-issues)
+  - [Behaviour](#behaviour)
+  - [Services](#services)
+ - [Known issues](#known-issues)
 - [Updating from before version 2](#updating-from-before-version-20)
 - [Installation](#installation)
   - [HACS (recommended)](#hacs)
@@ -40,7 +41,7 @@ A few notes on behaviour when changing entities.
 This behaviour is what happens when sending commands to the box and is a bit different on how the Hue app controls the syncbox as it seems to only send the settings when starting syncing (or while already syncing). Emulating this behaviour in Home Assistant is complicated and in general not recommended (or even allowed).
 
 
-## Services
+### Services
 
 The integration exposes some services to control functionality that can not be exposed on entities.
 
