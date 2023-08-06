@@ -29,6 +29,16 @@ Exposed entities:
 * Bridge ID
 * IP address
 
+### Behaviour
+
+A few notes on behaviour when changing entities.
+
+* Intensity applies to the current selected mode. So if you want to change both the intensity and mode you _first_ have to change the mode and then set the intensity. Otherwise the intensity is applied to the "old" mode
+* When enabling light sync, the box will power on automatically
+* Changing mode will power on the box and start light sync on that mode
+
+This behaviour is what happens when sending commands to the box and is a bit different on how the Hue app controls the syncbox as it seems to only send the settings when starting syncing (or while already syncing). Emulating this behaviour in Home Assistant is complicated and in general not recommended (or even allowed).
+
 
 ## Services
 
@@ -37,7 +47,6 @@ The integration exposes some services to control functionality that can not be e
 | Service name | Description |
 |---|---|
 | set_bridge | Set the bridge to be used by the Philips Hue Play HDMI Syncbox. Keep in mind that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to select an entertainment area if Bridge connection state is `invalidgroup` instead of `connected`. |
-| set_sync_state | Control all aspects of the syncbox state. Allows setting multiple paramters at once, e.g. intensity and syncmode. Intended for advanced use cases. |
 
 For the most up-to-date list and parameter descriptions use the Services tab in the Developer tools and search for `huesyncbox` in the services list.
 
@@ -56,11 +65,11 @@ If still not found automatically it is possible to add the syncbox manually thro
 
 Before 2.0 the functionality of the Philips Hue Play HDMI Sync Box was all exposed through one single mediaplayer entity. Several features of the media_player were abused to control things on the box. E.g. brightness was controlled by the volume slider. This turned out to be confusing and quite limiting. Next to that the way the integration was built did not allow for more entities so it was not possible to extend it. 
 
-The 2.0 version is a complete rewrite to allow for multiple entities and modernize the integration in general. Having multiple entities should make it clear what entity does what.
+The 2.0 version is a complete rewrite to allow for multiple entities and modernize the integration in general. Having multiple standard entities should make it clear what entity does what.
 
 > **Warning**
 > This change means that existing automations will need to be updated to use the new entities!
-> Home Assistant will create repairs when using the obsolete stuff which should help in finding the relevant automations.
+> Home Assistant will create repairs when using the obsolete items which should help in finding the relevant places that need to be updated.
 
 With the transition to the new entities most custom services that were offered became obsolete as native Home Assistant services of the entities can be used now. 
 Information exposed by additional attributes on the `media_player` is available on the new entities.
@@ -75,14 +84,14 @@ Below is a list of old services and the replacement to help with the transition.
 | set_syncmode | Use services of the sync mode entity |
 | set_intensity | Use services of the intensity entity |
 | set_entertainment_area | Use services of the entertainment area entity |
-| set_sync_state | Unchanged |
+| set_sync_state | Obsolete, use services on the specific entities instead |
 | set_bridge | Unchanged |
 
 
 ## Installation
 
 > **Note**
-> The Philips Hue Play HDMI Sync Box has to be setup with the official Hue  app before adding it to Home Assistant.
+> The Philips Hue Play HDMI Sync Box has to be setup with the official Hue app before adding it to Home Assistant.
 
 ### HACS
 
