@@ -7,7 +7,7 @@ Custom integration for the Philips Hue Play HDMI Sync Box.
 - [About](#about)
 - [Services](#services)
 - [Known issues](#known-issues)
-- [Updating from before version 2](#updating-from-before-version-2.0)
+- [Updating from before version 2](#updating-from-before-version-20)
 - [Installation](#installation)
   - [HACS (recommended)](#hacs)
   - [Manually](#manually)
