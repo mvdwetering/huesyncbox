@@ -23,12 +23,15 @@ Exposed entities:
 * Light sync on/off
 * Intensity subtle/moderate/high/intense
 * Mode video/music/game
+* HDMI Input select
 * Brightness
 * Dolby Vision compatibility on/off
+* LED indicator dimmed/normal/off
 * HDMI1-4 connection status
 * Bridge connection status (default disabled)
 * Bridge ID (default disabled)
 * IP address (default disabled)
+* Wifi quality (default disabled)
 
 ### Behaviour
 
@@ -68,25 +71,9 @@ Before 2.0 the functionality of the Philips Hue Play HDMI Sync Box was all expos
 
 The 2.0 version is a complete rewrite to allow for multiple entities and modernize the integration in general. Having multiple standard entities should make it clear what entity does what.
 
-> **Warning**
-> This change means that existing automations will need to be updated to use the new entities!
-> Home Assistant will create repairs when using the obsolete items which should help in finding the relevant places that need to be updated.
-
-With the transition to the new entities most custom services that were offered became obsolete as native Home Assistant services of the entities can be used now. 
-Information exposed by additional attributes on the `media_player` is available on the new entities.
-
 No functionality is lost it just moved to a different place.
 
-Below is a list of old services and the replacement to help with the transition.
-
-| Old service name | Replaced by |
-|---|---|
-| set_brightness | Use services of the brightness entity |
-| set_syncmode | Use services of the sync mode entity |
-| set_intensity | Use services of the intensity entity |
-| set_entertainment_area | Use services of the entertainment area entity |
-| set_sync_state | Obsolete, use services on the specific entities instead |
-| set_bridge | Unchanged |
+See the [release notes for 2.0.0](https://github.com/mvdwetering/huesyncbox/releases/tag/v2.0.0b0) for more details on the changes.
 
 
 ## Installation
@@ -96,7 +83,8 @@ Below is a list of old services and the replacement to help with the transition.
 
 ### HACS
 
-> **Note** Recommended because you will get notified of updates
+> **Note**
+> Recommended because you will get notified of updates
 
 * Install the integration from within HACS (you can use the search box to find it)
 * Restart Home Assistant
