@@ -26,9 +26,9 @@ Exposed entities:
 * Brightness
 * Dolby Vision compatibility on/off
 * HDMI1-4 connection status
-* Bridge connection status
-* Bridge ID
-* IP address
+* Bridge connection status (default disabled)
+* Bridge ID (default disabled)
+* IP address (default disabled)
 
 ### Behaviour
 
