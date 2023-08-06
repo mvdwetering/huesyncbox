@@ -21,6 +21,7 @@ import aiohuesyncbox
 
 
 LED_INDICATOR_MODES = ["off", "normal", "dimmed"]
+INPUTS = ["input1", "input2", "input3", "input4"]
 
 
 @dataclass
@@ -51,20 +52,25 @@ def get_hue_target_from_id(id_: str):
 
 
 def available_inputs(api: aiohuesyncbox.HueSyncBox):
-    return sorted(map(lambda input_: input_.name, api.hdmi.inputs))
+    inputs = []
+    for input_id in INPUTS:
+        input = getattr(api.hdmi, input_id)
+        inputs.append(input.name)
+    return inputs
 
 
 def current_input(api: aiohuesyncbox.HueSyncBox):
-    return next(
-        filter(lambda x: x.id == api.execution.hdmi_source, api.hdmi.inputs), NO_INPUT
-    ).name
-
+    for input_id in INPUTS:
+        if input_id == api.execution.hdmi_source:
+            return getattr(api.hdmi, input_id).name
+    return None
 
 async def select_input(api: aiohuesyncbox.HueSyncBox, input_name):
-    # Source is the user given name, so needs to be mapped back to a valid API value."""
-    input_ = next(filter(lambda i: i.name == input_name, api.hdmi.inputs), None)
-    if input_:
-        await api.execution.set_state(hdmi_source=input_.id)
+    # Inputname is the user given name, so needs to be mapped back to a valid API value."""
+    for input_id in INPUTS:
+        input = getattr(api.hdmi, input_id)
+        if input_name == input.name:
+            await api.execution.set_state(hdmi_source=input_id)
 
 
 def available_entertainment_areas(api: aiohuesyncbox.HueSyncBox):
