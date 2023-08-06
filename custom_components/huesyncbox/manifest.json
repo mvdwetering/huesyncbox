@@ -13,6 +13,6 @@
   "issue_tracker": "https://github.com/mvdwetering/huesyncbox/issues",
   "loggers": ["aiohuesyncbox"],
   "requirements": ["aiohuesyncbox==0.0.24"],
-  "version": "0.0.0",
+  "version": "2.0.0b0",
   "zeroconf": ["_huesync._tcp.local."]
 }
