@@ -3,6 +3,7 @@ import aiohuesyncbox
 import async_timeout
 import voluptuous as vol  # type: ignore
 
+from homeassistant.components import automation
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -13,6 +14,7 @@ from homeassistant.helpers import (
 )
 from homeassistant.helpers.config_validation import make_entity_service_schema
 from homeassistant.helpers.service import async_extract_config_entry_ids
+from homeassistant.helpers import issue_registry
 
 from .const import (
     ATTR_BRIDGE_CLIENTKEY,
@@ -166,9 +168,30 @@ def migrate_v1_to_v2(hass: HomeAssistant, config_entry: ConfigEntry):
     entities = entity_registry.async_entries_for_config_entry(
         registry, config_entry.entry_id
     )
+
+    automations_with_entity = []
     for entity in entities:
         if entity.domain == Platform.MEDIA_PLAYER:
             registry.async_remove(entity.entity_id)
+
+            automations_with_entity = automation.automations_with_entity(hass, entity.entity_id)
+
+            automation_info = []
+            for automation_with_entity in automations_with_entity:
+                if automation_entry := registry.async_get(automation_with_entity):
+                    automation_info.append(f"{automation_entry.name or automation_entry.original_name} ({automation_with_entity})\n")
+
+            if len(automation_info) > 0:
+                issue_registry.async_create_issue(
+                    hass,
+                    DOMAIN,
+                    f"automations_using_deleted_mediaplayer_{config_entry.entry_id}",
+                    is_fixable=True,
+                    is_persistent=True,
+                    severity=issue_registry.IssueSeverity.WARNING,
+                    translation_key="automations_using_deleted_mediaplayer",
+                    translation_placeholders={"automations": ",".join(automation_info), "media_player_entity": entity.entity_id }
+                )
 
     config_entry.version = 2
     hass.config_entries.async_update_entry(config_entry)
