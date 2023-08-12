@@ -1,5 +1,6 @@
 """Helpers for the Philips Hue Play HDMI Sync Box integration."""
 
+from typing import List
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry
@@ -46,3 +47,16 @@ async def stop_sync_and_retry_on_invalid_state(async_func, *args, **kwargs):
                 await api.hue.set_group_active(group.id, active=False)
                 await async_func(*args, **kwargs)
                 break
+
+class LinearRangeConverter:
+    """Converts values from one range to another with a linear thingy (y=ax+b)"""
+
+    def __init__(self, range_x:List[float], range_y:List[float]) -> None:
+        self._a = (range_y[1] - range_y[0]) / (range_x[1] - range_x[0])
+        self._b = range_y[0] - (self._a * range_x[0])
+
+    def to_x(self, y):
+        return (y - self._b) / self._a
+
+    def to_y(self, x):
+        return self._a * x + self._b
