@@ -24,7 +24,7 @@ Exposed entities:
 * Intensity subtle/moderate/high/intense
 * Mode video/music/game
 * HDMI Input select
-* Brightness
+* Brightness 1-100%
 * Dolby Vision compatibility on/off
 * LED indicator dimmed/normal/off
 * HDMI1-4 connection status
@@ -37,7 +37,7 @@ Exposed entities:
 
 A few notes on behaviour when changing entities.
 
-* Intensity applies to the current selected mode. So if you want to change both the intensity and mode you _first_ have to change the mode and then set the intensity. Otherwise the intensity is applied to the "old" mode
+* Intensity applies to the current selected mode. So if you want to change both the `intensity` and `mode` you _first_ have to change the mode and then set the intensity. Otherwise the intensity is applied to the "old" mode
 * When enabling light sync, the box will power on automatically
 * Changing mode will power on the box and start light sync on that mode
 
