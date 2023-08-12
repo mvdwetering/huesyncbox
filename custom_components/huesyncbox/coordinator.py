@@ -11,7 +11,7 @@ from homeassistant.helpers.update_coordinator import (
 )
 
 from .const import LOGGER
-from .helpers import update_device_registry
+from .helpers import update_config_entry_title, update_device_registry
 
 
 class HueSyncBoxCoordinator(DataUpdateCoordinator):
@@ -41,6 +41,7 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
 
                 if old_device != self.api.device:
                     await update_device_registry(self.hass, self.config_entry, self.api)
+                    update_config_entry_title(self.hass, self.config_entry, self.api.device.name)
 
                 return self.api
         except aiohuesyncbox.Unauthorized as err:

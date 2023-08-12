@@ -25,7 +25,7 @@ from .const import (
     SERVICE_SET_BRIDGE,
 )
 from .coordinator import HueSyncBoxCoordinator
-from .helpers import update_device_registry
+from .helpers import update_device_registry, update_config_entry_title
 
 PLATFORMS: list[Platform] = [
     Platform.NUMBER,
@@ -100,6 +100,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             await api.close()
 
     await update_device_registry(hass, entry, api)
+    update_config_entry_title(hass, entry, api.device.name)
 
     coordinator = HueSyncBoxCoordinator(hass, api)
 

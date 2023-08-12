@@ -25,6 +25,11 @@ async def update_device_registry(
         sw_version=api.device.firmware_version,
     )
 
+def update_config_entry_title(
+    hass: HomeAssistant, config_entry: ConfigEntry, new_title: str
+):
+    hass.config_entries.async_update_entry(config_entry, title=new_title)
+
 
 async def stop_sync_and_retry_on_invalid_state(async_func, *args, **kwargs):
     try:
