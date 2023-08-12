@@ -43,7 +43,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     entities: list[NumberEntity] = []
 
     for entity_description in ENTITY_DESCRIPTIONS:
-        entities.append(HueSyncBoxNumber(coordinator, entity_description))
+        try:
+            if entity_description.get_value(coordinator.api) is not None:
+                entities.append(HueSyncBoxNumber(coordinator, entity_description))
+        except:
+            # When not able to read value, entity is not supported
+            pass
 
     async_add_entities(entities)
 

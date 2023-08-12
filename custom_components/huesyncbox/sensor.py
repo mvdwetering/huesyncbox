@@ -99,7 +99,7 @@ ENTITY_DESCRIPTIONS = [
         icons=WIFI_STRENGTH_ICONS,
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         entity_registry_enabled_default=False,  # type: ignore
-        get_value=lambda api: WIFI_STRENGTH_STATES[api.device.wifi.strength],
+        get_value=lambda api: WIFI_STRENGTH_STATES[api.device.wifi.strength],  # type: ignore
     ),
 ]
 
@@ -110,7 +110,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     entities: list[SensorEntity] = []
 
     for entity_description in ENTITY_DESCRIPTIONS:
-        entities.append(HueSyncBoxSensor(coordinator, entity_description))
+        try:
+            if entity_description.get_value(coordinator.api) is not None:
+                entities.append(HueSyncBoxSensor(coordinator, entity_description))
+        except:
+            # When not able to read value, entity is not supported
+            pass
 
     async_add_entities(entities)
 
