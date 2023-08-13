@@ -13,6 +13,7 @@ from homeassistant.const import (
     CONF_ACCESS_TOKEN,
     CONF_HOST,
     CONF_IP_ADDRESS,
+    CONF_NAME,
     CONF_PATH,
     CONF_PORT,
     CONF_UNIQUE_ID,
@@ -160,7 +161,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             reload_on_update=True,  # This is the default, but make it more visible
         )
 
+        self.device_name = discovery_info.properties["name"]
         self.connection_info = connection_info
+
+        self.context.update({"title_placeholders": {CONF_NAME: self.device_name}})
+
         return await self.async_step_link()
 
     async def _async_register(
