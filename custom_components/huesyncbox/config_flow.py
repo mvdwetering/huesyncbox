@@ -164,9 +164,19 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.device_name = discovery_info.properties["name"]
         self.connection_info = connection_info
 
+        # This makes sure that the name of the box appears in the card with the discovered device
         self.context.update({"title_placeholders": {CONF_NAME: self.device_name}})
 
+        # Can't directly go to link step as it will immediately start trying to link
+        # and it seems to get stuck. Go through intermediate dialog like with reauth.
+        return await self.async_step_zeroconf_confirm()
+    
+    async def async_step_zeroconf_confirm(self, user_input=None) -> FlowResult:
+        """Dialog that informs the user that device is found and needs to be linked."""
+        if user_input is None:
+            return self.async_show_form(step_id="zeroconf_confirm", last_step=False)
         return await self.async_step_link()
+
 
     async def _async_register(
         self, ha_instance_name: str, connection_info: ConnectionInfo

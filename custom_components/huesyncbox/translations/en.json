@@ -21,6 +21,10 @@
       "reauth_confirm": {
         "title": "Reauthenticate Integration",
         "description": "The Philips Hue Play HDMI Sync Box needs to be re-linked"
+      },
+      "zeroconf_confirm": {
+        "title": "Device found",
+        "description": "The Philips Hue Play HDMI Sync Box needs to be linked. Press next to start the linking process."
       }
     },
     "progress": {
