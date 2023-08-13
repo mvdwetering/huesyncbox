@@ -20,3 +20,60 @@ set_bridge:
       required: true
       selector:
         text:
+
+set_sync_state:
+  target:
+    device:
+      integration: huesyncbox
+    entity:
+      integration: huesyncbox
+  fields:
+    power:
+      example: true
+      selector:
+        boolean:
+    sync:
+      example: true
+      selector:
+        boolean:
+    brightness:
+      example: 42
+      selector:
+        number:
+          min: 1
+          max: 100
+          step: 1
+          mode: slider
+    intensity:
+      example: high
+      selector:
+        select:
+          translation_key: "intensities"
+          options:
+            - subtle
+            - moderate
+            - high
+            - intense
+    mode:
+      example: video
+      selector:
+        select:
+          translation_key: modes
+          options:
+            - video
+            - music
+            - game
+    input:
+      example: input1
+      selector:
+        select:
+          translation_key: "inputs"
+          options:
+            - input1
+            - input2
+            - input3
+            - input4
+    entertainment_area:
+      example: TV Area
+      selector:
+        text:

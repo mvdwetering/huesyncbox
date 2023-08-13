@@ -9,7 +9,6 @@ from .const import DOMAIN, LOGGER, MANUFACTURER_NAME
 
 import aiohuesyncbox
 
-
 async def update_device_registry(
     hass: HomeAssistant, config_entry: ConfigEntry, api: aiohuesyncbox.HueSyncBox
 ):
@@ -64,4 +63,29 @@ class LinearRangeConverter:
         return (y - self._b) / self._a
 
     def to_y(self, x):
-        return self._a * x + self._b
+        return (self._a * x) + self._b
+
+class BrightnessRangeConverter:
+    _converter = LinearRangeConverter([1, 100], [0, 200])
+
+    @classmethod
+    def ha_to_api(cls, ha_value):
+        return round(cls._converter.to_y(ha_value))
+
+    @classmethod
+    def api_to_ha(cls, api_value):
+        return cls._converter.to_x(api_value)
+
+def get_hue_target_from_id(id_: str):
+    """Determine API target from id"""
+    try:
+        return f"groups/{int(id_)}"
+    except ValueError:
+        return id_
+
+def get_group_from_area_name(api:aiohuesyncbox.HueSyncBox, area_name):
+    """Get the group object by entertainment area name."""
+    for group in api.hue.groups:
+        if group.name == area_name:
+            return group
+    return None

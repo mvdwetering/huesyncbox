@@ -12,9 +12,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import HueSyncBoxCoordinator
-from .helpers import LinearRangeConverter, stop_sync_and_retry_on_invalid_state
-
-brightness_range_converter = LinearRangeConverter([1, 100], [0, 200])
+from .helpers import BrightnessRangeConverter, stop_sync_and_retry_on_invalid_state
 
 @dataclass
 class HueSyncBoxNumberEntityDescription(NumberEntityDescription):
@@ -23,7 +21,7 @@ class HueSyncBoxNumberEntityDescription(NumberEntityDescription):
 
 
 async def set_brightness(api: aiohuesyncbox.HueSyncBox, brightness):
-    await api.execution.set_state(brightness=round(brightness_range_converter.to_y(brightness)))
+    await api.execution.set_state(brightness=BrightnessRangeConverter.ha_to_api(brightness))
 
 
 ENTITY_DESCRIPTIONS = [
@@ -34,7 +32,7 @@ ENTITY_DESCRIPTIONS = [
         native_min_value=1,  # type: ignore
         native_step=1,  # type: ignore
         native_unit_of_measurement="%",  # type: ignore
-        get_value=lambda api: brightness_range_converter.to_x(api.execution.brightness),
+        get_value=lambda api: BrightnessRangeConverter.api_to_ha(api.execution.brightness),
         set_value_fn=set_brightness,
     ),
 ]

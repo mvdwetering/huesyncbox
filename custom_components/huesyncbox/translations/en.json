@@ -145,6 +145,31 @@
       }
     }
   },
+  "selector": {
+    "modes": {
+      "options": {
+        "video": "Video",
+        "music": "Music",
+        "game": "Game"
+      }
+    },
+    "intensities": {
+      "options": {
+        "subtle": "Subtle",
+        "moderate": "Moderate",
+        "high": "High",
+        "intense": "Intense"
+      }
+    },
+    "inputs": {
+      "options": {
+        "input1": "HDMI 1",
+        "input2": "HDMI 2",
+        "input3": "HDMI 3",
+        "input4": "HDMI 4"
+      }
+    }
+  },
   "services": {
     "set_bridge": {
       "name": "Set bridge",
@@ -161,6 +186,40 @@
         "bridge_clientkey": {
           "name": "Clientkey",
           "description": "Clientkey that belongs with the username. A hexadecimal code of 32 characters."
+        }
+      }
+    },
+    "set_sync_state": {
+      "name": "Set light sync state",
+      "description": "Control the complete light sync state of the Philips Hue Play HDMI Syncbox with one call.",
+      "fields": {
+        "power": {
+          "name": "Power",
+          "description": "Turn the box on or off."
+        },
+        "sync": {
+          "name": "Light sync",
+          "description": "Set light sync state on or off. Setting this to on will also turn on the box."
+        },
+        "brightness": {
+          "name": "Brightness",
+          "description": "Brightness value to set."
+        },
+        "mode": {
+          "name": "Mode",
+          "description": "Mode to set. Setting the mode will also turn on the box and start light sync."
+        },
+        "intensity": {
+          "name": "Intensity",
+          "description": "Intensity to set."
+        },
+        "input": {
+          "name": "Input",
+          "description": "Input to select."
+        },
+        "entertainment_area": {
+          "name": "Entertainment area",
+          "description": "Entertainment area to select. Name must match _exactly_"
         }
       }
     }
