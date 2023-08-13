@@ -15,18 +15,18 @@ Custom integration for the Philips Hue Play HDMI Sync Box.
 
 ## About
 
-This integration exposes functionality of the Philips Hue Play HDMI Sync Box as entities in Home Assistant so it can be used in automation or from the dashboard.
+This integration exposes the Philips Hue Play HDMI Sync Box in Home Assistant so it can be used in automations or dashboards.
 
-Exposed entities:
+Exposed entities per device:
 
 * Power on/off
 * Light sync on/off
-* Intensity subtle/moderate/high/intense
-* Mode video/music/game
+* Intensity
+* Mode
 * HDMI Input select
-* Brightness 1-100%
+* Brightness percentage
 * Dolby Vision compatibility on/off
-* LED indicator dimmed/normal/off
+* LED indicator mode
 * HDMI1-4 connection status
 * Bridge connection status (default disabled)
 * Bridge ID (default disabled)
@@ -37,11 +37,9 @@ Exposed entities:
 
 A few notes on behaviour when changing entities.
 
-* Intensity applies to the current selected mode. So if you want to change both the `intensity` and `mode` you _first_ have to change the mode and then set the intensity. Otherwise the intensity is applied to the "old" mode
-* When enabling light sync, the box will power on automatically
-* Changing mode will power on the box and start light sync on that mode
-
-This behaviour is what happens when sending commands to the box and is a bit different on how the Hue app controls the syncbox as it seems to only send the settings when starting syncing (or while already syncing). Emulating this behaviour in Home Assistant is complicated and in general not recommended (or even allowed).
+* Enabling light sync will also power on the box
+* Settings mode will also power on the box and start light sync on the selected mode
+* When you want to change multiple entities the order is important. For example Intensity applies to the current selected mode. So if you want to change both the `intensity` and `mode` you _first_ have to change the mode and then set the intensity. Otherwise the intensity is applied to the "old" mode. If you want to avoid ordering issues you can use the `set_sync_state` service which will take care of the ordering and is more efficient.
 
 
 ### Services
@@ -51,6 +49,7 @@ The integration exposes some services to control functionality that can not be e
 | Service name | Description |
 |---|---|
 | set_bridge | Set the bridge to be used by the Philips Hue Play HDMI Syncbox. Keep in mind that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to select an entertainment area if Bridge connection state is `invalidgroup` instead of `connected`. |
+| set_sync_state | Set the complete state of the Philips Hue Play HDMI Syncbox. Makes sure everything is set in the correct order and is more efficient than using separate commands. |
 
 For the most up-to-date list and parameter descriptions use the Services tab in the Developer tools and search for `huesyncbox` in the services list.
 
@@ -73,7 +72,7 @@ The 2.0 version is a complete rewrite to allow for multiple entities and moderni
 
 No functionality is lost it just moved to a different place.
 
-See the [release notes for 2.0.0](https://github.com/mvdwetering/huesyncbox/releases/tag/v2.0.0b0) for more details on the changes.
+See the [release notes for 2.0.0](https://github.com/mvdwetering/huesyncbox/releases/tag/v2.0.0b0) for more details on the changes and migration.
 
 
 ## Installation
@@ -101,4 +100,3 @@ See the [release notes for 2.0.0](https://github.com/mvdwetering/huesyncbox/rele
   * Copy it to the custom_components directory of your Home Assistnat install as usual
 * Restart Home Assistant
 * Devices will be found automatically or can be added manually from the Home Assistant integrations screen
-
