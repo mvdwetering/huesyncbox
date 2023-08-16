@@ -74,7 +74,7 @@ class BrightnessRangeConverter:
 
     @classmethod
     def api_to_ha(cls, api_value):
-        return cls._converter.to_x(api_value)
+        return round(cls._converter.to_x(api_value))
 
 def get_hue_target_from_id(id_: str):
     """Determine API target from id"""
