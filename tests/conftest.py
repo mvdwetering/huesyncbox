@@ -12,6 +12,8 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_UNIQUE_ID,
 )
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
 )
@@ -42,6 +44,8 @@ def mock_api(hass):
     mock_api.device.unique_id = "unique_id"
     mock_api.device.led_mode = 1
     mock_api.device.ip_address = "1.2.3.4"
+    mock_api.device.wifi = Mock(aiohuesyncbox.device.Wifi)
+    mock_api.device.wifi.strength = 2
 
     mock_api.execution = Mock(aiohuesyncbox.execution.Execution)
     mock_api.execution.brightness = 120
@@ -56,19 +60,19 @@ def mock_api(hass):
     mock_api.hdmi.input2 = Mock(aiohuesyncbox.hdmi.Input)
     mock_api.hdmi.input2.name = "HDMI 2"
     mock_api.hdmi.input2.type = "generic"
-    mock_api.hdmi.input2.status = "unplugged"
+    mock_api.hdmi.input2.status = "plugged"
     mock_api.hdmi.input3 = Mock(aiohuesyncbox.hdmi.Input)
     mock_api.hdmi.input3.name = "HDMI 3"
     mock_api.hdmi.input3.type = "generic"
-    mock_api.hdmi.input3.status = "unplugged"
+    mock_api.hdmi.input3.status = "linked"
     mock_api.hdmi.input4 = Mock(aiohuesyncbox.hdmi.Input)
     mock_api.hdmi.input4.name = "HDMI 4"
     mock_api.hdmi.input4.type = "generic"
-    mock_api.hdmi.input4.status = "unplugged"
+    mock_api.hdmi.input4.status = "unknown"
 
     mock_api.hue = Mock(aiohuesyncbox.hue.Hue)
-    mock_api.hue.bridge_id = "bridge_id"
-    mock_api.hue.connection_state = "idle"
+    mock_api.hue.bridge_unique_id = "bridge_id"
+    mock_api.hue.connection_state = "connected"
     mock_api.hue.groups = [
         aiohuesyncbox.hue.Group(
             "id1", {"name": "Name 1", "numLights": 1, "active": False}
@@ -76,7 +80,7 @@ def mock_api(hass):
     ]
 
     mock_api.behavior = Mock(aiohuesyncbox.behavior.Behavior)
-    mock_api.behavior.force_dovi_native = None
+    mock_api.behavior.force_dovi_native = 1
 
     return mock_api
 
@@ -87,14 +91,8 @@ class Integration:
     mock_api: Type[Mock]
 
 
-async def setup_integration(hass, mock_api):
+async def setup_integration(hass:HomeAssistant, mock_api, disable_enable_default_all=False):
     entry_id = "entry_id"
-
-    coordinator: huesyncbox.HueSyncBoxCoordinator = Mock()
-    coordinator.data = mock_api
-
-    hass.data.setdefault(huesyncbox.DOMAIN, {})
-    hass.data[huesyncbox.DOMAIN][entry_id] = coordinator
 
     entry = MockConfigEntry(
         version=2,
@@ -111,6 +109,18 @@ async def setup_integration(hass, mock_api):
         },
     )
     entry.add_to_hass(hass)
+
+    if not disable_enable_default_all:
+        # Pre-create registry entries for default disabled ones
+        er = entity_registry.async_get(hass)
+        for default_disabled_sensor in ["ip_address", "wifi_strength", "bridge_unique_id", "bridge_connection_state"]:
+            er.async_get_or_create(
+                "sensor",
+                huesyncbox.DOMAIN,
+                f"{default_disabled_sensor}_unique_id",
+                suggested_object_id=f"name_{default_disabled_sensor}",
+                disabled_by=None,
+            )
 
     with patch("aiohuesyncbox.HueSyncBox", return_value=mock_api):
         await hass.config_entries.async_setup(entry.entry_id)
