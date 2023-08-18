@@ -10,7 +10,7 @@ from homeassistant.helpers.update_coordinator import (
     UpdateFailed,
 )
 
-from .const import LOGGER
+from .const import COORDINATOR_UPDATE_INTERVAL, LOGGER
 from .helpers import update_config_entry_title, update_device_registry
 
 
@@ -25,7 +25,7 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
             # Name of the data. For logging purposes.
             name="Philips Hue Play HDMI Sync Box",
             # Polling interval. Will only be polled if there are subscribers.
-            update_interval=timedelta(seconds=2),
+            update_interval=COORDINATOR_UPDATE_INTERVAL,
         )
         self.api = api
 

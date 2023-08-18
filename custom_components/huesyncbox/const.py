@@ -1,10 +1,14 @@
 """Constants for the Philips Hue Play HDMI Sync Box integration."""
+from datetime import timedelta
 import logging
 
 DOMAIN = "huesyncbox"
 LOGGER = logging.getLogger(__package__)
 
 DEFAULT_PORT = 443
+
+COORDINATOR_UPDATE_INTERVAL = timedelta(seconds=2)
+
 
 MANUFACTURER_NAME = "Signify"
 
