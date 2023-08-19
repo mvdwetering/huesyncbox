@@ -57,6 +57,7 @@ async def test_retry_on_invalid_state_nothing_streaming_so_no_retry(
         ("switch", "switch.name_power", "turn_on", {}),
         ("number", "number.name_brightness", "set_value", {"value": 12}),
         ("select", "select.name_sync_mode", "select_option", {"option": "video"}),
+        ("huesyncbox", "switch.name_power", "set_sync_state", {"mode": "video"}),
     ],
 )
 async def test_retry_on_invalid_state_streaming_so_retry(
