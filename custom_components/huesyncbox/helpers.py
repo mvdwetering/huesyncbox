@@ -55,14 +55,14 @@ async def stop_sync_and_retry_on_invalid_state(async_func, *args, **kwargs):
 class LinearRangeConverter:
     """Converts values from one range to another with a linear thingy (y=ax+b)"""
 
-    def __init__(self, range_x:List[float], range_y:List[float]) -> None:
-        self._a = (range_y[1] - range_y[0]) / (range_x[1] - range_x[0])
-        self._b = range_y[0] - (self._a * range_x[0])
+    def __init__(self, range_1:List[float], range_2:List[float]) -> None:
+        self._a = (range_2[1] - range_2[0]) / (range_1[1] - range_1[0])
+        self._b = range_2[0] - (self._a * range_1[0])
 
-    def to_x(self, y):
+    def range_2_to_range_1(self, y):
         return (y - self._b) / self._a
 
-    def to_y(self, x):
+    def range_1_to_range_2(self, x):
         return (self._a * x) + self._b
 
 class BrightnessRangeConverter:
@@ -70,11 +70,11 @@ class BrightnessRangeConverter:
 
     @classmethod
     def ha_to_api(cls, ha_value):
-        return round(cls._converter.to_y(ha_value))
+        return round(cls._converter.range_1_to_range_2(ha_value))
 
     @classmethod
     def api_to_ha(cls, api_value):
-        return round(cls._converter.to_x(api_value))
+        return round(cls._converter.range_2_to_range_1(api_value))
 
 def get_hue_target_from_id(id_: str):
     """Determine API target from id"""

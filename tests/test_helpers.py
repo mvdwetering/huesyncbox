@@ -12,12 +12,14 @@ from .conftest import setup_integration
 
 def test_linear_range_converter():
     lrc = LinearRangeConverter([-1, 1], [-11, 11])
-    assert lrc.to_x(-11) == -1
-    assert lrc.to_x(11) == 1
-    assert lrc.to_x(0) == 0
-    assert lrc.to_y(-1) == -11
-    assert lrc.to_y(1) == 11
-    assert lrc.to_y(0) == 0
+
+    assert lrc.range_1_to_range_2(-1) == -11
+    assert lrc.range_1_to_range_2(1) == 11
+    assert lrc.range_1_to_range_2(0) == 0
+
+    assert lrc.range_2_to_range_1(-11) == -1
+    assert lrc.range_2_to_range_1(11) == 1
+    assert lrc.range_2_to_range_1(0) == 0
 
 
 def test_group_from_area_name(mock_api):
@@ -58,7 +60,12 @@ async def test_retry_on_invalid_state_nothing_streaming_so_no_retry(
     ],
 )
 async def test_retry_on_invalid_state_streaming_so_retry(
-    hass: HomeAssistant, mock_api, entity_platform, entity_under_test, service, service_data
+    hass: HomeAssistant,
+    mock_api,
+    entity_platform,
+    entity_under_test,
+    service,
+    service_data,
 ):
     mock_api.hue.groups[1]._raw["active"] = True
     await setup_integration(hass, mock_api)
