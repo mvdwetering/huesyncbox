@@ -1,9 +1,11 @@
 from unittest.mock import call
 
 from homeassistant.core import HomeAssistant
+import pytest
 
 from tests.conftest import setup_integration
 
+import aiohuesyncbox
 
 async def test_set_bridge(hass: HomeAssistant, mock_api):
     await setup_integration(hass, mock_api)
@@ -52,10 +54,11 @@ async def test_set_sync_state(hass: HomeAssistant, mock_api):
         hue_target="id1",
     )
 
-
 async def test_set_sync_state_no_data(hass: HomeAssistant, mock_api):
     await setup_integration(hass, mock_api)
 
+    # The box will give back an error when setting nothing
+    mock_api.execution.set_state.side_effect=aiohuesyncbox.RequestError("13: Invalid Key")
     await hass.services.async_call(
         "huesyncbox",
         "set_sync_state",
@@ -73,3 +76,27 @@ async def test_set_sync_state_no_data(hass: HomeAssistant, mock_api):
         intensity=None,
         hue_target=None,
     )
+
+async def test_set_sync_state_exception(hass: HomeAssistant, mock_api):
+    await setup_integration(hass, mock_api)
+
+    # Make sure other exceptions are not eaten by empty message logic
+    with pytest.raises(aiohuesyncbox.RequestError):
+        mock_api.execution.set_state.side_effect=aiohuesyncbox.RequestError("Other")
+        await hass.services.async_call(
+            "huesyncbox",
+            "set_sync_state",
+            {
+                "entity_id": "switch.name_power",  # Any entity on the device is fine
+            },
+            blocking=True,
+        )
+        assert mock_api.execution.set_state.call_args == call(
+            hdmi_active=None,
+            sync_active=None,
+            mode=None,
+            hdmi_source=None,
+            brightness=None,
+            intensity=None,
+            hue_target=None,
+        )

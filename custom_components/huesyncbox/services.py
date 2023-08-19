@@ -113,9 +113,18 @@ async def async_register_services(hass: HomeAssistant):
             async def set_state(api: aiohuesyncbox.HueSyncBox, **kwargs):
                 await api.execution.set_state(**kwargs)
 
-            await stop_sync_and_retry_on_invalid_state(
-                set_state, coordinator.api, **state
-            )
+            try:
+                await stop_sync_and_retry_on_invalid_state(
+                    set_state, coordinator.api, **state
+                )
+            except aiohuesyncbox.RequestError as ex:
+                if "13: Invalid Key" in ex.args[0]:
+                    # Clarify this specific case as people will run into it
+                    LOGGER.warning(
+                        "The service call resulted in an empty message to the syncbox. Make sure some data is provided)."
+                    )
+                else:
+                    raise
 
     if not hass.services.has_service(DOMAIN, SERVICE_SET_SYNC_STATE):
         hass.services.async_register(
