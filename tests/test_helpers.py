@@ -18,4 +18,5 @@ def test_group_from_area_name(mock_api):
     assert get_group_from_area_name(mock_api, "does not exist") is None
 
     group = get_group_from_area_name(mock_api, "Name 1")
+    assert group is not None
     assert group.id == "id1"
