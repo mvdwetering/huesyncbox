@@ -14,6 +14,9 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry
+from homeassistant.util import dt as dt_util
+
+from pytest_homeassistant_custom_component.common import async_fire_time_changed
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
 )
@@ -21,6 +24,7 @@ from pytest_homeassistant_custom_component.common import (
 import aiohuesyncbox
 
 from custom_components import huesyncbox
+
 
 
 @pytest.fixture(autouse=True)
@@ -49,8 +53,17 @@ def mock_api(hass):
 
     mock_api.execution = Mock(aiohuesyncbox.execution.Execution)
     mock_api.execution.brightness = 120
-    mock_api.execution.mode = "video"
+    mock_api.execution.mode = "music"
+    mock_api.execution.last_sync_mode = "game"
     mock_api.execution.sync_active = False
+    mock_api.execution.hdmi_source = "input2"
+    mock_api.execution.hue_target = "id2"
+    mock_api.execution.video = Mock(aiohuesyncbox.execution.SyncMode)
+    mock_api.execution.video.intensity = "subtle"
+    mock_api.execution.music = Mock(aiohuesyncbox.execution.SyncMode)
+    mock_api.execution.music.intensity = "moderate"
+    mock_api.execution.game = Mock(aiohuesyncbox.execution.SyncMode)
+    mock_api.execution.game.intensity = "intense"
 
     mock_api.hdmi = Mock(aiohuesyncbox.hdmi.Hdmi)
     mock_api.hdmi.input1 = Mock(aiohuesyncbox.hdmi.Input)
@@ -76,6 +89,9 @@ def mock_api(hass):
     mock_api.hue.groups = [
         aiohuesyncbox.hue.Group(
             "id1", {"name": "Name 1", "numLights": 1, "active": False}
+        ),
+        aiohuesyncbox.hue.Group(
+            "id2", {"name": "Name 2", "numLights": 2, "active": False}
         )
     ]
 
@@ -127,3 +143,9 @@ async def setup_integration(hass:HomeAssistant, mock_api, disable_enable_default
         await hass.async_block_till_done()
 
     return Integration(entry, mock_api)
+
+async def force_coordinator_update(hass:HomeAssistant):
+    async_fire_time_changed(
+        hass, dt_util.utcnow() + huesyncbox.const.COORDINATOR_UPDATE_INTERVAL
+    )
+    await hass.async_block_till_done()

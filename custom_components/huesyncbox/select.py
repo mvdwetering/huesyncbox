@@ -52,7 +52,6 @@ def current_input(api: aiohuesyncbox.HueSyncBox):
     for input_id in INPUTS:
         if input_id == api.execution.hdmi_source:
             return getattr(api.hdmi, input_id).name
-    return None
 
 async def select_input(api: aiohuesyncbox.HueSyncBox, input_name):
     # Inputname is the user given name, so needs to be mapped back to a valid API value."""
@@ -60,7 +59,6 @@ async def select_input(api: aiohuesyncbox.HueSyncBox, input_name):
         input = getattr(api.hdmi, input_id)
         if input_name == input.name:
             await api.execution.set_state(hdmi_source=input_id)
-
 
 def available_entertainment_areas(api: aiohuesyncbox.HueSyncBox):
     return sorted(map(lambda group: group.name, api.hue.groups))
