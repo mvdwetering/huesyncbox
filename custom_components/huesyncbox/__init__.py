@@ -8,11 +8,8 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryError
 from homeassistant.helpers import (
-    config_validation as cv,
     entity_registry,
 )
-from homeassistant.helpers.config_validation import make_entity_service_schema
-from homeassistant.helpers.service import async_extract_config_entry_ids
 from homeassistant.helpers import issue_registry
 
 from .services import async_register_services, async_unregister_services
