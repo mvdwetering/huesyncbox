@@ -8,7 +8,7 @@ REDACTED = "**REDACTED**"
 
 async def test_diagnostics(hass: HomeAssistant, mock_api):
 
-    API_RESPONSE = {"test": "data"}
+    API_RESPONSE = {"uniqueId": "abc", "bridgeUniqueId": "def", "ssid": "ghi"}
 
     integration = await setup_integration(hass, mock_api)
     integration.mock_api.last_response = API_RESPONSE
@@ -18,6 +18,8 @@ async def test_diagnostics(hass: HomeAssistant, mock_api):
     assert "config_entry" in diagnostics
     assert diagnostics["config_entry"]["data"]["unique_id"] == REDACTED
     assert diagnostics["config_entry"]["data"]["access_token"] == REDACTED
-
+    
     assert "api" in diagnostics
-    assert diagnostics["api"] == API_RESPONSE
+    assert diagnostics["api"]["uniqueId"] == REDACTED
+    assert diagnostics["api"]["bridgeUniqueId"] == REDACTED
+    assert diagnostics["api"]["ssid"] == REDACTED
