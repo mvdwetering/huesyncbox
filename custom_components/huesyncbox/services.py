@@ -70,7 +70,7 @@ async def async_register_services(hass: HomeAssistant):
         config_entry_ids = await async_extract_config_entry_ids(hass, call)
         for config_entry_id in config_entry_ids:
             # Need to check if it is our config entry since async_extract_config_entry_ids
-            # can return config entries from other integrations also 
+            # can return config entries from other integrations also
             # (e.g. area id or devices with entities from multiple integrations)
             if coordinator := hass.data[DOMAIN].get(config_entry_id):
                 bridge_id = call.data.get(ATTR_BRIDGE_ID)
@@ -93,7 +93,7 @@ async def async_register_services(hass: HomeAssistant):
         config_entry_ids = await async_extract_config_entry_ids(hass, call)
         for config_entry_id in config_entry_ids:
             # Need to check if it is our config entry since async_extract_config_entry_ids
-            # can return config entries from other integrations also 
+            # can return config entries from other integrations also
             # (e.g. area id or devices with entities from multiple integrations)
             if coordinator := hass.data[DOMAIN].get(config_entry_id):
                 sync_state = call.data
@@ -109,7 +109,11 @@ async def async_register_services(hass: HomeAssistant):
                     "sync_active": sync_state.get(ATTR_SYNC, None),
                     "mode": sync_state.get(ATTR_MODE, None),
                     "hdmi_source": sync_state.get(ATTR_INPUT, None),
-                    "brightness": BrightnessRangeConverter.ha_to_api(sync_state[ATTR_BRIGHTNESS]) if ATTR_BRIGHTNESS in sync_state else None,
+                    "brightness": BrightnessRangeConverter.ha_to_api(
+                        sync_state[ATTR_BRIGHTNESS]
+                    )
+                    if ATTR_BRIGHTNESS in sync_state
+                    else None,
                     "intensity": sync_state.get(ATTR_INTENSITY, None),
                     "hue_target": hue_target,
                 }

@@ -28,6 +28,7 @@ PLATFORMS: list[Platform] = [
     Platform.SWITCH,
 ]
 
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Philips Hue Play HDMI Sync Box from a config entry."""
 
@@ -127,12 +128,16 @@ def migrate_v1_to_v2(hass: HomeAssistant, config_entry: ConfigEntry):
         if entity.domain == Platform.MEDIA_PLAYER:
             registry.async_remove(entity.entity_id)
 
-            automations_with_entity = automation.automations_with_entity(hass, entity.entity_id)
+            automations_with_entity = automation.automations_with_entity(
+                hass, entity.entity_id
+            )
 
             automation_info = []
             for automation_with_entity in automations_with_entity:
                 if automation_entry := registry.async_get(automation_with_entity):
-                    automation_info.append(f"{automation_entry.name or automation_entry.original_name} ({automation_with_entity})\n")
+                    automation_info.append(
+                        f"{automation_entry.name or automation_entry.original_name} ({automation_with_entity})\n"
+                    )
 
             if len(automation_info) > 0:
                 issue_registry.async_create_issue(
@@ -143,7 +148,10 @@ def migrate_v1_to_v2(hass: HomeAssistant, config_entry: ConfigEntry):
                     is_persistent=True,
                     severity=issue_registry.IssueSeverity.WARNING,
                     translation_key="automations_using_deleted_mediaplayer",
-                    translation_placeholders={"automations": ",".join(automation_info), "media_player_entity": entity.entity_id }
+                    translation_placeholders={
+                        "automations": ",".join(automation_info),
+                        "media_player_entity": entity.entity_id,
+                    },
                 )
 
     config_entry.version = 2

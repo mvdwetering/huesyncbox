@@ -41,7 +41,9 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
 
                 if old_device != self.api.device:
                     await update_device_registry(self.hass, self.config_entry, self.api)
-                    update_config_entry_title(self.hass, self.config_entry, self.api.device.name)
+                    update_config_entry_title(
+                        self.hass, self.config_entry, self.api.device.name
+                    )
 
                 return self.api
         except aiohuesyncbox.Unauthorized as err:
