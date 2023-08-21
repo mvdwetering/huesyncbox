@@ -19,7 +19,7 @@ async def test_diagnostics(hass: HomeAssistant, mock_api):
     assert "config_entry" in diagnostics
     assert diagnostics["config_entry"]["data"]["unique_id"] == REDACTED
     assert diagnostics["config_entry"]["data"]["access_token"] == REDACTED
-    
+
     assert "api" in diagnostics
     assert diagnostics["api"]["uniqueId"] == REDACTED
     assert diagnostics["api"]["bridgeUniqueId"] == REDACTED
@@ -36,7 +36,7 @@ async def test_diagnostics_no_response_yet(hass: HomeAssistant, mock_api):
     assert "config_entry" in diagnostics
     assert diagnostics["config_entry"]["data"]["unique_id"] == REDACTED
     assert diagnostics["config_entry"]["data"]["access_token"] == REDACTED
-    
+
     assert "api" in diagnostics
     assert diagnostics["api"] == {}
 
@@ -51,5 +51,5 @@ async def test_diagnostics_not_setup(hass: HomeAssistant, mock_api):
     assert "config_entry" in diagnostics
     assert diagnostics["config_entry"]["data"]["unique_id"] == REDACTED
     assert diagnostics["config_entry"]["data"]["access_token"] == REDACTED
-    
+
     assert "api" not in diagnostics

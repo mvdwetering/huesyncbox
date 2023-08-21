@@ -4,6 +4,7 @@ from homeassistant.core import HomeAssistant
 
 from .conftest import force_coordinator_update, setup_integration
 
+
 async def test_switch(hass: HomeAssistant, mock_api):
     await setup_integration(hass, mock_api)
     assert hass.states.async_entity_ids_count("switch") == 3

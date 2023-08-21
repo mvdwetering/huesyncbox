@@ -26,7 +26,6 @@ import aiohuesyncbox
 from custom_components import huesyncbox
 
 
-
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(enable_custom_integrations):
     """Enable custom integrations"""
@@ -92,7 +91,7 @@ def mock_api(hass):
         ),
         aiohuesyncbox.hue.Group(
             "id2", {"name": "Name 2", "numLights": 2, "active": False}
-        )
+        ),
     ]
 
     mock_api.behavior = Mock(aiohuesyncbox.behavior.Behavior)
@@ -107,7 +106,13 @@ class Integration:
     mock_api: Type[Mock]
 
 
-async def setup_integration(hass:HomeAssistant, mock_api, disable_enable_default_all=False, mock_config_entry:MockConfigEntry|None=None, entry_id="entry_id"):
+async def setup_integration(
+    hass: HomeAssistant,
+    mock_api,
+    disable_enable_default_all=False,
+    mock_config_entry: MockConfigEntry | None = None,
+    entry_id="entry_id",
+):
 
     entry = mock_config_entry or MockConfigEntry(
         version=2,
@@ -129,7 +134,12 @@ async def setup_integration(hass:HomeAssistant, mock_api, disable_enable_default
     if not disable_enable_default_all:
         # Pre-create registry entries for default disabled ones
         er = entity_registry.async_get(hass)
-        for default_disabled_sensor in ["ip_address", "wifi_strength", "bridge_unique_id", "bridge_connection_state"]:
+        for default_disabled_sensor in [
+            "ip_address",
+            "wifi_strength",
+            "bridge_unique_id",
+            "bridge_connection_state",
+        ]:
             er.async_get_or_create(
                 "sensor",
                 huesyncbox.DOMAIN,
@@ -144,7 +154,8 @@ async def setup_integration(hass:HomeAssistant, mock_api, disable_enable_default
 
     return Integration(entry, mock_api)
 
-async def force_coordinator_update(hass:HomeAssistant):
+
+async def force_coordinator_update(hass: HomeAssistant):
     async_fire_time_changed(
         hass, dt_util.utcnow() + huesyncbox.const.COORDINATOR_UPDATE_INTERVAL
     )

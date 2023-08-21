@@ -78,6 +78,7 @@ async def test_user_new_box(hass: HomeAssistant, mock_api) -> None:
         assert entries[0].title == "Name"
         assert entries[0].unique_id == "test_unique_id"
 
+
 async def test_user_update_box_host(hass: HomeAssistant, mock_api) -> None:
 
     integration = await setup_integration(hass, mock_api)
@@ -90,10 +91,7 @@ async def test_user_update_box_host(hass: HomeAssistant, mock_api) -> None:
     assert result["step_id"] == "user"
 
     # Provide different host for existing entry, should update
-    with patch(
-        "aiohuesyncbox.HueSyncBox.is_registered",
-        return_value=True
-    ):
+    with patch("aiohuesyncbox.HueSyncBox.is_registered", return_value=True):
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {
@@ -149,10 +147,12 @@ async def test_connection_errors_during_connection_check(
         (aiohuesyncbox.RequestError),
         (aiohuesyncbox.AiohuesyncboxException),
         # (asyncio.CancelledError)  can't test because just throwing the exception won't properly cancel the task
-        (asyncio.InvalidStateError)
+        (asyncio.InvalidStateError),
     ],
 )
-async def test_user_box_connection_errors_during_link(hass: HomeAssistant, mock_api, side_effect) -> None:
+async def test_user_box_connection_errors_during_link(
+    hass: HomeAssistant, mock_api, side_effect
+) -> None:
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
@@ -188,7 +188,8 @@ async def test_user_box_connection_errors_during_link(hass: HomeAssistant, mock_
         assert result["type"] == FlowResultType.ABORT
         assert result["reason"] == "connection_failed"
 
-#asyncio.CancelledError
+
+# asyncio.CancelledError
 async def test_user_box_abort_flow_during_link(hass: HomeAssistant, mock_api) -> None:
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
@@ -342,10 +343,12 @@ async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
     assert integration.entry.data["access_token"] == "token_value"
     assert integration.entry.data["registration_id"] == "registration_id_value"
 
-
-
     result = await hass.config_entries.flow.async_init(
-        huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_REAUTH, "entry_id": integration.entry.entry_id}
+        huesyncbox.DOMAIN,
+        context={
+            "source": config_entries.SOURCE_REAUTH,
+            "entry_id": integration.entry.entry_id,
+        },
     )
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "reauth_confirm"
@@ -362,10 +365,7 @@ async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
         }
 
         # Press next on reauth confirm form
-        result = await hass.config_entries.flow.async_configure(
-            result["flow_id"],
-            {}
-        )
+        result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
         await hass.async_block_till_done()
 
         assert result["type"] == FlowResultType.SHOW_PROGRESS

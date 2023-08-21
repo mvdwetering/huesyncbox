@@ -8,7 +8,10 @@ from custom_components.huesyncbox.services import async_register_services
 
 import aiohuesyncbox
 
-async def test_register_service_can_be_called_multiple_times(hass: HomeAssistant, mock_api):
+
+async def test_register_service_can_be_called_multiple_times(
+    hass: HomeAssistant, mock_api
+):
     await setup_integration(hass, mock_api)
     await async_register_services(hass)
 
@@ -61,11 +64,14 @@ async def test_set_sync_state(hass: HomeAssistant, mock_api):
         hue_target="id1",
     )
 
+
 async def test_set_sync_state_no_data(hass: HomeAssistant, mock_api):
     await setup_integration(hass, mock_api)
 
     # The box will give back an error when setting nothing
-    mock_api.execution.set_state.side_effect=aiohuesyncbox.RequestError("13: Invalid Key")
+    mock_api.execution.set_state.side_effect = aiohuesyncbox.RequestError(
+        "13: Invalid Key"
+    )
     await hass.services.async_call(
         "huesyncbox",
         "set_sync_state",
@@ -84,12 +90,13 @@ async def test_set_sync_state_no_data(hass: HomeAssistant, mock_api):
         hue_target=None,
     )
 
+
 async def test_set_sync_state_exception(hass: HomeAssistant, mock_api):
     await setup_integration(hass, mock_api)
 
     # Make sure other exceptions are not eaten by empty message logic
     with pytest.raises(aiohuesyncbox.RequestError):
-        mock_api.execution.set_state.side_effect=aiohuesyncbox.RequestError("Other")
+        mock_api.execution.set_state.side_effect = aiohuesyncbox.RequestError("Other")
         await hass.services.async_call(
             "huesyncbox",
             "set_sync_state",
