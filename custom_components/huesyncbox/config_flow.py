@@ -91,6 +91,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     @callback
     def async_remove(self) -> None:
+        _LOGGER.debug("async_remove, %s", self.link_task is not None)
         if self.link_task:
             self.link_task.cancel()
 
@@ -98,6 +99,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Handle the initial step."""
+        _LOGGER.debug("async_step_user, %s", user_input)
         if user_input is None:
             return self.async_show_form(
                 step_id="user",
@@ -144,6 +146,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self, discovery_info: zeroconf.ZeroconfServiceInfo
     ) -> FlowResult:
         """Handle zeroconf discovery."""
+        _LOGGER.debug("async_step_zeroconf, %s", discovery_info)
 
         connection_info = ConnectionInfo(
             discovery_info.host,
@@ -172,6 +175,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     
     async def async_step_zeroconf_confirm(self, user_input=None) -> FlowResult:
         """Dialog that informs the user that device is found and needs to be linked."""
+        _LOGGER.debug("async_step_zeroconf_confirm, %s", user_input)
         if user_input is None:
             return self.async_show_form(step_id="zeroconf_confirm", last_step=False)
         return await self.async_step_link()
@@ -180,7 +184,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def _async_register(
         self, ha_instance_name: str, connection_info: ConnectionInfo
     ):
+        _LOGGER.debug("_async_register, %s", connection_info)
         cancelled = False
+
         try:
             async with aiohuesyncbox.HueSyncBox(
                 connection_info.host,
@@ -232,6 +238,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_link(self, user_input=None) -> FlowResult:
         """Handle the linking step."""
+        _LOGGER.debug("async_step_link, %s", user_input)
         assert self.connection_info
 
         if not self.link_task:
@@ -264,6 +271,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_finish(self, user_input=None) -> FlowResult:
         """Finish flow"""
+        _LOGGER.debug("async_step_finish, %s", user_input)
         assert self.connection_info
 
         if self.reauth_entry:
@@ -279,10 +287,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_abort(self, user_input=None) -> FlowResult:
         """Abort flow"""
+        _LOGGER.debug("async_step_abort, %s", user_input)
         return self.async_abort(reason="connection_failed")
 
     async def async_step_reauth(self, user_input=None):
         """Reauth is triggered when token is not valid anymore, retrigger link flow."""
+        _LOGGER.debug("async_step_reauth, %s", user_input)
         self.reauth_entry = self.hass.config_entries.async_get_entry(
             self.context["entry_id"]
         )
@@ -302,6 +312,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_reauth_confirm(self, user_input=None) -> FlowResult:
         """Dialog that informs the user that reauth is required."""
+        _LOGGER.debug("async_step_reauth_confirm, %s", user_input)
         if user_input is None:
             return self.async_show_form(step_id="reauth_confirm", last_step=False)
         return await self.async_step_link()
