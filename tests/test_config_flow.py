@@ -43,7 +43,7 @@ async def test_user_new_box(hass: HomeAssistant, mock_api) -> None:
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {
-                "ip_address": "1.1.1.1",
+                "host": "1.1.1.1",
                 "unique_id": "test_unique_id",
             },
         )
@@ -97,7 +97,7 @@ async def test_user_update_box_host(hass: HomeAssistant, mock_api) -> None:
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {
-                "ip_address": "1.2.3.4",
+                "host": "1.2.3.4",
                 "unique_id": "unique_id",
             },
         )
@@ -132,7 +132,7 @@ async def test_connection_errors_during_connection_check(
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {
-                "ip_address": "1.1.1.1",
+                "host": "1.1.1.1",
                 "unique_id": "test-unique_id",
             },
         )
@@ -169,7 +169,7 @@ async def test_user_box_connection_errors_during_link(hass: HomeAssistant, mock_
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {
-                "ip_address": "1.1.1.1",
+                "host": "1.1.1.1",
                 "unique_id": "test-unique_id",
             },
         )
@@ -206,7 +206,7 @@ async def test_user_box_abort_flow_during_link(hass: HomeAssistant, mock_api) ->
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {
-                "ip_address": "1.1.1.1",
+                "host": "1.1.1.1",
                 "unique_id": "test-unique_id",
             },
         )

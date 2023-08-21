@@ -12,7 +12,6 @@ from homeassistant.components import zeroconf
 from homeassistant.const import (
     CONF_ACCESS_TOKEN,
     CONF_HOST,
-    CONF_IP_ADDRESS,
     CONF_NAME,
     CONF_PATH,
     CONF_PORT,
@@ -26,6 +25,13 @@ from .const import DEFAULT_PORT, DOMAIN, REGISTRATION_ID
 
 _LOGGER = logging.getLogger(__name__)
 
+USER_DATA_SCHEMA = vol.Schema(
+    {
+        vol.Required(CONF_HOST): str,
+        vol.Required(CONF_UNIQUE_ID): str,
+    }
+)
+
 
 @dataclass
 class ConnectionInfo:
@@ -35,19 +41,6 @@ class ConnectionInfo:
     registration_id: str | None = None
     port: int = 443
     path: str = "/api"
-
-
-def get_user_data_schema(connection_info: ConnectionInfo):
-    return vol.Schema(
-        {
-            vol.Required(
-                CONF_IP_ADDRESS, default=connection_info.host or vol.UNDEFINED  # type: ignore
-            ): str,
-            vol.Required(
-                CONF_UNIQUE_ID, default=connection_info.unique_id or vol.UNDEFINED  # type: ignore
-            ): str,
-        }
-    )
 
 
 def entry_data_from_connection_info(connection_info: ConnectionInfo):
@@ -103,12 +96,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is None:
             return self.async_show_form(
                 step_id="user",
-                data_schema=get_user_data_schema(ConnectionInfo("", "")),
+                data_schema=USER_DATA_SCHEMA,
                 last_step=False,
             )
 
         connection_info = ConnectionInfo(
-            user_input[CONF_IP_ADDRESS], user_input[CONF_UNIQUE_ID]
+            user_input[CONF_HOST], user_input[CONF_UNIQUE_ID]
         )
 
         errors = {}
@@ -137,7 +130,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=get_user_data_schema(connection_info),
+            data_schema=self.add_suggested_values_to_schema(
+                USER_DATA_SCHEMA, asdict(connection_info)
+            ),
             errors=errors,
             last_step=False,
         )
@@ -172,14 +167,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         # Can't directly go to link step as it will immediately start trying to link
         # and it seems to get stuck. Go through intermediate dialog like with reauth.
         return await self.async_step_zeroconf_confirm()
-    
+
     async def async_step_zeroconf_confirm(self, user_input=None) -> FlowResult:
         """Dialog that informs the user that device is found and needs to be linked."""
         _LOGGER.debug("async_step_zeroconf_confirm, %s", user_input)
         if user_input is None:
             return self.async_show_form(step_id="zeroconf_confirm", last_step=False)
         return await self.async_step_link()
-
 
     async def _async_register(
         self, ha_instance_name: str, connection_info: ConnectionInfo
@@ -253,7 +247,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 progress_action="wait_for_button",
             )
 
-
         registered = False
         try:
             registered = self.link_task.result()
@@ -264,10 +257,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             # Was not done, so not registered, cancel it
             self.link_task.cancel()
 
-        
         next_step_id = "finish" if registered else "abort"
         return self.async_show_progress_done(next_step_id=next_step_id)
-
 
     async def async_step_finish(self, user_input=None) -> FlowResult:
         """Finish flow"""

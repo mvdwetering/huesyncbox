@@ -15,7 +15,7 @@
         "title": "Enter device information",
         "description": "Details can be found in the main Hue App.\n\nSelect the Sync tab and make sure the Philips Hue Play HDMI Syncbox is selected. After that tap the … menu at the top, select Device and then NetworkInfo for the IP address and DeviceInfo for the Identifier.",
         "data": {
-          "ip_address": "IP address or hostname",
+          "host": "IP address or hostname",
           "unique_id": "Identifier (eg. C42996000000)"
         }
       },
