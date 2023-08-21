@@ -114,6 +114,7 @@ async def setup_integration(hass:HomeAssistant, mock_api, disable_enable_default
         version=2,
         domain=huesyncbox.DOMAIN,
         entry_id=entry_id,
+        unique_id="unique_id",
         title="HUESYNCBOX TITLE",
         data={
             CONF_HOST: "host",

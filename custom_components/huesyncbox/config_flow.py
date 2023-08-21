@@ -151,9 +151,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             port=discovery_info.port or DEFAULT_PORT,
             path=discovery_info.properties["path"],
         )
-        # TODO: Also available, do we need it?
-        # "name": discovery_info.properties["name"],
-        # "devicetype": discovery_info.properties["devicetype"],
+        # Also available, do we need it?
+        # "devicetype": discovery_info.properties["devicetype"],  value is HSB001
 
         await self.async_set_unique_id(connection_info.unique_id)
         self._abort_if_unique_id_configured(
@@ -209,17 +208,19 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await huesyncbox.initialize()
                 self.device_name = huesyncbox.device.name
 
-        # except aiohuesyncbox.Unauthorized as ex:
-        #     raise InvalidAuth from ex
-        except aiohuesyncbox.RequestError as ex:
-            raise CannotConnect from ex
-        except aiohuesyncbox.AiohuesyncboxException as ex:
+                return True
+
+        except aiohuesyncbox.RequestError:
+            return False
+        except aiohuesyncbox.AiohuesyncboxException:
             _LOGGER.exception("Unknown Philips Hue Play HDMI Sync Box error occurred")
-            raise CannotConnect from ex
+            return False
         except asyncio.CancelledError:
+            _LOGGER.debug("_async_register, %s", "asyncio.CancelledError")
             cancelled = True
         finally:
             # Only gets cancelled when flow is removed, don't call things on flow after that
+            _LOGGER.debug("_async_register, %s, %s", "finally", cancelled)
             if not cancelled:
                 # Continue the flow after show progress when the task is done.
                 # To avoid a potential deadlock we create a new task that continues the flow.
@@ -245,7 +246,21 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 progress_action="wait_for_button",
             )
 
-        return self.async_show_progress_done(next_step_id="finish")
+
+        registered = False
+        try:
+            registered = self.link_task.result()
+        except asyncio.CancelledError:
+            # Was cancelled, so not registered
+            pass
+        except asyncio.InvalidStateError:
+            # Was not done, so not registered, cancel it
+            self.link_task.cancel()
+
+        
+        next_step_id = "finish" if registered else "abort"
+        return self.async_show_progress_done(next_step_id=next_step_id)
+
 
     async def async_step_finish(self, user_input=None) -> FlowResult:
         """Finish flow"""
@@ -261,6 +276,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_create_entry(
             title=self.device_name, data=asdict(self.connection_info)
         )
+
+    async def async_step_abort(self, user_input=None) -> FlowResult:
+        """Abort flow"""
+        return self.async_abort(reason="connection_failed")
 
     async def async_step_reauth(self, user_input=None):
         """Reauth is triggered when token is not valid anymore, retrigger link flow."""
