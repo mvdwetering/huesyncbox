@@ -72,7 +72,7 @@ async def test_user_new_box(hass: HomeAssistant, mock_api) -> None:
         }
         assert len(mock_setup_entry.mock_calls) == 1
 
-        # 1One config entry should be created
+        # One config entry should be created
         entries = hass.config_entries.async_entries(huesyncbox.DOMAIN)
         assert len(entries) == 1
         assert entries[0].title == "Name"
@@ -333,3 +333,61 @@ async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api) -> Non
     assert integration.entry.data["host"] == "1.2.3.4"
     assert integration.entry.data["port"] == 443
     assert integration.entry.data["path"] == "/different"
+
+
+async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
+
+    integration = await setup_integration(hass, mock_api)
+
+    assert integration.entry.data["access_token"] == "token_value"
+    assert integration.entry.data["registration_id"] == "registration_id_value"
+
+
+
+    result = await hass.config_entries.flow.async_init(
+        huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_REAUTH, "entry_id": integration.entry.entry_id}
+    )
+    assert result["type"] == FlowResultType.FORM
+    assert result["step_id"] == "reauth_confirm"
+
+    # Confirming will start link phase which tries to connect to the API so setup up front
+    with patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance:
+        # __aenter__ stuff needed because used as context manager
+        huesyncbox_instance.return_value.__aenter__.return_value = mock_api
+
+        # First attempt button not pressed yet, second try return value
+        mock_api.register.return_value = {
+            "registration_id": "NewRegistrationId",
+            "access_token": "NewAccessToken",
+        }
+
+        # Press next on reauth confirm form
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {}
+        )
+        await hass.async_block_till_done()
+
+        assert result["type"] == FlowResultType.SHOW_PROGRESS
+        assert result["step_id"] == "link"
+        assert result["progress_action"] == "wait_for_button"
+        await hass.async_block_till_done()
+
+        # Wait until press the button is done
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+        )
+        await hass.async_block_till_done()
+
+        assert result["type"] == FlowResultType.ABORT
+        assert result["reason"] == "reauth_successful"
+
+        # Config entry token and registration id should be updated,
+        # rest should still be the same
+        assert integration.entry.data["host"] == "host_value"
+        assert integration.entry.data["port"] == 1234
+        assert integration.entry.data["unique_id"] == "unique_id_value"
+        assert integration.entry.data["path"] == "/path_value"
+
+        assert integration.entry.data["access_token"] == "NewAccessToken"
+        assert integration.entry.data["registration_id"] == "NewRegistrationId"

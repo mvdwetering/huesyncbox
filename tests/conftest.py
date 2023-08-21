@@ -107,8 +107,7 @@ class Integration:
     mock_api: Type[Mock]
 
 
-async def setup_integration(hass:HomeAssistant, mock_api, disable_enable_default_all=False, mock_config_entry:MockConfigEntry|None=None):
-    entry_id = "entry_id"
+async def setup_integration(hass:HomeAssistant, mock_api, disable_enable_default_all=False, mock_config_entry:MockConfigEntry|None=None, entry_id="entry_id"):
 
     entry = mock_config_entry or MockConfigEntry(
         version=2,
@@ -117,11 +116,11 @@ async def setup_integration(hass:HomeAssistant, mock_api, disable_enable_default
         unique_id="unique_id",
         title="HUESYNCBOX TITLE",
         data={
-            CONF_HOST: "host",
-            CONF_UNIQUE_ID: "unique_id",
+            CONF_HOST: "host_value",
+            CONF_UNIQUE_ID: "unique_id_value",
             CONF_PORT: 1234,
-            CONF_PATH: "/api_path",
-            CONF_ACCESS_TOKEN: "token",
+            CONF_PATH: "/path_value",
+            CONF_ACCESS_TOKEN: "token_value",
             huesyncbox.const.REGISTRATION_ID: "registration_id_value",
         },
     )
