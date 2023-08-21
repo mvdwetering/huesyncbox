@@ -3,7 +3,7 @@ from unittest.mock import call
 from homeassistant.core import HomeAssistant
 import pytest
 
-from tests.conftest import setup_integration
+from .conftest import setup_integration
 
 import aiohuesyncbox
 

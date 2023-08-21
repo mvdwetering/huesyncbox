@@ -2,7 +2,7 @@ from unittest.mock import call
 
 from homeassistant.core import HomeAssistant
 
-from tests.conftest import setup_integration
+from .conftest import setup_integration
 
 
 async def test_number(hass: HomeAssistant, mock_api):

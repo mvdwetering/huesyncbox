@@ -2,7 +2,7 @@ from unittest.mock import call
 
 from homeassistant.core import HomeAssistant
 
-from tests.conftest import setup_integration
+from .conftest import force_coordinator_update, setup_integration
 
 async def test_switch(hass: HomeAssistant, mock_api):
     await setup_integration(hass, mock_api)
@@ -18,6 +18,12 @@ async def test_power(hass: HomeAssistant, mock_api):
     power = hass.states.get(entity_under_test)
     assert power is not None
     assert power.state == "on"
+
+    mock_api.execution.mode = "powersave"
+    await force_coordinator_update(hass)
+    power = hass.states.get(entity_under_test)
+    assert power is not None
+    assert power.state == "off"
 
     # Turn off
     await hass.services.async_call(
