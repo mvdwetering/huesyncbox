@@ -24,8 +24,8 @@ INPUTS = ["input1", "input2", "input3", "input4"]
 @dataclass
 class HueSyncBoxSelectEntityDescription(SelectEntityDescription):
     options_fn: Callable[[aiohuesyncbox.HueSyncBox], list[str]] | None = None
-    current_option_fn: Callable[[aiohuesyncbox.HueSyncBox], str] = lambda x: ""
-    select_option_fn: Callable[[aiohuesyncbox.HueSyncBox, str], Coroutine] = None  # type: ignore
+    current_option_fn: Callable[[aiohuesyncbox.HueSyncBox], str] = None  # type: ignore[assignment]
+    select_option_fn: Callable[[aiohuesyncbox.HueSyncBox, str], Coroutine] = None  # type: ignore[assignment]
 
 
 class NO_INPUT:

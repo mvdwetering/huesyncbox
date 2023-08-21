@@ -14,9 +14,9 @@ from .helpers import stop_sync_and_retry_on_invalid_state
 
 @dataclass
 class HueSyncBoxSwitchEntityDescription(SwitchEntityDescription):
-    is_on: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda _: False
-    turn_on: Callable[[aiohuesyncbox.HueSyncBox], Coroutine] = None  # type: ignore
-    turn_off: Callable[[aiohuesyncbox.HueSyncBox], Coroutine] = None  # type: ignore
+    is_on: Callable[[aiohuesyncbox.HueSyncBox], bool] = None  # type: ignore[assignment]
+    turn_on: Callable[[aiohuesyncbox.HueSyncBox], Coroutine] = None  # type: ignore[assignment]
+    turn_off: Callable[[aiohuesyncbox.HueSyncBox], Coroutine] = None  # type: ignore[assignment]
     is_supported: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda _: True
 
 
