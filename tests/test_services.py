@@ -1,11 +1,17 @@
-from unittest.mock import call
+from unittest.mock import call, patch
 
 from homeassistant.core import HomeAssistant
 import pytest
 
 from .conftest import setup_integration
+from custom_components.huesyncbox.services import async_register_services
 
 import aiohuesyncbox
+
+async def test_register_service_can_be_called_multiple_times(hass: HomeAssistant, mock_api):
+    await setup_integration(hass, mock_api)
+    await async_register_services(hass)
+
 
 async def test_set_bridge(hass: HomeAssistant, mock_api):
     await setup_integration(hass, mock_api)
@@ -21,6 +27,7 @@ async def test_set_bridge(hass: HomeAssistant, mock_api):
         },
         blocking=True,
     )
+    assert mock_api.hue.set_bridge.call_count == 1
     assert mock_api.hue.set_bridge.call_args == call(
         "001788FFFE000000", "bridge_username_value", "00112233445566778899AABBCCDDEEFF"
     )
