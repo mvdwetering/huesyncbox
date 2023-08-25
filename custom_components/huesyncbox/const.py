@@ -7,7 +7,7 @@ LOGGER = logging.getLogger(__package__)
 
 DEFAULT_PORT = 443
 
-COORDINATOR_UPDATE_INTERVAL = timedelta(seconds=2)
+COORDINATOR_UPDATE_INTERVAL = timedelta(seconds=3)
 
 
 MANUFACTURER_NAME = "Signify"
