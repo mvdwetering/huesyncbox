@@ -26,6 +26,7 @@ The following features are available:
 * Sync mode (video/music/game)
 * HDMI Input selection
 * Brightness control
+* Entertainment area selection
 * HDMI1-4 connection status
 * Dolby Vision compatibility on/off
 * LED indicator mode
@@ -44,7 +45,6 @@ A few notes on behavior when changing entities.
 * Setting sync mode will also power on the box and start light sync on the selected mode
 * When you want to change multiple entities the order is important. For example Intensity applies to the current selected mode. So if you want to change both the `intensity` and `mode` you _first_ have to change the mode and then set the intensity. Otherwise the intensity is applied to the "old" mode. If you want to avoid ordering issues you can use the `set_sync_state` service which will take care of the ordering and is more efficient.
 
-
 ### Services
 
 The integration exposes some additional services.
@@ -53,8 +53,8 @@ For the parameter descriptions use the Services tab in the Home Assistant Develo
 
 | Service name | Description |
 |---|---|
-| set_sync_state | Set the state of multiple features of the Philips Hue Play HDMI Syncbox at once. Makes sure everything is set in the correct order and is more efficient compared to using separate commands. |
 | set_bridge | Set the bridge to be used by the Philips Hue Play HDMI Syncbox. |
+| set_sync_state | Set the state of multiple features of the Philips Hue Play HDMI Syncbox at once. Makes sure everything is set in the correct order and is more efficient compared to using separate commands. |
 
 ## Updating from before version 2.0
 
