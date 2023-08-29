@@ -1,6 +1,5 @@
 """Coordinator for the Philips Hue Play HDMI Sync Box integration."""
 
-from datetime import timedelta
 import aiohuesyncbox
 import async_timeout
 
