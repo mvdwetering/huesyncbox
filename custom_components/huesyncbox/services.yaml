@@ -1,245 +1,79 @@
-# Describes the format for available huesync services
-
-set_sync_state:
-  name: Set sync state
-  description: Control the complete sync state of the Philips Hue Play HDMI Syncbox. This is an advanced service and contains potential conflicting fields. Use responsibly!
-  target:
-    device:
-      integration: huesyncbox
-    entity:
-      integration: huesyncbox
-      domain: media_player
-  fields:
-    sync:
-      name: Sync
-      description: Set sync state on or off.
-      example: true
-      selector:
-        boolean:
-    sync_toggle:
-      name: Sync toggle
-      description: Toggle sync state between on/off.
-      example: true
-      selector:
-        boolean:
-    brightness:
-      name: Brightness
-      description: Brightness value to set [0,1].
-      example: 0.42
-      selector:
-        number:
-          min: 0.0
-          max: 1.0
-          step: 0.01
-          mode: slider
-    brightness_step:
-      name: Brightness step
-      description: Change brightness relative to the current state. Should be between -1..1.
-      example: -0.2
-      selector:
-        number:
-          min: -1.0
-          max: 1.0
-          step: 0.01
-          mode: slider
-    mode:
-      name: Mode
-      description: Mode to set. One of 'video', 'music', 'game'.
-      example: video
-      selector:
-        select:
-          options:
-            - video
-            - music
-            - game
-    mode_next:
-      name: Next mode
-      description: Select next mode, will wrap around.
-      example: true
-      selector:
-        boolean:
-    mode_prev:
-      name: Previous mode
-      description: Select previous mode, will wrap around.
-      example: true
-      selector:
-        boolean:
-    intensity:
-      name: Intensity
-      description: Intensity to set. One of 'subtle', 'moderate', 'high', 'intense'.
-      example: high
-      selector:
-        select:
-          options:
-            - subtle
-            - moderate
-            - high
-            - intense
-    intensity_next:
-      name: Next intensity
-      description: Select next intensity.
-      example: true
-      selector:
-        boolean:
-    intensity_prev:
-      name: Previous intensity
-      description: Select previous intensity.
-      example: true
-      selector:
-        boolean:
-    input:
-      name: Input
-      description: Input to select. One of 'input1', 'input2', 'input3', 'input4'.
-      example: input1
-      selector:
-        select:
-          options:
-            - input1
-            - input2
-            - input3
-            - input4
-    input_next:
-      name: Next input
-      description: Select next input, wraps around.
-      example: true
-      selector:
-        boolean:
-    input_prev:
-      name: Previous input
-      description: Select previous input, wraps around.
-      example: true
-      selector:
-        boolean:
-    entertainment_area:
-      name: Entertainment area
-      description: Entertainment area to select. Can be one of the names available in 'entertainment_area_list' attribute.
-      example: TV Area
-      selector:
-        text:
-
-set_brightness:
-  name: Set brightness
-  description: Set brightness for the Philips Hue Play HDMI Syncbox.
-  target:
-    device:
-      integration: huesyncbox
-    entity:
-      integration: huesyncbox
-      domain: media_player
-  fields:
-    brightness:
-      name: Brightness
-      description: Brightness value to set [0,1].
-      example: 0.42
-      required: true
-      selector:
-        number:
-          min: 0.0
-          max: 1.0
-          step: 0.01
-          mode: slider
-
-set_sync_mode:
-  name: Set sync mode
-  description: Set syncmode for the Philips Hue Play HDMI Syncbox.
-  target:
-    device:
-      integration: huesyncbox
-    entity:
-      integration: huesyncbox
-      domain: media_player
-  fields:
-    mode:
-      name: Mode
-      description: Mode to set. One of 'video', 'music', 'game'.
-      example: video
-      required: true
-      selector:
-        select:
-          options:
-            - video
-            - music
-            - game
-
-set_intensity:
-  name: Set intensity
-  description: Set intensity for the Philips Hue Play HDMI Syncbox.
-  target:
-    device:
-      integration: huesyncbox
-    entity:
-      integration: huesyncbox
-      domain: media_player
-  fields:
-    intensity:
-      name: Intensity
-      description: Intensity to set. One of 'subtle', 'moderate', 'high', 'intense'.
-      example: high
-      required: true
-      selector:
-        select:
-          options:
-            - subtle
-            - moderate
-            - high
-            - intense
-    mode:
-      name: Mode
-      description: Optional mode to apply intensity to. If not set intensity is applied to current/last used mode.
-      example: video
-      selector:
-        select:
-          options:
-            - video
-            - music
-            - game
-
-set_entertainment_area:
-  name: Select entertainment area
-  description: Set entertainment area to be used for the Philips Hue Play HDMI Syncbox.
-  target:
-    device:
-      integration: huesyncbox
-    entity:
-      integration: huesyncbox
-      domain: media_player
-  fields:
-    entertainment_area:
-      name: Entertainment area
-      description: Entertainment area to select. Must be one of the names available in 'entertainment_area_list' attribute.
-      example: TV Area
-      required: true
-      selector:
-        text:
-
 set_bridge:
-  name: Set bridge
-  description: Set the bridge to be used by the Philips Hue Play HDMI Syncbox. Keep in mind that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to select the `entertainment_area` if connectionstate is `invalidgroup` instead of `connected`.
   target:
     device:
       integration: huesyncbox
     entity:
       integration: huesyncbox
-      domain: media_player
   fields:
     bridge_id:
-      name: Bridge ID
-      description: ID of the bridge. A hexadecimal code of 16 characters.
-      example: 001788FFFE123456
+      example: 001788FFFE000000
       required: true
       selector:
         text:
     bridge_username:
-      name: Username
-      description: Username (a.k.a. application key) valid for the bridge. A long code of random characters.
       example: WB9xS1t0Baw-8ZqYKMcEhOaKRU42E84-NZBXwcIL
       required: true
       selector:
         text:
     bridge_clientkey:
-      name: Clientkey
-      description: Clientkey corresponeding with the username. A hexadecimal code of 32 characters.
       example: 00112233445566778899AABBCCDDEEFF
       required: true
+      selector:
+        text:
+
+set_sync_state:
+  target:
+    device:
+      integration: huesyncbox
+    entity:
+      integration: huesyncbox
+  fields:
+    power:
+      example: true
+      selector:
+        boolean:
+    sync:
+      example: true
+      selector:
+        boolean:
+    brightness:
+      example: 42
+      selector:
+        number:
+          min: 1
+          max: 100
+          step: 1
+          mode: slider
+    intensity:
+      example: high
+      selector:
+        select:
+          translation_key: "intensities"
+          options:
+            - subtle
+            - moderate
+            - high
+            - intense
+    mode:
+      example: video
+      selector:
+        select:
+          translation_key: modes
+          options:
+            - video
+            - music
+            - game
+    input:
+      example: input1
+      selector:
+        select:
+          translation_key: "inputs"
+          options:
+            - input1
+            - input2
+            - input3
+            - input4
+    entertainment_area:
+      example: TV Area
       selector:
         text:

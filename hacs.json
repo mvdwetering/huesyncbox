@@ -1,5 +1,5 @@
 {
     "name": "Philips Hue Play HDMI Sync Box",
     "render_readme": true,
-    "homeassistant": "2022.10.0"
+    "homeassistant": "2023.8.0"
 }

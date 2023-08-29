@@ -1,81 +1,245 @@
 {
   "config": {
-    "flow_title": "{name}",
+    "abort": {
+      "already_configured": "Device is already configured",
+      "reauth_successful": "Successfully re-linked the Philips Hue Play HDMI Sync Box",
+      "connection_failed": "Connection failed"
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error"
+    },
     "step": {
       "user": {
         "title": "Enter device information",
-        "description": "Details can be found in the Hue Sync Box App under 'Network and Device information'.",
+        "description": "Details can be found in the main Hue App.\n\nSelect the Sync tab and make sure the Philips Hue Play HDMI Syncbox is selected. After that tap the … menu at the top, select Device and then NetworkInfo for the IP address and DeviceInfo for the Identifier.",
         "data": {
-          "ip_address": "IP Address",
-          "unique_id": "Identifier (eg. C42996000000)"
+          "host": "IP address (e.g. 192.168.1.123)",
+          "unique_id": "Identifier (e.g. C42996000000)"
         }
       },
-      "link": {
-        "title": "Link Philips Hue Play HDMI Sync Box",
-        "description": "Press 'Submit' on this dialog to start the linking procedure. Then walk to the Philips Hue Play HDMI Sync Box and hold the button for a few seconds until it blinks green to register it with Home Assistant."
+      "reauth_confirm": {
+        "title": "Reauthenticate Integration",
+        "description": "The Philips Hue Play HDMI Sync Box needs to be re-linked"
+      },
+      "zeroconf_confirm": {
+        "title": "Device found",
+        "description": "The Philips Hue Play HDMI Sync Box needs to be linked. Press next to start the linking process."
       }
     },
-    "error": {
-      "cannot_connect": "Failed to connect, please try again",
-      "invalid_auth": "Invalid authentication",
-      "unknown": "Unexpected error",
-      "register_failed": "Failed to register, please try again",
-      "linking": "Unknown linking error occurred."
-    },
-    "abort": {
-      "no_huesyncboxes": "No Philips Hue Play HDMI Sync Boxes discovered",
-      "all_configured": "All Philips Hue Play HDMI Sync Boxes are already configured",
-      "unknown": "Unknown error occurred",
-      "cannot_connect": "Unable to connect to the device",
-      "already_configured": "Device is already configured",
-      "already_in_progress": "Config flow for device is already in progress."
-   }
+    "progress": {
+      "wait_for_button": "Press and hold the button on the Philips Hue Play HDMI Sync Box for a few seconds until it blinks green to link it."
+    }
   },
-  "device_automation": {
-    "trigger_type": {
-      "hdmi1_status_changed": "HDMI1 status changed",
-      "hdmi2_status_changed": "HDMI2 status changed",
-      "hdmi3_status_changed": "HDMI3 status changed",
-      "hdmi4_status_changed": "HDMI4 status changed"
+  "entity": {
+    "number": {
+      "brightness": {
+        "name": "Brightness"
+      }
     },
-    "condition_type": {
-      "hdmi1_status_linked": "HDMI1 has link",
-      "hdmi2_status_linked": "HDMI2 has link",
-      "hdmi3_status_linked": "HDMI3 has link",
-      "hdmi4_status_linked": "HDMI4 has link"
+    "select": {
+      "hdmi_input": {
+        "name": "HDMI Input"
+      },
+      "entertainment_area": {
+        "name": "Entertainment area"
+      },
+      "intensity": {
+        "name": "Intensity",
+        "state": {
+          "subtle": "Subtle",
+          "moderate": "Moderate",
+          "high": "High",
+          "intense": "Intense"
+        }
+      },
+      "led_indicator_mode": {
+        "name": "Led indicator",
+        "state": {
+          "normal": "Normal",
+          "off": "Off",
+          "dimmed": "Dimmed"
+        }
+      },
+      "sync_mode": {
+        "name": "Sync mode",
+        "state": {
+          "video": "Video",
+          "music": "Music",
+          "game": "Game"
+        }
+      }
     },
-    "action_type": {
-      "brightness_decrease": "Decrease brightness",
-      "brightness_increase": "Increase brightness",
-      "intensity_down": "Decrease intensity",
-      "intensity_up": "Increase intensity",
-      "intensity_subtle": "Set intensity subtle",
-      "intensity_moderate": "Set intensity moderate",
-      "intensity_high": "Set intensity high",
-      "intensity_intense": "Set intensity extreme",
-      "sync_on": "Start light sync",
-      "sync_off": "Stop light sync",
-      "sync_toggle": "Toggle light sync",
-      "sync_video_toggle": "Toggle video mode light sync",
-      "sync_music_toggle": "Toggle music mode light sync",
-      "sync_game_toggle": "Toggle game mode light sync",
-      "sync_video_on": "Start video mode light sync",
-      "sync_music_on": "Start music mode light sync",
-      "sync_game_on": "Start game mode light sync",
-      "input_next": "Select next input",
-      "input_previous": "Select previous input",
-      "input_hdmi1": "Select HDMI1",
-      "input_hdmi2": "Select HDMI2",
-      "input_hdmi3": "Select HDMI3",
-      "input_hdmi4": "Select HDMI4",
-      "mode_next": "Select next mode",
-      "mode_previous": "Select previous mode",
-      "mode_game": "Set mode game",
-      "mode_music": "Set mode music",
-      "mode_video": "Set mode video",
-      "toggle": "Toggle on/off",
-      "turn_on": "Turn on",
-      "turn_off": "Turn off"
+    "sensor": {
+      "bridge_unique_id": {
+        "name": "Bridge ID"
+      },
+      "ip_address": {
+        "name": "IP address"
+      },
+      "bridge_connection_state": {
+        "name": "Bridge connection",
+        "state": {
+          "uninitialized": "Uninitialized",
+          "disconnected": "Disconnected",
+          "connecting": "Connecting",
+          "unauthorized": "Unauthorized",
+          "connected": "Connected",
+          "invalidgroup": "Invalid group",
+          "streaming": "Streaming",
+          "busy": "Busy"
+        }
+      },
+      "hdmi1_status": {
+        "name": "HDMI1 status",
+        "state": {
+          "unplugged": "Unplugged",
+          "plugged": "Plugged",
+          "linked": "Linked",
+          "unknown": "Unknown"
+        }
+      },
+      "hdmi2_status": {
+        "name": "HDMI2 status",
+        "state": {
+          "unplugged": "Unplugged",
+          "plugged": "Plugged",
+          "linked": "Linked",
+          "unknown": "Unknown"
+        }
+      },
+      "hdmi3_status": {
+        "name": "HDMI3 status",
+        "state": {
+          "unplugged": "Unplugged",
+          "plugged": "Plugged",
+          "linked": "Linked",
+          "unknown": "Unknown"
+        }
+      },
+      "hdmi4_status": {
+        "name": "HDMI4 status",
+        "state": {
+          "unplugged": "Unplugged",
+          "plugged": "Plugged",
+          "linked": "Linked",
+          "unknown": "Unknown"
+        }
+      },
+      "wifi_strength": {
+        "name": "Wifi quality",
+        "state": {
+          "not_connected": "Not connected",
+          "weak": "Weak",
+          "fair": "Fair",
+          "good": "Good",
+          "excellent": "Excellent"
+        }
+      }
+    },
+    "switch": {
+      "power": {
+        "name": "Power"
+      },
+      "light_sync": {
+        "name": "Light Sync"
+      },
+      "dolby_vision_compatibility": {
+        "name": "Dolby Vision compatibility"
+      }
+    }
+  },
+  "selector": {
+    "modes": {
+      "options": {
+        "video": "Video",
+        "music": "Music",
+        "game": "Game"
+      }
+    },
+    "intensities": {
+      "options": {
+        "subtle": "Subtle",
+        "moderate": "Moderate",
+        "high": "High",
+        "intense": "Intense"
+      }
+    },
+    "inputs": {
+      "options": {
+        "input1": "HDMI 1",
+        "input2": "HDMI 2",
+        "input3": "HDMI 3",
+        "input4": "HDMI 4"
+      }
+    }
+  },
+  "services": {
+    "set_bridge": {
+      "name": "Set bridge",
+      "description": "Set the bridge to be used by the Philips Hue Play HDMI Syncbox. Keep in mind that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to select the `entertainment_area` if connectionstate is `invalidgroup` instead of `connected`.",
+      "fields": {
+        "bridge_id": {
+          "name": "Bridge ID",
+          "description": "ID of the bridge. A hexadecimal code of 16 characters."
+        },
+        "bridge_username": {
+          "name": "Username",
+          "description": "Username (a.k.a. application key) valid for the bridge. A long code of random characters."
+        },
+        "bridge_clientkey": {
+          "name": "Clientkey",
+          "description": "Clientkey that belongs with the username. A hexadecimal code of 32 characters."
+        }
+      }
+    },
+    "set_sync_state": {
+      "name": "Set light sync state",
+      "description": "Control the complete light sync state of the Philips Hue Play HDMI Syncbox with one call.",
+      "fields": {
+        "power": {
+          "name": "Power",
+          "description": "Turn the box on or off."
+        },
+        "sync": {
+          "name": "Light sync",
+          "description": "Set light sync state on or off. Setting this to on will also turn on the box."
+        },
+        "brightness": {
+          "name": "Brightness",
+          "description": "Brightness value to set."
+        },
+        "mode": {
+          "name": "Mode",
+          "description": "Mode to set. Setting the mode will also turn on the box and start light sync."
+        },
+        "intensity": {
+          "name": "Intensity",
+          "description": "Intensity to set."
+        },
+        "input": {
+          "name": "Input",
+          "description": "Input to select."
+        },
+        "entertainment_area": {
+          "name": "Entertainment area",
+          "description": "Entertainment area to select. Name must match _exactly_"
+        }
+      }
+    }
+  },
+  "issues": {
+    "automations_using_deleted_mediaplayer": {
+      "title": "Automations using deleted HueSyncBox mediaplayer",
+      "fix_flow": {
+        "step": {
+          "confirm": {
+            "title": "Update the automations",
+            "description": "The following automations are using a deleted HueSyncBox mediaplayer with id {media_player_entity}.\n\n{automations}\n\nPress SUBMIT to confirm the automations have been updated and dismiss this repair"
+          }
+        }
+      }
     }
   }
 }
