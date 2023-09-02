@@ -6,7 +6,7 @@
     "@mvdwetering"
   ],
   "config_flow": true,
-  "dependencies": ["automation"],
+  "dependencies": [],
   "documentation": "https://github.com/mvdwetering/huesyncbox",
   "integration_type": "device",
   "iot_class": "local_polling",
