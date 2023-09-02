@@ -98,7 +98,7 @@ async def try_connection(connection_info: ConnectionInfo) -> bool:
 class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Philips Hue Play HDMI Sync Box."""
 
-    VERSION = 2
+    VERSION = 3
 
     link_task: asyncio.Task | None = None
     config_entry: ConfigEntry | None = None

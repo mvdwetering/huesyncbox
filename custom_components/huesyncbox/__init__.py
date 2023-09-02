@@ -2,7 +2,6 @@
 import asyncio
 import aiohuesyncbox
 
-from homeassistant.components import automation
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -105,6 +104,8 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
     if config_entry.version == 1:
         migrate_v1_to_v2(hass, config_entry)
+    if config_entry.version == 2:
+        migrate_v2_to_v3(hass, config_entry)
 
     LOGGER.info(
         "Migration of ConfigEntry from version %s to version %s successful",
@@ -123,36 +124,22 @@ def migrate_v1_to_v2(hass: HomeAssistant, config_entry: ConfigEntry):
         registry, config_entry.entry_id
     )
 
-    automations_with_entity = []
     for entity in entities:
         if entity.domain == Platform.MEDIA_PLAYER:
             registry.async_remove(entity.entity_id)
 
-            automations_with_entity = automation.automations_with_entity(
-                hass, entity.entity_id
-            )
-
-            automation_info = []
-            for automation_with_entity in automations_with_entity:
-                if automation_entry := registry.async_get(automation_with_entity):
-                    automation_info.append(
-                        f"{automation_entry.name or automation_entry.original_name} ({automation_with_entity})\n"
-                    )
-
-            if len(automation_info) > 0:
-                issue_registry.async_create_issue(
-                    hass,
-                    DOMAIN,
-                    f"automations_using_deleted_mediaplayer_{config_entry.entry_id}",
-                    is_fixable=True,
-                    is_persistent=True,
-                    severity=issue_registry.IssueSeverity.WARNING,
-                    translation_key="automations_using_deleted_mediaplayer",
-                    translation_placeholders={
-                        "automations": ",".join(automation_info),
-                        "media_player_entity": entity.entity_id,
-                    },
-                )
+            # There used to be a repair created here
+            # Removed due to adding dependency on automation
 
     config_entry.version = 2
+    hass.config_entries.async_update_entry(config_entry)
+
+
+def migrate_v2_to_v3(hass: HomeAssistant, config_entry: ConfigEntry):
+    # Remove any pending repairs
+    issue_registry.async_delete_issue(
+        hass, DOMAIN, f"automations_using_deleted_mediaplayer_{config_entry.entry_id}"
+    )
+
+    config_entry.version = 3
     hass.config_entries.async_update_entry(config_entry)
