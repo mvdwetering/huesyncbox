@@ -22,7 +22,7 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
             hass,
             LOGGER,
             # Name of the data. For logging purposes.
-            name="Philips Hue Play HDMI Sync Box",
+            name=f"Philips Hue Play HDMI Sync Box ({api.device.name} at {api.device.ip_address})",
             # Polling interval. Will only be polled if there are subscribers.
             update_interval=COORDINATOR_UPDATE_INTERVAL,
         )
