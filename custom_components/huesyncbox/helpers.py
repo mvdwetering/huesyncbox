@@ -4,6 +4,7 @@ from typing import List
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry
+from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 
 from .const import DOMAIN, LOGGER, MANUFACTURER_NAME
 
@@ -23,6 +24,9 @@ async def update_device_registry(
         name=api.device.name,
         model=api.device.device_type,
         sw_version=api.device.firmware_version,
+        # Uniqueid seems to be the mac. Adding the connection allows other integrations
+        # like e.g. Mikrotik Router to link their entities to this device
+        connections={(CONNECTION_NETWORK_MAC, api.device.unique_id)},
     )
 
 

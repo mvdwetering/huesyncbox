@@ -13,11 +13,26 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_UNIQUE_ID,
 )
-from homeassistant.helpers import entity_registry, issue_registry
+from homeassistant.helpers import entity_registry, issue_registry, device_registry
+
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry  # type: ignore
 
 from .conftest import setup_integration
+
+
+async def test_device_info(hass: HomeAssistant, mock_api):
+    integration = await setup_integration(hass, mock_api)
+
+    dr = device_registry.async_get(hass)
+    device = dr.async_get_device(identifiers={(huesyncbox.DOMAIN, "unique_id")})
+
+    assert device is not None
+    assert device.name == "Name"
+    assert device.manufacturer == "Signify"
+    assert device.model == "HSB1"
+    assert device.sw_version == "firmwareversion"
+    assert device.connections == {("mac", "unique_id")}
 
 
 async def test_handle_authentication_error_during_setup(hass: HomeAssistant, mock_api):
