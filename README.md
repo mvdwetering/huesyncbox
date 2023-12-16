@@ -60,7 +60,7 @@ For the parameter descriptions use the Services tab in the Home Assistant Develo
 
 The 2.0 version is a complete rewrite to allow for multiple entities and modernize the integration in general, however it is a big breaking change.
 
-See the [release notes for 2.0.0](https://github.com/mvdwetering/huesyncbox/releases/tag/v2.0.0b4) for more details on the changes and migration.
+See the [release notes for 2.0.0](https://github.com/mvdwetering/huesyncbox/releases/tag/v2.0.0) for more details on the changes and migration.
 
 No functionality is lost it just moved to a different place.
 
