@@ -1,18 +1,25 @@
 {
   "domain": "huesyncbox",
   "name": "Philips Hue Play HDMI Sync Box",
-
   "codeowners": [
     "@mvdwetering"
   ],
   "config_flow": true,
-  "dependencies": ["automation"],
+  "dependencies": [
+    "automation"
+  ],
   "documentation": "https://github.com/mvdwetering/huesyncbox",
   "integration_type": "device",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/mvdwetering/huesyncbox/issues",
-  "loggers": ["aiohuesyncbox"],
-  "requirements": ["aiohuesyncbox==0.0.26"],
-  "version": "0.0.0",
-  "zeroconf": ["_huesync._tcp.local."]
+  "loggers": [
+    "aiohuesyncbox"
+  ],
+  "requirements": [
+    "aiohuesyncbox==0.0.26"
+  ],
+  "version": "2.0.1",
+  "zeroconf": [
+    "_huesync._tcp.local."
+  ]
 }
