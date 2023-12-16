@@ -6,7 +6,7 @@ from homeassistant.components import automation
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryError
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers import (
     entity_registry,
 )
@@ -47,7 +47,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except aiohuesyncbox.Unauthorized as err:
         raise ConfigEntryAuthFailed(err) from err
     except aiohuesyncbox.RequestError as err:
-        raise ConfigEntryError(err) from err
+        raise ConfigEntryNotReady(err) from err
     finally:
         if not initialized:
             await api.close()

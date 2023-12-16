@@ -53,7 +53,7 @@ async def test_handle_communication_error_during_setup(hass: HomeAssistant, mock
 
     config_entry = hass.config_entries.async_get_entry(integration.entry.entry_id)
     assert config_entry is not None
-    assert config_entry.state == ConfigEntryState.SETUP_ERROR
+    assert config_entry.state == ConfigEntryState.SETUP_RETRY
 
     assert mock_api.close.call_count == 1
 
