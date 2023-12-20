@@ -216,11 +216,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.exception("Unknown Philips Hue Play HDMI Sync Box error occurred")
             return False
         except asyncio.CancelledError:
-            _LOGGER.debug("_async_register, %s", "asyncio.CancelledError")
+            _LOGGER.debug("_async_register, asyncio.CancelledError", exc_info=True)
             cancelled = True
         finally:
             # Only gets cancelled when flow is removed, don't call things on flow after that
-            _LOGGER.debug("_async_register, %s, %s", "finally", cancelled)
+            _LOGGER.debug("_async_register, finally, %s", cancelled)
             if not cancelled:
                 # Continue the flow after show progress when the task is done.
                 # To avoid a potential deadlock we create a new task that continues the flow.
@@ -252,6 +252,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             registered = self.link_task.result()
         except asyncio.CancelledError:
             # Was cancelled, so not registered
+            _LOGGER.debug("async_step_link, asyncio.CancelledError", exc_info=True)
             pass
         except asyncio.InvalidStateError:
             # Was not done, so not registered, cancel it
