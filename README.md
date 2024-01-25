@@ -14,6 +14,8 @@ Custom integration for the Philips Hue Play HDMI Sync Box.
 
 ## About
 
+> Please setup the Philips Hue Play HDMI Syncbox with the Hue App first and make sure it works before setting up this integration.
+
 This integration exposes the Philips Hue Play HDMI Sync Box in Home Assistant so it can be used in automations or dashboards.
 
 The Philips Hue Play HDMI Sync Box will be discovered automatically in most cases and can be added manually through the `Settings > Devices and Services` menu in Home Assistant if that is not the case.
