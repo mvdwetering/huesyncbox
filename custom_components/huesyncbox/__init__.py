@@ -1,6 +1,6 @@
 """The Philips Hue Play HDMI Sync Box integration."""
+import asyncio
 import aiohuesyncbox
-import async_timeout
 
 from homeassistant.components import automation
 from homeassistant.config_entries import ConfigEntry
@@ -83,7 +83,7 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     # Best effort cleanup. User might not even have the device anymore or had it factory reset.
     # Note that the entry already has been unloaded, so need to create API again
     try:
-        async with async_timeout.timeout(10):
+        async with asyncio.timeout(10):
             async with aiohuesyncbox.HueSyncBox(
                 entry.data["host"],
                 entry.data["unique_id"],

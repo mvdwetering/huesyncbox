@@ -1,7 +1,7 @@
 """Coordinator for the Philips Hue Play HDMI Sync Box integration."""
 
+import asyncio
 import aiohuesyncbox
-import async_timeout
 
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import (
@@ -33,7 +33,7 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
         try:
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
-            async with async_timeout.timeout(5):
+            async with asyncio.timeout(5):
 
                 old_device = self.api.device
                 await self.api.update()
