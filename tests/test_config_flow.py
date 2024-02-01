@@ -227,8 +227,8 @@ async def test_zeroconf_new_box(hass: HomeAssistant, mock_api) -> None:
         huesyncbox.DOMAIN,
         context={"source": config_entries.SOURCE_ZEROCONF},
         data=zeroconf.ZeroconfServiceInfo(
-            host="1.2.3.4",
-            addresses=["1.2.3.4"],
+            ip_address="1.2.3.4",
+            ip_addresses=["1.2.3.4"],
             port=443,
             hostname="unique_id.local",
             type="_huesync._tcp.local.",
@@ -307,8 +307,8 @@ async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api) -> Non
         huesyncbox.DOMAIN,
         context={"source": config_entries.SOURCE_ZEROCONF},
         data=zeroconf.ZeroconfServiceInfo(
-            host="1.2.3.4",
-            addresses=["1.2.3.4"],
+            ip_address="1.2.3.4",
+            ip_addresses=["1.2.3.4"],
             port=443,
             hostname="unique_id.local",
             type="_huesync._tcp.local.",
