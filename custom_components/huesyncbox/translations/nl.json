@@ -83,7 +83,7 @@
         "state": {
           "uninitialized": "Niet geinitialiseert",
           "disconnected": "Verbroken",
-          "connecting": "Verbinden",
+          "connecting": "Verbinding maken",
           "unauthorized": "Niet gekoppeld",
           "connected": "Verbonden",
           "invalidgroup": "Ongeldige entertainmentruimte",
@@ -140,7 +140,7 @@
     },
     "switch": {
       "power": {
-        "name": "Power"
+        "name": "Ingeshakeld"
       },
       "light_sync": {
         "name": "Synchroniseren"
@@ -160,10 +160,10 @@
     },
     "intensities": {
       "options": {
-        "subtle": "Subtle",
-        "moderate": "Moderate",
-        "high": "High",
-        "intense": "Intense"
+        "subtle": "Subtiel",
+        "moderate": "Gematigd",
+        "high": "Hoog",
+        "intense": "Extreem"
       }
     },
     "inputs": {
