@@ -12,6 +12,7 @@ from homeassistant.helpers.update_coordinator import (
 from .const import COORDINATOR_UPDATE_INTERVAL, LOGGER
 from .helpers import update_config_entry_title, update_device_registry
 
+MAX_CONSECUTIVE_ERRORS = 5
 
 class HueSyncBoxCoordinator(DataUpdateCoordinator):
     """My custom coordinator."""
@@ -27,6 +28,12 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
             update_interval=COORDINATOR_UPDATE_INTERVAL,
         )
         self.api = api
+        self._consecutive_errors = 0
+
+    def _is_consecutive_error_reached(self):
+        self._consecutive_errors += 1
+        LOGGER.debug("Consecutive errors = %s", self._consecutive_errors)
+        return self._consecutive_errors >= MAX_CONSECUTIVE_ERRORS
 
     async def _async_update_data(self):
         """Fetch data from API endpoint."""
@@ -37,6 +44,7 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
 
                 old_device = self.api.device
                 await self.api.update()
+                self._consecutive_errors = 0
 
                 if old_device != self.api.device:
                     await update_device_registry(self.hass, self.config_entry, self.api)
@@ -44,10 +52,17 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
                         self.hass, self.config_entry, self.api.device.name
                     )
 
-                return self.api
         except aiohuesyncbox.Unauthorized as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
         except aiohuesyncbox.RequestError as err:
-            raise UpdateFailed(f"Error communicating with API: {err}")
+            LOGGER.debug("aiohuesyncbox.RequestError while updating data: %s", err)
+            if self._is_consecutive_error_reached():
+                raise UpdateFailed(err)
+        except asyncio.TimeoutError as err:
+            LOGGER.debug("asyncio.TimeoutError while updating data")
+            if self._is_consecutive_error_reached():
+                raise
+
+        return self.api
