@@ -1,7 +1,8 @@
 """Test the Philips Hue Play HDMI Sync Box config flow."""
 import asyncio
 from unittest import mock
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import patch
+from ipaddress import IPv4Address
 
 from homeassistant import config_entries
 from homeassistant.components import zeroconf
@@ -9,7 +10,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, UnknownFlow
 import pytest
 
-from custom_components.huesyncbox.config_flow import CannotConnect, InvalidAuth
 from custom_components import huesyncbox
 
 import aiohuesyncbox
@@ -227,8 +227,8 @@ async def test_zeroconf_new_box(hass: HomeAssistant, mock_api) -> None:
         huesyncbox.DOMAIN,
         context={"source": config_entries.SOURCE_ZEROCONF},
         data=zeroconf.ZeroconfServiceInfo(
-            host="1.2.3.4",
-            addresses=["1.2.3.4"],
+            ip_address=IPv4Address("1.2.3.4"),
+            ip_addresses=[IPv4Address("1.2.3.4")],
             port=443,
             hostname="unique_id.local",
             type="_huesync._tcp.local.",
@@ -307,8 +307,8 @@ async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api) -> Non
         huesyncbox.DOMAIN,
         context={"source": config_entries.SOURCE_ZEROCONF},
         data=zeroconf.ZeroconfServiceInfo(
-            host="1.2.3.4",
-            addresses=["1.2.3.4"],
+            ip_address=IPv4Address("1.2.3.4"),
+            ip_addresses=[IPv4Address("1.2.3.4")],
             port=443,
             hostname="unique_id.local",
             type="_huesync._tcp.local.",
