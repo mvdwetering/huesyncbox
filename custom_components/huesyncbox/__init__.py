@@ -11,8 +11,9 @@ from homeassistant.helpers import (
     entity_registry,
 )
 from homeassistant.helpers import issue_registry
+from homeassistant.helpers.typing import ConfigType
 
-from .services import async_register_services, async_unregister_services
+from .services import async_register_services
 
 from .const import (
     DOMAIN,
@@ -29,6 +30,12 @@ PLATFORMS: list[Platform] = [
 ]
 
 
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Set up the Philips Hue Play HDMI Sync Box integration."""
+    hass.data[DOMAIN] = {}
+    await async_register_services(hass)
+    return True
+    
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Philips Hue Play HDMI Sync Box from a config entry."""
 
@@ -57,11 +64,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     coordinator = HueSyncBoxCoordinator(hass, api)
 
-    hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-
-    await async_register_services(hass)
 
     return True
 
@@ -71,10 +75,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         coordinator = hass.data[DOMAIN].pop(entry.entry_id)
         await coordinator.api.close()
-
-        if len(hass.data[DOMAIN]) == 0:
-            hass.data.pop(DOMAIN)
-            await async_unregister_services(hass)
 
     return unload_ok
 
