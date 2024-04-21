@@ -7,7 +7,11 @@ from typing import Any
 import aiohuesyncbox
 import voluptuous as vol  # type: ignore
 
-from homeassistant import config_entries
+from homeassistant.config_entries import (
+    ConfigEntry,
+    ConfigFlow,
+    ConfigFlowResult
+)
 from homeassistant.components import zeroconf
 from homeassistant.const import (
     CONF_ACCESS_TOKEN,
@@ -18,7 +22,6 @@ from homeassistant.const import (
     CONF_UNIQUE_ID,
 )
 from homeassistant.core import callback
-from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
 
 from .const import DEFAULT_PORT, DOMAIN, REGISTRATION_ID
@@ -71,13 +74,13 @@ async def try_connection(connection_info: ConnectionInfo):
             raise CannotConnect
 
 
-class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Philips Hue Play HDMI Sync Box."""
 
     VERSION = 2
 
     link_task: asyncio.Task | None = None
-    reauth_entry: config_entries.ConfigEntry | None = None
+    reauth_entry: ConfigEntry | None = None
 
     connection_info: ConnectionInfo
     device_name = "Default syncbox name"
@@ -90,7 +93,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Handle the initial step."""
         _LOGGER.debug("async_step_user, %s", user_input)
         if user_input is None:
@@ -139,7 +142,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_zeroconf(
         self, discovery_info: zeroconf.ZeroconfServiceInfo
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Handle zeroconf discovery."""
         _LOGGER.debug("async_step_zeroconf, %s", discovery_info)
 
@@ -168,7 +171,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         # and it seems to get stuck. Go through intermediate dialog like with reauth.
         return await self.async_step_zeroconf_confirm()
 
-    async def async_step_zeroconf_confirm(self, user_input=None) -> FlowResult:
+    async def async_step_zeroconf_confirm(self, user_input=None) -> ConfigFlowResult:
         """Dialog that informs the user that device is found and needs to be linked."""
         _LOGGER.debug("async_step_zeroconf_confirm, %s", user_input)
         if user_input is None:
@@ -230,7 +233,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     self.hass.config_entries.flow.async_configure(flow_id=self.flow_id)
                 )
 
-    async def async_step_link(self, user_input=None) -> FlowResult:
+    async def async_step_link(self, user_input=None) -> ConfigFlowResult:
         """Handle the linking step."""
         _LOGGER.debug("async_step_link, %s", user_input)
         assert self.connection_info
@@ -261,7 +264,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         next_step_id = "finish" if registered else "abort"
         return self.async_show_progress_done(next_step_id=next_step_id)
 
-    async def async_step_finish(self, user_input=None) -> FlowResult:
+    async def async_step_finish(self, user_input=None) -> ConfigFlowResult:
         """Finish flow"""
         _LOGGER.debug("async_step_finish, %s", user_input)
         assert self.connection_info
@@ -277,7 +280,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             title=self.device_name, data=asdict(self.connection_info)
         )
 
-    async def async_step_abort(self, user_input=None) -> FlowResult:
+    async def async_step_abort(self, user_input=None) -> ConfigFlowResult:
         """Abort flow"""
         _LOGGER.debug("async_step_abort, %s", user_input)
         return self.async_abort(reason="connection_failed")
@@ -302,7 +305,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return await self.async_step_reauth_confirm()
 
-    async def async_step_reauth_confirm(self, user_input=None) -> FlowResult:
+    async def async_step_reauth_confirm(self, user_input=None) -> ConfigFlowResult:
         """Dialog that informs the user that reauth is required."""
         _LOGGER.debug("async_step_reauth_confirm, %s", user_input)
         if user_input is None:
