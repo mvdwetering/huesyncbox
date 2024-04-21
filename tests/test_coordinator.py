@@ -1,6 +1,8 @@
+import asyncio
 from unittest.mock import Mock
 
 import aiohuesyncbox
+import pytest
 
 from custom_components import huesyncbox
 from homeassistant.config_entries import SOURCE_REAUTH
@@ -59,8 +61,15 @@ async def test_authentication_error_starts_reauth_flow(hass: HomeAssistant, mock
     assert len(list(config_entry.async_get_active_flows(hass, {SOURCE_REAUTH}))) == 1
 
 
-async def test_communication_error_marks_entities_unavailable(
-    hass: HomeAssistant, mock_api
+@pytest.mark.parametrize(
+    "side_effect",
+    [
+        (aiohuesyncbox.RequestError),
+        (asyncio.TimeoutError),
+    ],
+)
+async def test_continued_communication_errors_mark_entities_unavailable(
+    hass: HomeAssistant, mock_api, side_effect
 ):
     entity_under_test = "switch.name_power"
     await setup_integration(hass, mock_api)
@@ -70,10 +79,16 @@ async def test_communication_error_marks_entities_unavailable(
     assert entity is not None
     assert entity.state == "on"
 
-    # Trigger communicaiton error
-    mock_api.update.side_effect = aiohuesyncbox.RequestError
-    await force_coordinator_update(hass)
+    # Setup communication error
+    mock_api.update.side_effect = side_effect
 
-    # Check entities are unavailable
+    # Trigger 4 updates, entities should be fine
+    for _ in range(4):
+        await force_coordinator_update(hass)
+        entity = hass.states.get(entity_under_test)
+        assert entity.state == "on"
+
+    # 5th error makes entity unavailable
+    await force_coordinator_update(hass)
     entity = hass.states.get(entity_under_test)
     assert entity.state == "unavailable"
