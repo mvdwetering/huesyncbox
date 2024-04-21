@@ -237,8 +237,6 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         registered = False
         try:
             registered = self.link_task.result()
-        except asyncio.CancelledError:
-            _LOGGER.debug("async_step_link, asyncio.CancelledError", exc_info=True)
         except asyncio.InvalidStateError:
             _LOGGER.debug("async_step_link, asyncio.InvalidStateError", exc_info=True)
 
