@@ -59,6 +59,7 @@ HUESYNCBOX_SET_SYNC_STATE_SCHEMA = make_entity_service_schema(
 
 
 async def async_register_services(hass: HomeAssistant):
+
     async def async_set_bridge(call):
         """
         Set bridge, note that this change is not instant.
@@ -79,13 +80,12 @@ async def async_register_services(hass: HomeAssistant):
 
                 await coordinator.api.hue.set_bridge(bridge_id, username, clientkey)
 
-    if not hass.services.has_service(DOMAIN, SERVICE_SET_BRIDGE):
-        hass.services.async_register(
-            DOMAIN,
-            SERVICE_SET_BRIDGE,
-            async_set_bridge,
-            schema=HUESYNCBOX_SET_BRIDGE_SCHEMA,
-        )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_SET_BRIDGE,
+        async_set_bridge,
+        schema=HUESYNCBOX_SET_BRIDGE_SCHEMA,
+    )
 
     async def async_set_sync_state(call):
         """Set sync state, allow combining of all options."""
@@ -134,15 +134,9 @@ async def async_register_services(hass: HomeAssistant):
                     else:
                         raise
 
-    if not hass.services.has_service(DOMAIN, SERVICE_SET_SYNC_STATE):
-        hass.services.async_register(
-            DOMAIN,
-            SERVICE_SET_SYNC_STATE,
-            async_set_sync_state,
-            schema=HUESYNCBOX_SET_SYNC_STATE_SCHEMA,
-        )
-
-
-async def async_unregister_services(hass: HomeAssistant):
-    hass.services.async_remove(DOMAIN, SERVICE_SET_BRIDGE)
-    hass.services.async_remove(DOMAIN, SERVICE_SET_SYNC_STATE)
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_SET_SYNC_STATE,
+        async_set_sync_state,
+        schema=HUESYNCBOX_SET_SYNC_STATE_SCHEMA,
+    )
