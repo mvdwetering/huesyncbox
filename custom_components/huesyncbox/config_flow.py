@@ -21,7 +21,6 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_UNIQUE_ID,
 )
-from homeassistant.core import callback
 from homeassistant.exceptions import HomeAssistantError
 
 from .const import DEFAULT_PORT, DOMAIN, REGISTRATION_ID
