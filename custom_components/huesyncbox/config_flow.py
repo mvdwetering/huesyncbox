@@ -85,12 +85,6 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
     connection_info: ConnectionInfo
     device_name = "Default syncbox name"
 
-    @callback
-    def async_remove(self) -> None:
-        _LOGGER.debug("async_remove, %s", self.link_task is not None)
-        if self.link_task:
-            self.link_task.cancel()
-
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -182,7 +176,6 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         self, ha_instance_name: str, connection_info: ConnectionInfo
     ):
         _LOGGER.debug("_async_register, %s", connection_info)
-        cancelled = False
 
         try:
             async with aiohuesyncbox.HueSyncBox(
@@ -218,20 +211,7 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         except aiohuesyncbox.AiohuesyncboxException:
             _LOGGER.exception("Unknown Philips Hue Play HDMI Sync Box error occurred")
             return False
-        except asyncio.CancelledError:
-            _LOGGER.debug("_async_register, asyncio.CancelledError", exc_info=True)
-            cancelled = True
-        finally:
-            # Only gets cancelled when flow is removed, don't call things on flow after that
-            _LOGGER.debug("_async_register, finally, %s", cancelled)
-            if not cancelled:
-                # Continue the flow after show progress when the task is done.
-                # To avoid a potential deadlock we create a new task that continues the flow.
-                # The task must be completely done so the flow can await the task
-                # if needed and get the task result.
-                self.hass.async_create_task(
-                    self.hass.config_entries.flow.async_configure(flow_id=self.flow_id)
-                )
+
 
     async def async_step_link(self, user_input=None) -> ConfigFlowResult:
         """Handle the linking step."""
@@ -239,30 +219,31 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         assert self.connection_info
 
         if not self.link_task:
+            _LOGGER.debug("async_step_link, async_create_task")
             self.link_task = self.hass.async_create_task(
                 self._async_register(
                     self.hass.config.location_name, self.connection_info
                 )
             )
 
+        if not self.link_task.done():
+            _LOGGER.debug("async_step_link, async_show_progress")
             return self.async_show_progress(
                 step_id="link",
                 progress_action="wait_for_button",
+                progress_task=self.link_task,
             )
 
         registered = False
         try:
             registered = self.link_task.result()
         except asyncio.CancelledError:
-            # Was cancelled, so not registered
             _LOGGER.debug("async_step_link, asyncio.CancelledError", exc_info=True)
-            pass
         except asyncio.InvalidStateError:
-            # Was not done, so not registered, cancel it
-            self.link_task.cancel()
+            _LOGGER.debug("async_step_link, asyncio.InvalidStateError", exc_info=True)
 
-        next_step_id = "finish" if registered else "abort"
-        return self.async_show_progress_done(next_step_id=next_step_id)
+        _LOGGER.debug("async_step_link, asyncio.async_show_progress_done registered=%s", registered)
+        return self.async_show_progress_done(next_step_id="finish" if registered else "abort")
 
     async def async_step_finish(self, user_input=None) -> ConfigFlowResult:
         """Finish flow"""
