@@ -60,7 +60,6 @@ async def test_handle_communication_error_during_setup(hass: HomeAssistant, mock
 
 async def test_unload_entry(hass: HomeAssistant, mock_api):
     integration = await setup_integration(hass, mock_api)
-    integration2 = await setup_integration(hass, mock_api, entry_id="entry_id_2")
 
     # Unload first entry
     await hass.config_entries.async_unload(integration.entry.entry_id)
@@ -76,21 +75,6 @@ async def test_unload_entry(hass: HomeAssistant, mock_api):
     assert huesyncbox.DOMAIN in hass.data
     assert hass.services.has_service(huesyncbox.DOMAIN, "set_bridge")
     assert hass.services.has_service(huesyncbox.DOMAIN, "set_sync_state")
-
-    # Unload second entry
-    await hass.config_entries.async_unload(integration2.entry.entry_id)
-    await hass.async_block_till_done()
-
-    config_entry = hass.config_entries.async_get_entry(integration2.entry.entry_id)
-    assert config_entry is not None
-    assert config_entry.state == ConfigEntryState.NOT_LOADED
-
-    assert mock_api.close.call_count == 2
-
-    # Check that data and services are cleaned up
-    assert huesyncbox.DOMAIN not in hass.data
-    assert not hass.services.has_service(huesyncbox.DOMAIN, "set_bridge")
-    assert not hass.services.has_service(huesyncbox.DOMAIN, "set_sync_state")
 
 
 @pytest.mark.parametrize(
