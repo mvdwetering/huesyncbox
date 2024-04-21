@@ -59,8 +59,8 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
         except aiohuesyncbox.RequestError as err:
             LOGGER.debug("aiohuesyncbox.RequestError while updating data: %s", err)
             if self._is_consecutive_error_reached():
-                raise UpdateFailed(err)
-        except asyncio.TimeoutError as err:
+                raise UpdateFailed(err) from err
+        except asyncio.TimeoutError:
             LOGGER.debug("asyncio.TimeoutError while updating data")
             if self._is_consecutive_error_reached():
                 raise
