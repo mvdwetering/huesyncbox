@@ -116,6 +116,7 @@ async def setup_integration(
 
     entry = mock_config_entry or MockConfigEntry(
         version=2,
+        minor_version=2,
         domain=huesyncbox.DOMAIN,
         entry_id=entry_id,
         unique_id="unique_id",

@@ -99,6 +99,7 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Philips Hue Play HDMI Sync Box."""
 
     VERSION = 2
+    MINOR_VERSION = 2
 
     link_task: asyncio.Task | None = None
     config_entry: ConfigEntry | None = None

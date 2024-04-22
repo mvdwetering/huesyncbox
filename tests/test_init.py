@@ -135,6 +135,7 @@ async def test_migrate(hass: HomeAssistant, mock_api):
     config_entry = hass.config_entries.async_get_entry(integration.entry.entry_id)
     assert config_entry is not None
     assert config_entry.version == 2
+    assert config_entry.minor_version == 2
 
 
 async def test_migrate_v1_to_v2(hass: HomeAssistant, mock_api):
@@ -173,7 +174,7 @@ async def test_migrate_v1_to_v2(hass: HomeAssistant, mock_api):
         original_name="original name",
     )
 
-    # Manually trigger v1 to v2 upgrade
+    # Manually trigger upgrade
     with patch(
         "homeassistant.components.automation.automations_with_entity",
         return_value=[automation_entity.entity_id],
@@ -183,6 +184,35 @@ async def test_migrate_v1_to_v2(hass: HomeAssistant, mock_api):
     # Check results
     assert er.async_get(mp_entity.entity_id) is None
 
+
+async def test_migrate_v2_1_to_v2_2(hass: HomeAssistant, mock_api):
+    # Create v1 entry
+    mock_config_entry = MockConfigEntry(
+        version=2,
+        domain=huesyncbox.DOMAIN,
+        entry_id="entry_id",
+        title="HUESYNCBOX TITLE",
+        data={
+            CONF_HOST: "host",
+            CONF_UNIQUE_ID: "unique_id",
+            CONF_PORT: 1234,
+            CONF_PATH: "/api_path",
+            CONF_ACCESS_TOKEN: "token",
+            huesyncbox.const.REGISTRATION_ID: "registration_id_value",
+        },
+    )
+    mock_config_entry.add_to_hass(hass)
+
+    # Create old migration issue
+    issue_registry.async_create_issue(
+        hass,
+        huesyncbox.DOMAIN,
+        f"automations_using_deleted_mediaplayer_{mock_config_entry.entry_id}",
+        is_fixable=True,
+        is_persistent=True,
+        severity=issue_registry.IssueSeverity.WARNING,
+        translation_key="automations_using_deleted_mediaplayer",
+    )
     ir = issue_registry.async_get(hass)
     assert (
         ir.async_get_issue(
@@ -190,4 +220,16 @@ async def test_migrate_v1_to_v2(hass: HomeAssistant, mock_api):
             f"automations_using_deleted_mediaplayer_{mock_config_entry.entry_id}",
         )
         is not None
+    )
+
+    # Manually trigger upgrade
+    huesyncbox.migrate_v2_1_to_v2_2(hass, mock_config_entry)
+
+    # Check results
+    assert (
+        ir.async_get_issue(
+            huesyncbox.DOMAIN,
+            f"automations_using_deleted_mediaplayer_{mock_config_entry.entry_id}",
+        )
+        is None
     )
