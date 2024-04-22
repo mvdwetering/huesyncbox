@@ -229,18 +229,5 @@
         }
       }
     }
-  },
-  "issues": {
-    "automations_using_deleted_mediaplayer": {
-      "title": "Automations using deleted HueSyncBox mediaplayer",
-      "fix_flow": {
-        "step": {
-          "confirm": {
-            "title": "Update the automations",
-            "description": "The following automations are using a deleted HueSyncBox mediaplayer with id {media_player_entity}.\n\n{automations}\n\nPress SUBMIT to confirm the automations have been updated and dismiss this repair"
-          }
-        }
-      }
-    }
   }
 }
