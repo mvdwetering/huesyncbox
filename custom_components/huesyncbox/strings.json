@@ -3,7 +3,8 @@
     "abort": {
       "already_configured": "Device is already configured",
       "reauth_successful": "Successfully re-linked the Philips Hue Play HDMI Sync Box",
-      "connection_failed": "Connection failed"
+      "reconfigure_successful": "Successfully re-configured the Philips Hue Play HDMI Sync Box",
+      "connection_failed": "Setup failed"
     },
     "error": {
       "cannot_connect": "Failed to connect",
