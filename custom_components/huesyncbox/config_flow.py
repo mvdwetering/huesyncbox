@@ -53,6 +53,15 @@ def entry_data_from_connection_info(connection_info: ConnectionInfo):
         CONF_PATH: connection_info.path,
     }
 
+def connection_info_from_entry(entry: ConfigEntry) -> ConnectionInfo:
+    return ConnectionInfo(
+        entry.data[CONF_HOST],
+        entry.data[CONF_UNIQUE_ID],
+        entry.data[CONF_ACCESS_TOKEN],
+        entry.data[REGISTRATION_ID],
+        entry.data[CONF_PORT],
+        entry.data[CONF_PATH],
+    )
 
 async def try_connection(connection_info: ConnectionInfo):
     """Validate the connection_info allows us to connect."""
@@ -79,7 +88,10 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
     VERSION = 2
 
     link_task: asyncio.Task | None = None
-    reauth_entry: ConfigEntry | None = None
+    config_entry: ConfigEntry | None = None
+
+    reauth: bool = False
+    reconfigure: bool = False
 
     connection_info: ConnectionInfo
     device_name = "Default syncbox name"
@@ -247,12 +259,9 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         _LOGGER.debug("async_step_finish, %s", user_input)
         assert self.connection_info
 
-        if self.reauth_entry:
-            self.hass.config_entries.async_update_entry(
-                self.reauth_entry, data=asdict(self.connection_info)
-            )
-            await self.hass.config_entries.async_reload(self.reauth_entry.entry_id)
-            return self.async_abort(reason="reauth_successful")
+        if self.reauth:
+            assert self.config_entry is not None
+            return self.async_update_reload_and_abort(self.config_entry, data=asdict(self.connection_info))
 
         return self.async_create_entry(
             title=self.device_name, data=asdict(self.connection_info)
@@ -266,20 +275,14 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_reauth(self, user_input=None):
         """Reauth is triggered when token is not valid anymore, retrigger link flow."""
         _LOGGER.debug("async_step_reauth, %s", user_input)
-        self.reauth_entry = self.hass.config_entries.async_get_entry(
+
+        self.reauth = True
+        self.config_entry = self.hass.config_entries.async_get_entry(
             self.context["entry_id"]
         )
 
-        assert self.reauth_entry is not None
-
-        self.connection_info = ConnectionInfo(
-            self.reauth_entry.data[CONF_HOST],
-            self.reauth_entry.data[CONF_UNIQUE_ID],
-            self.reauth_entry.data[CONF_ACCESS_TOKEN],
-            self.reauth_entry.data[REGISTRATION_ID],
-            self.reauth_entry.data[CONF_PORT],
-            self.reauth_entry.data[CONF_PATH],
-        )
+        assert self.config_entry is not None
+        self.connection_info = connection_info_from_entry(self.config_entry)
 
         return await self.async_step_reauth_confirm()
 
