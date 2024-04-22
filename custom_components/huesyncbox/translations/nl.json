@@ -56,7 +56,7 @@
         }
       },
       "led_indicator_mode": {
-        "name": "Led indicator",
+        "name": "Led indicatie",
         "state": {
           "normal": "Normaal",
           "off": "Uit",
