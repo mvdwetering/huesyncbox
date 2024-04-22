@@ -105,7 +105,8 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     if config_entry.version == 1:
         migrate_v1_to_v2(hass, config_entry)
     if config_entry.version == 2:
-        migrate_v2_to_v3(hass, config_entry)
+        if config_entry.minor_version == 1:
+            migrate_v2_1_to_v2_2(hass, config_entry)
 
     LOGGER.info(
         "Migration of ConfigEntry from version %s to version %s successful",
@@ -135,11 +136,12 @@ def migrate_v1_to_v2(hass: HomeAssistant, config_entry: ConfigEntry):
     hass.config_entries.async_update_entry(config_entry)
 
 
-def migrate_v2_to_v3(hass: HomeAssistant, config_entry: ConfigEntry):
+def migrate_v2_1_to_v2_2(hass: HomeAssistant, config_entry: ConfigEntry):
     # Remove any pending repairs
     issue_registry.async_delete_issue(
         hass, DOMAIN, f"automations_using_deleted_mediaplayer_{config_entry.entry_id}"
     )
 
-    config_entry.version = 3
+    config_entry.version = 2
+    config_entry.minor_version = 2
     hass.config_entries.async_update_entry(config_entry)

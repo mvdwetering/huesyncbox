@@ -134,7 +134,8 @@ async def test_migrate(hass: HomeAssistant, mock_api):
     # Just check if updated to latest version
     config_entry = hass.config_entries.async_get_entry(integration.entry.entry_id)
     assert config_entry is not None
-    assert config_entry.version == 3
+    assert config_entry.version == 2
+    assert config_entry.minor_version == 2
 
 
 async def test_migrate_v1_to_v2(hass: HomeAssistant, mock_api):
@@ -184,7 +185,7 @@ async def test_migrate_v1_to_v2(hass: HomeAssistant, mock_api):
     assert er.async_get(mp_entity.entity_id) is None
 
 
-async def test_migrate_v2_to_v3(hass: HomeAssistant, mock_api):
+async def test_migrate_v2_1_to_v2_2(hass: HomeAssistant, mock_api):
     # Create v1 entry
     mock_config_entry = MockConfigEntry(
         version=2,
@@ -222,7 +223,7 @@ async def test_migrate_v2_to_v3(hass: HomeAssistant, mock_api):
     )
 
     # Manually trigger upgrade
-    huesyncbox.migrate_v2_to_v3(hass, mock_config_entry)
+    huesyncbox.migrate_v2_1_to_v2_2(hass, mock_config_entry)
 
     # Check results
     assert (
