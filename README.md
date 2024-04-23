@@ -14,7 +14,7 @@ Custom integration for the Philips Hue Play HDMI Sync Box.
 
 ## About
 
-> Please setup the Philips Hue Play HDMI Syncbox with the Hue App first and make sure it works before setting up this integration.
+> Please set up the Philips Hue Play HDMI Syncbox with the Hue App first and make sure it works before setting up this integration.
 
 This integration exposes the Philips Hue Play HDMI Sync Box in Home Assistant so it can be used in automations or dashboards.
 
@@ -45,7 +45,7 @@ A few notes on behavior when changing entities. Note that this behavior is just 
 
 * Enabling light sync will also power on the box
 * Setting sync mode will also power on the box and start light sync on the selected mode
-* When you want to change multiple entities the order is important. For example Intensity applies to the current selected mode. So if you want to change both the `intensity` and `mode` you _first_ have to change the mode and then set the intensity. Otherwise the intensity is applied to the "old" mode. If you want to avoid ordering issues you can use the `set_sync_state` service which will take care of the ordering and is more efficient than sending everything separately.
+* When you want to change multiple entities the order is important. For example, Intensity applies to the current selected mode. So if you want to change both the `intensity` and `mode` you _first_ have to change the mode and then set the intensity. Otherwise, the intensity is applied to the "old" mode. If you want to avoid ordering issues you can use the `set_sync_state` service which will take care of the ordering and is more efficient than sending everything separately.
 
 ### Services
 
@@ -73,7 +73,7 @@ No functionality is lost it just moved to a different place.
 
 ### Home Assistant Community Store (HACS)
 
-HACS is a 3rd party downloader for Home Assistant to easily install and update custom integrations made by the community. More information and installation instructions can be found on their site https://hacs.xyz/
+HACS is a 3rd party downloader for Home Assistant to easily install and update custom integrations made by the community. More information and installation instructions can be found on the [HACS website](https://hacs.xyz/).
 
 * Install the integration from within HACS (you can use the search box to find it)
 * Restart Home Assistant
@@ -82,8 +82,8 @@ HACS is a 3rd party downloader for Home Assistant to easily install and update c
 ### Manually
 
 * Install the custom component
-  * Download the zip from the releases section on Github
+  * Download the zip from the releases section on GitHub
   * Unzip it
-  * Copy it to the custom_components directory of your Home Assistnat install as usual
+  * Copy it to the custom_components directory of your Home Assistant install as usual
 * Restart Home Assistant
 * Devices will be found automatically or can be added manually from the Home Assistant integrations screen
