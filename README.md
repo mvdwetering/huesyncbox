@@ -29,7 +29,7 @@ The following features are available:
 * HDMI Input selection
 * Brightness control
 * Entertainment area selection
-* HDMI1-4 connection status
+* HDMI input connection status
 * Dolby Vision compatibility on/off
 * LED indicator mode
 * Bridge connection status ⁺
@@ -41,11 +41,11 @@ Entities marked with ⁺ are default disabled.
 
 ### Behavior
 
-A few notes on behavior when changing entities.
+A few notes on behavior when changing entities. Note that this behavior is just how the box reacts when sending these commands, not something coded in this integration.
 
 * Enabling light sync will also power on the box
 * Setting sync mode will also power on the box and start light sync on the selected mode
-* When you want to change multiple entities the order is important. For example Intensity applies to the current selected mode. So if you want to change both the `intensity` and `mode` you _first_ have to change the mode and then set the intensity. Otherwise the intensity is applied to the "old" mode. If you want to avoid ordering issues you can use the `set_sync_state` service which will take care of the ordering and is more efficient.
+* When you want to change multiple entities the order is important. For example Intensity applies to the current selected mode. So if you want to change both the `intensity` and `mode` you _first_ have to change the mode and then set the intensity. Otherwise the intensity is applied to the "old" mode. If you want to avoid ordering issues you can use the `set_sync_state` service which will take care of the ordering and is more efficient than sending everything separately.
 
 ### Services
 
@@ -69,7 +69,7 @@ No functionality is lost it just moved to a different place.
 ## Installation
 
 > **Note**
-> The Wifi connection of the Philips Hue Play HDMI Sync Box has to be setup with the official Hue app before it can be added to Home Assistant.
+> Please setup the Philips Hue Play HDMI Syncbox with the Hue App first and make sure it works before setting up this integration.
 
 ### Home Assistant Community Store (HACS)
 
