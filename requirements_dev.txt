@@ -1,10 +1,3 @@
--r requirements.txt
-mypy==1.4.0
+-r requirements_test.txt
 
-homeassistant-stubs==2023.8.0
-pytest-homeassistant-custom-component==0.13.49
-
-# Not entirely clear why it is needed as not a requirement for huesyncbox directly
-# but the tests fail because HA seems to initialize the zeroconf component which fails due to missing lib.
-# Not sure why it started showing up now :/
-zeroconf
+homeassistant-stubs==2024.4.0

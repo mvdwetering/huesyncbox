@@ -15,7 +15,7 @@ from . import HueSyncBoxCoordinator
 from .const import DOMAIN
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class HueSyncBoxSensorEntityDescription(SensorEntityDescription):
     get_value: Callable[[aiohuesyncbox.HueSyncBox], str] = None  # type: ignore[assignment]
     icons: dict[str, str] | None = None

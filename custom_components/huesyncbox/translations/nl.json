@@ -1,0 +1,233 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Apparaat is al ingesteld",
+      "reauth_successful": "Philips Hue Play HDMI Sync Box koppeling gelukt",
+      "reconfigure_successful": "Philips Hue Play HDMI Sync Box opnieuw ingesteld",
+      "connection_failed": "Instellen mislukt"
+    },
+    "error": {
+      "cannot_connect": "Kan niet verbinden",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Onverwachtte fout"
+    },
+    "step": {
+      "configure": {
+        "title": "Voer apparaat informatie in",
+        "description": "De informatie is beschikbaar in de Hue App.\n\nSelecteer de Sync tab en selecteer de Philips Hue Play HDMI Syncbox. Daarna druk boven aan het scherm op het … menu, selecteer Apparaat. Onder Netwerkinfo staat het IP addres en onder Apparaatinfo staat Identificatie.",
+        "data": {
+          "host": "IP addres (bijv. 192.168.1.123)",
+          "unique_id": "Identificatie (bijv. C42996000000)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Integratie opnieuw koppelen",
+        "description": "De Philips Hue Play HDMI Sync Box moet opnieuw gekoppeld worden"
+      },
+      "zeroconf_confirm": {
+        "title": "Apparaat gevonden",
+        "description": "Druk op Volgende om het koppelen van de Philips Hue Play HDMI Sync Box te starten."
+      }
+    },
+    "progress": {
+      "wait_for_button": "Druk een paar seconden op de knop van de Philips Hue Play HDMI Sync Box totdat het lampje groen knippert."
+    }
+  },
+  "entity": {
+    "number": {
+      "brightness": {
+        "name": "Helderheid"
+      }
+    },
+    "select": {
+      "hdmi_input": {
+        "name": "HDMI Ingang"
+      },
+      "entertainment_area": {
+        "name": "Entertainmentruimte"
+      },
+      "intensity": {
+        "name": "Intensiteit",
+        "state": {
+          "subtle": "Subtiel",
+          "moderate": "Gematigd",
+          "high": "Hoog",
+          "intense": "Extreem"
+        }
+      },
+      "led_indicator_mode": {
+        "name": "Led indicatie",
+        "state": {
+          "normal": "Normaal",
+          "off": "Uit",
+          "dimmed": "Gedimd"
+        }
+      },
+      "sync_mode": {
+        "name": "Sync modus",
+        "state": {
+          "video": "Video",
+          "music": "Muziek",
+          "game": "Game"
+        }
+      }
+    },
+    "sensor": {
+      "bridge_unique_id": {
+        "name": "Bridge ID"
+      },
+      "ip_address": {
+        "name": "IP adres"
+      },
+      "bridge_connection_state": {
+        "name": "Bridge verbinding",
+        "state": {
+          "uninitialized": "Niet ingesteld",
+          "disconnected": "Verbroken",
+          "connecting": "Verbinding maken",
+          "unauthorized": "Niet gekoppeld",
+          "connected": "Verbonden",
+          "invalidgroup": "Ongeldige entertainmentruimte",
+          "streaming": "Synchroniseren",
+          "busy": "Bezig"
+        }
+      },
+      "hdmi1_status": {
+        "name": "HDMI1 status",
+        "state": {
+          "unplugged": "Niet verbonden",
+          "plugged": "Verbonden",
+          "linked": "Gereed",
+          "unknown": "Onbekend"
+        }
+      },
+      "hdmi2_status": {
+        "name": "HDMI2 status",
+        "state": {
+          "unplugged": "Niet verbonden",
+          "plugged": "Verbonden",
+          "linked": "Gereed",
+          "unknown": "Onbekend"
+        }
+      },
+      "hdmi3_status": {
+        "name": "HDMI3 status",
+        "state": {
+          "unplugged": "Niet verbonden",
+          "plugged": "Verbonden",
+          "linked": "Gereed",
+          "unknown": "Onbekend"
+        }
+      },
+      "hdmi4_status": {
+        "name": "HDMI4 status",
+        "state": {
+          "unplugged": "Niet verbonden",
+          "plugged": "Verbonden",
+          "linked": "Gereed",
+          "unknown": "Onbekend"
+        }
+      },
+      "wifi_strength": {
+        "name": "Wifi kwaliteit",
+        "state": {
+          "not_connected": "Niet verbonden",
+          "weak": "Zwak",
+          "fair": "Matig",
+          "good": "Goed",
+          "excellent": "Uitstekend"
+        }
+      }
+    },
+    "switch": {
+      "power": {
+        "name": "Ingeschakeld"
+      },
+      "light_sync": {
+        "name": "Synchroniseren"
+      },
+      "dolby_vision_compatibility": {
+        "name": "Dolby Vision compatibiliteit"
+      }
+    }
+  },
+  "selector": {
+    "modes": {
+      "options": {
+        "video": "Video",
+        "music": "Muziek",
+        "game": "Game"
+      }
+    },
+    "intensities": {
+      "options": {
+        "subtle": "Subtiel",
+        "moderate": "Gematigd",
+        "high": "Hoog",
+        "intense": "Extreem"
+      }
+    },
+    "inputs": {
+      "options": {
+        "input1": "HDMI 1",
+        "input2": "HDMI 2",
+        "input3": "HDMI 3",
+        "input4": "HDMI 4"
+      }
+    }
+  },
+  "services": {
+    "set_bridge": {
+      "name": "Stel bridge in",
+      "description": "Stel de bridge in die gebruikt moet worden door de Philips Hue Play HDMI Syncbox. Let op het aanpassen en opnieuw verbinden duurt een tijdje (ongeveer 15 seconden lijkt het). Nadat de bridge verbonden is kan het zijn dat de `entertainment_area` aangepast moet worden. Dit is te zien aaan 'connectionstate' die `invalidgroup` is ipv`connected`.",
+      "fields": {
+        "bridge_id": {
+          "name": "Bridge ID",
+          "description": "ID van de bridge. Een code van 16 letters en cijfers."
+        },
+        "bridge_username": {
+          "name": "Toegangs code",
+          "description": "Toegangscode die geldig is voor de bridge. Een lange code van willekeurige karakters."
+        },
+        "bridge_clientkey": {
+          "name": "Clientkey",
+          "description": "Clientkey die bij de toegangscode hoort. Een code van 32 letters en cijfers."
+        }
+      }
+    },
+    "set_sync_state": {
+      "name": "Bedien syncbox",
+      "description": "Bedien alle instellingen van de Philips Hue Play HDMI Syncbox in één keer.",
+      "fields": {
+        "power": {
+          "name": "Ingeschakeld",
+          "description": "Zet be box aan of uit."
+        },
+        "sync": {
+          "name": "Light sync",
+          "description": "Synchroniseer je lampen. Deze instelling schakeld ook de box aan."
+        },
+        "brightness": {
+          "name": "Helderheid",
+          "description": "Helderheid die ingesteld moet worden."
+        },
+        "mode": {
+          "name": "Sync modus",
+          "description": "Modus die ingesteld moet worden. Het zetten van de modus zet de box aan en start light sync."
+        },
+        "intensity": {
+          "name": "Intensiteit",
+          "description": "Intensiteit om in te stellen."
+        },
+        "input": {
+          "name": "Ingang",
+          "description": "Ingang om te selecteren."
+        },
+        "entertainment_area": {
+          "name": "Entertainment area",
+          "description": "Entertainment area de gebruikt moet worden. De naam moet _exact_ gepspeld worden"
+        }
+      }
+    }
+  }
+}

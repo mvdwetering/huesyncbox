@@ -1,7 +1,7 @@
 """Coordinator for the Philips Hue Play HDMI Sync Box integration."""
 
+import asyncio
 import aiohuesyncbox
-import async_timeout
 
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import (
@@ -12,6 +12,7 @@ from homeassistant.helpers.update_coordinator import (
 from .const import COORDINATOR_UPDATE_INTERVAL, LOGGER
 from .helpers import update_config_entry_title, update_device_registry
 
+MAX_CONSECUTIVE_ERRORS = 5
 
 class HueSyncBoxCoordinator(DataUpdateCoordinator):
     """My custom coordinator."""
@@ -27,16 +28,23 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
             update_interval=COORDINATOR_UPDATE_INTERVAL,
         )
         self.api = api
+        self._consecutive_errors = 0
+
+    def _is_consecutive_error_reached(self):
+        self._consecutive_errors += 1
+        LOGGER.debug("Consecutive errors = %s", self._consecutive_errors)
+        return self._consecutive_errors >= MAX_CONSECUTIVE_ERRORS
 
     async def _async_update_data(self):
         """Fetch data from API endpoint."""
         try:
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
-            async with async_timeout.timeout(5):
+            async with asyncio.timeout(5):
 
                 old_device = self.api.device
                 await self.api.update()
+                self._consecutive_errors = 0
 
                 if old_device != self.api.device:
                     await update_device_registry(self.hass, self.config_entry, self.api)
@@ -44,10 +52,17 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
                         self.hass, self.config_entry, self.api.device.name
                     )
 
-                return self.api
         except aiohuesyncbox.Unauthorized as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
             # and start a config flow with SOURCE_REAUTH (async_step_reauth)
             raise ConfigEntryAuthFailed from err
         except aiohuesyncbox.RequestError as err:
-            raise UpdateFailed(f"Error communicating with API: {err}")
+            LOGGER.debug("aiohuesyncbox.RequestError while updating data: %s", err)
+            if self._is_consecutive_error_reached():
+                raise UpdateFailed(err) from err
+        except asyncio.TimeoutError:
+            LOGGER.debug("asyncio.TimeoutError while updating data")
+            if self._is_consecutive_error_reached():
+                raise
+
+        return self.api

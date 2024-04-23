@@ -21,7 +21,7 @@ LED_INDICATOR_MODES = ["off", "normal", "dimmed"]
 INPUTS = ["input1", "input2", "input3", "input4"]
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class HueSyncBoxSelectEntityDescription(SelectEntityDescription):
     options_fn: Callable[[aiohuesyncbox.HueSyncBox], list[str]] | None = None
     current_option_fn: Callable[[aiohuesyncbox.HueSyncBox], str] = None  # type: ignore[assignment]

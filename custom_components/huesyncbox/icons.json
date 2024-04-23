@@ -1,0 +1,6 @@
+{
+    "services": {
+        "set_bridge": "mdi:bridge",
+        "set_sync_state": "mdi:sync"
+    }
+}

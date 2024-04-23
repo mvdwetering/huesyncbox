@@ -12,7 +12,7 @@ from .coordinator import HueSyncBoxCoordinator
 from .helpers import stop_sync_and_retry_on_invalid_state
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class HueSyncBoxSwitchEntityDescription(SwitchEntityDescription):
     is_on: Callable[[aiohuesyncbox.HueSyncBox], bool] = None  # type: ignore[assignment]
     turn_on: Callable[[aiohuesyncbox.HueSyncBox], Coroutine] = None  # type: ignore[assignment]

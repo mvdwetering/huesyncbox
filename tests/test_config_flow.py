@@ -1,7 +1,9 @@
 """Test the Philips Hue Play HDMI Sync Box config flow."""
+
 import asyncio
 from unittest import mock
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import patch
+from ipaddress import IPv4Address
 
 from homeassistant import config_entries
 from homeassistant.components import zeroconf
@@ -9,7 +11,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, UnknownFlow
 import pytest
 
-from custom_components.huesyncbox.config_flow import CannotConnect, InvalidAuth
 from custom_components import huesyncbox
 
 import aiohuesyncbox
@@ -22,16 +23,21 @@ async def test_user_new_box(hass: HomeAssistant, mock_api) -> None:
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
     assert result["type"] == FlowResultType.FORM
-    assert result["step_id"] == "user"
+    assert result["step_id"] == "configure"
 
     # Filling in correct data (at least it maches the schema)
     # it will start link phase which tries to connect to the API so setup up front
-    with patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance, patch(
-        "custom_components.huesyncbox.async_setup_entry",
-        return_value=True,
-    ) as mock_setup_entry:
+    with (
+        patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance,
+        patch(
+            "custom_components.huesyncbox.async_setup_entry",
+            return_value=True,
+        ) as mock_setup_entry,
+    ):
         # __aenter__ stuff needed because used as context manager
         huesyncbox_instance.return_value.__aenter__.return_value = mock_api
+
+        mock_api.is_registered.return_value = False
 
         # First attempt button not pressed yet, second try return value
         mock_api.register.side_effect = [aiohuesyncbox.InvalidState, mock.DEFAULT]
@@ -79,16 +85,20 @@ async def test_user_new_box(hass: HomeAssistant, mock_api) -> None:
         assert entries[0].unique_id == "test_unique_id"
 
 
-async def test_user_update_box_host(hass: HomeAssistant, mock_api) -> None:
+async def test_reconfigure_host(hass: HomeAssistant, mock_api) -> None:
 
     integration = await setup_integration(hass, mock_api)
     assert integration.entry.data["host"] != "1.2.3.4"
 
     result = await hass.config_entries.flow.async_init(
-        huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
+        huesyncbox.DOMAIN,
+        context={
+            "source": config_entries.SOURCE_RECONFIGURE,
+            "entry_id": integration.entry.entry_id,
+        },
     )
     assert result["type"] == FlowResultType.FORM
-    assert result["step_id"] == "user"
+    assert result["step_id"] == "configure"
 
     # Provide different host for existing entry, should update
     with patch("aiohuesyncbox.HueSyncBox.is_registered", return_value=True):
@@ -96,7 +106,6 @@ async def test_user_update_box_host(hass: HomeAssistant, mock_api) -> None:
             result["flow_id"],
             {
                 "host": "1.2.3.4",
-                "unique_id": "unique_id",
             },
         )
         await hass.async_block_till_done()
@@ -108,7 +117,6 @@ async def test_user_update_box_host(hass: HomeAssistant, mock_api) -> None:
 @pytest.mark.parametrize(
     "side_effect, error_message",
     [
-        (aiohuesyncbox.Unauthorized, "invalid_auth"),
         (aiohuesyncbox.RequestError, "cannot_connect"),
         (Exception, "unknown"),
     ],
@@ -120,7 +128,7 @@ async def test_connection_errors_during_connection_check(
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
     assert result["type"] == FlowResultType.FORM
-    assert result["step_id"] == "user"
+    assert result["step_id"] == "configure"
 
     with patch(
         "aiohuesyncbox.HueSyncBox.is_registered",
@@ -136,7 +144,7 @@ async def test_connection_errors_during_connection_check(
         )
 
         assert result["type"] == FlowResultType.FORM
-        assert result["step_id"] == "user"
+        assert result["step_id"] == "configure"
         assert result["errors"] == {"base": error_message}
 
 
@@ -146,7 +154,6 @@ async def test_connection_errors_during_connection_check(
         (aiohuesyncbox.Unauthorized),
         (aiohuesyncbox.RequestError),
         (aiohuesyncbox.AiohuesyncboxException),
-        # (asyncio.CancelledError)  can't test because just throwing the exception won't properly cancel the task
         (asyncio.InvalidStateError),
     ],
 )
@@ -157,13 +164,14 @@ async def test_user_box_connection_errors_during_link(
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
     assert result["type"] == FlowResultType.FORM
-    assert result["step_id"] == "user"
+    assert result["step_id"] == "configure"
 
     # Filling in correct data (at least it maches the schema)
     # it will start link phase which tries to connect to the API so setup up front
     with patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance:
         # __aenter__ stuff needed because used as context manager
         huesyncbox_instance.return_value.__aenter__.return_value = mock_api
+        mock_api.is_registered.return_value = False
         mock_api.register.side_effect = side_effect
 
         result = await hass.config_entries.flow.async_configure(
@@ -195,13 +203,14 @@ async def test_user_box_abort_flow_during_link(hass: HomeAssistant, mock_api) ->
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
     assert result["type"] == FlowResultType.FORM
-    assert result["step_id"] == "user"
+    assert result["step_id"] == "configure"
 
     # Filling in correct data (at least it maches the schema)
     # it will start link phase which tries to connect to the API so setup up front
     with patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance:
         # __aenter__ stuff needed because used as context manager
         huesyncbox_instance.return_value.__aenter__.return_value = mock_api
+        mock_api.is_registered.return_value = False
         mock_api.register.side_effect = aiohuesyncbox.InvalidState
 
         result = await hass.config_entries.flow.async_configure(
@@ -227,8 +236,8 @@ async def test_zeroconf_new_box(hass: HomeAssistant, mock_api) -> None:
         huesyncbox.DOMAIN,
         context={"source": config_entries.SOURCE_ZEROCONF},
         data=zeroconf.ZeroconfServiceInfo(
-            host="1.2.3.4",
-            addresses=["1.2.3.4"],
+            ip_address=IPv4Address("1.2.3.4"),
+            ip_addresses=[IPv4Address("1.2.3.4")],
             port=443,
             hostname="unique_id.local",
             type="_huesync._tcp.local.",
@@ -254,10 +263,13 @@ async def test_zeroconf_new_box(hass: HomeAssistant, mock_api) -> None:
     # Confirm discovery will start link phase which tries to
     # connect to the API so setup up front
 
-    with patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance, patch(
-        "custom_components.huesyncbox.async_setup_entry",
-        return_value=True,
-    ) as mock_setup_entry:
+    with (
+        patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance,
+        patch(
+            "custom_components.huesyncbox.async_setup_entry",
+            return_value=True,
+        ) as mock_setup_entry,
+    ):
         # __aenter__ stuff needed because used as context manager
         huesyncbox_instance.return_value.__aenter__.return_value = mock_api
         mock_api.register.return_value = {
@@ -307,8 +319,8 @@ async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api) -> Non
         huesyncbox.DOMAIN,
         context={"source": config_entries.SOURCE_ZEROCONF},
         data=zeroconf.ZeroconfServiceInfo(
-            host="1.2.3.4",
-            addresses=["1.2.3.4"],
+            ip_address=IPv4Address("1.2.3.4"),
+            ip_addresses=[IPv4Address("1.2.3.4")],
             port=443,
             hostname="unique_id.local",
             type="_huesync._tcp.local.",

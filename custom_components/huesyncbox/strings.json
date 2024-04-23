@@ -3,7 +3,8 @@
     "abort": {
       "already_configured": "Device is already configured",
       "reauth_successful": "Successfully re-linked the Philips Hue Play HDMI Sync Box",
-      "connection_failed": "Connection failed"
+      "reconfigure_successful": "Successfully re-configured the Philips Hue Play HDMI Sync Box",
+      "connection_failed": "Setup failed"
     },
     "error": {
       "cannot_connect": "Failed to connect",
@@ -11,9 +12,9 @@
       "unknown": "Unexpected error"
     },
     "step": {
-      "user": {
+      "configure": {
         "title": "Enter device information",
-        "description": "Details can be found in the main Hue App.\n\nSelect the Sync tab and make sure the Philips Hue Play HDMI Syncbox is selected. After that tap the … menu at the top, select Device and then NetworkInfo for the IP address and DeviceInfo for the Identifier.",
+        "description": "Details can be found in the main Hue App.\n\nSelect the Sync tab and make sure the Philips Hue Play HDMI Syncbox is selected. After that tap the … menu at the top, then select Device and then NetworkInfo for the IP address and DeviceInfo for the Identifier.",
         "data": {
           "host": "IP address (e.g. 192.168.1.123)",
           "unique_id": "Identifier (e.g. C42996000000)"
@@ -225,19 +226,6 @@
         "entertainment_area": {
           "name": "Entertainment area",
           "description": "Entertainment area to select. Name must match _exactly_"
-        }
-      }
-    }
-  },
-  "issues": {
-    "automations_using_deleted_mediaplayer": {
-      "title": "Automations using deleted HueSyncBox mediaplayer",
-      "fix_flow": {
-        "step": {
-          "confirm": {
-            "title": "Update the automations",
-            "description": "The following automations are using a deleted HueSyncBox mediaplayer with id {media_player_entity}.\n\n{automations}\n\nPress SUBMIT to confirm the automations have been updated and dismiss this repair"
-          }
         }
       }
     }

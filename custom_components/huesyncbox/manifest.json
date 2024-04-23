@@ -5,9 +5,7 @@
     "@mvdwetering"
   ],
   "config_flow": true,
-  "dependencies": [
-    "automation"
-  ],
+  "dependencies": [],
   "documentation": "https://github.com/mvdwetering/huesyncbox",
   "integration_type": "device",
   "iot_class": "local_polling",
@@ -16,9 +14,9 @@
     "aiohuesyncbox"
   ],
   "requirements": [
-    "aiohuesyncbox==0.0.26"
+    "aiohuesyncbox==0.0.27"
   ],
-  "version": "2.0.1",
+  "version": "2.1.0",
   "zeroconf": [
     "_huesync._tcp.local."
   ]
