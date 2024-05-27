@@ -81,6 +81,7 @@ def mock_api(hass):
     mock_api.hdmi.input4.name = "HDMI 4"
     mock_api.hdmi.input4.type = "generic"
     mock_api.hdmi.input4.status = "unknown"
+    mock_api.hdmi.content_specs = "1920 x 1080 @ 60 - SDR"
 
     mock_api.hue = Mock(aiohuesyncbox.hue.Hue)
     mock_api.hue.bridge_unique_id = "bridge_id"
