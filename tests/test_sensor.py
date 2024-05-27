@@ -1,18 +1,17 @@
-from unittest.mock import call
-
 from homeassistant.core import HomeAssistant
 
 from .conftest import setup_integration
 
 
 async def test_sensor(hass: HomeAssistant, mock_api):
+    """Test the total count of sensor entities after integration setup."""
     await setup_integration(hass, mock_api)
-    assert hass.states.async_entity_ids_count("sensor") == 8
+    assert hass.states.async_entity_ids_count("sensor") == 9
 
 
 async def test_sensor_default_disabled(hass: HomeAssistant, mock_api):
     await setup_integration(hass, mock_api, disable_enable_default_all=True)
-    assert hass.states.async_entity_ids_count("sensor") == 4
+    assert hass.states.async_entity_ids_count("sensor") == 5
 
 
 async def test_hdmi_status(hass: HomeAssistant, mock_api):
@@ -74,3 +73,11 @@ async def test_wifi_strength(hass: HomeAssistant, mock_api):
     assert entity is not None
     assert entity.state == "fair"
     assert entity.attributes["icon"] == "mdi:wifi-strength-2"
+
+async def test_content_info(hass: HomeAssistant, mock_api):
+    await setup_integration(hass, mock_api)
+
+    entity = hass.states.get("sensor.name_content_info")
+    assert entity is not None
+    assert entity.state == "1920 x 1080 @ 60 - SDR"
+

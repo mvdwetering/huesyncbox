@@ -137,6 +137,9 @@
           "good": "Goed",
           "excellent": "Uitstekend"
         }
+      },
+      "content_info": {
+        "name": "Signaal info"
       }
     },
     "switch": {
