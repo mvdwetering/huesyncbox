@@ -7,12 +7,12 @@ from .conftest import setup_integration
 
 async def test_sensor(hass: HomeAssistant, mock_api):
     await setup_integration(hass, mock_api)
-    assert hass.states.async_entity_ids_count("sensor") == 8
+    assert hass.states.async_entity_ids_count("sensor") == 9
 
 
 async def test_sensor_default_disabled(hass: HomeAssistant, mock_api):
     await setup_integration(hass, mock_api, disable_enable_default_all=True)
-    assert hass.states.async_entity_ids_count("sensor") == 4
+    assert hass.states.async_entity_ids_count("sensor") == 5
 
 
 async def test_hdmi_status(hass: HomeAssistant, mock_api):
