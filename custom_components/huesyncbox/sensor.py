@@ -101,6 +101,12 @@ ENTITY_DESCRIPTIONS = [
         entity_registry_enabled_default=False,  # type: ignore
         get_value=lambda api: WIFI_STRENGTH_STATES[api.device.wifi.strength],  # type: ignore
     ),
+    HueSyncBoxSensorEntityDescription(  # type: ignore
+        key="content_info",  # type: ignore
+        icon="mdi:aspect-ratio",  # type: ignore
+        entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
+        get_value=lambda api: api.hdmi.content_specs,  # type: ignore
+    ),
 ]
 
 
