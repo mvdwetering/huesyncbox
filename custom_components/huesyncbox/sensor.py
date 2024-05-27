@@ -127,6 +127,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class HueSyncBoxSensor(CoordinatorEntity, SensorEntity):
+    """Representation of a HueSyncBox sensor"""
+
     _attr_has_entity_name = True
 
     def __init__(
@@ -134,8 +136,7 @@ class HueSyncBoxSensor(CoordinatorEntity, SensorEntity):
         coordinator: HueSyncBoxCoordinator,
         entity_description: HueSyncBoxSensorEntityDescription,
     ):
-        """Pass coordinator to CoordinatorEntity."""
-        super().__init__(coordinator)
+        super().__init__(coordinator)  # Pass coordinator to CoordinatorEntity
         self.coordinator: HueSyncBoxCoordinator
 
         self.entity_description: HueSyncBoxSensorEntityDescription = entity_description
@@ -150,6 +151,7 @@ class HueSyncBoxSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def native_value(self) -> str | None:
+        """Return the state of the sensor."""
         return self.entity_description.get_value(self.coordinator.api)
 
     @property

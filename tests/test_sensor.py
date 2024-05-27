@@ -1,11 +1,10 @@
-from unittest.mock import call
-
 from homeassistant.core import HomeAssistant
 
 from .conftest import setup_integration
 
 
 async def test_sensor(hass: HomeAssistant, mock_api):
+    """Test the total count of sensor entities after integration setup."""
     await setup_integration(hass, mock_api)
     assert hass.states.async_entity_ids_count("sensor") == 9
 
