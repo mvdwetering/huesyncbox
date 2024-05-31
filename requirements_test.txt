@@ -2,7 +2,7 @@
 
 mypy==1.4.0
 
-pytest-homeassistant-custom-component==0.13.111
+pytest-homeassistant-custom-component==0.13.120
 
 # Not entirely clear why it is needed as not a requirement for huesyncbox directly
 # but the tests fail because HA seems to initialize the zeroconf component which fails due to missing lib.
