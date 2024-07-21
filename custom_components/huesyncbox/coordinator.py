@@ -1,13 +1,11 @@
 """Coordinator for the Philips Hue Play HDMI Sync Box integration."""
 
 import asyncio
+
 import aiohuesyncbox
 
 from homeassistant.exceptions import ConfigEntryAuthFailed
-from homeassistant.helpers.update_coordinator import (
-    DataUpdateCoordinator,
-    UpdateFailed,
-)
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import COORDINATOR_UPDATE_INTERVAL, LOGGER
 from .helpers import update_config_entry_title, update_device_registry

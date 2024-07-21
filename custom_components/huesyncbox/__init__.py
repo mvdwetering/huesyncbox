@@ -1,26 +1,21 @@
 """The Philips Hue Play HDMI Sync Box integration."""
 import asyncio
 from dataclasses import dataclass
+
 import aiohuesyncbox
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
-from homeassistant.helpers import (
-    entity_registry,
-)
-from homeassistant.helpers import issue_registry
+from homeassistant.helpers import entity_registry, issue_registry
 from homeassistant.helpers.typing import ConfigType
 
+from .const import DOMAIN, LOGGER
+from .coordinator import HueSyncBoxCoordinator
+from .helpers import update_config_entry_title, update_device_registry
 from .services import async_register_services
 
-from .const import (
-    DOMAIN,
-    LOGGER,
-)
-from .coordinator import HueSyncBoxCoordinator
-from .helpers import update_device_registry, update_config_entry_title
 
 @dataclass
 class HueSyncBoxRuntimeData:

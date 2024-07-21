@@ -4,14 +4,13 @@ from typing import Any, Callable, Coroutine
 import aiohuesyncbox
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
-from homeassistant.helpers.entity import EntityCategory, DeviceInfo
+from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from . import HueSyncBoxConfigEntry
 from .const import DOMAIN
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import stop_sync_and_retry_on_invalid_state
-from . import HueSyncBoxConfigEntry
-
 
 
 @dataclass(frozen=True, kw_only=True)

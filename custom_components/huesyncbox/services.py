@@ -26,14 +26,12 @@ from .const import (
     SERVICE_SET_SYNC_STATE,
     SYNC_MODES,
 )
-
 from .helpers import (
     BrightnessRangeConverter,
     get_group_from_area_name,
     get_hue_target_from_id,
     stop_sync_and_retry_on_invalid_state,
 )
-
 
 HUESYNCBOX_SET_BRIDGE_SCHEMA = make_entity_service_schema(
     {

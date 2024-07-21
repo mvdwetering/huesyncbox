@@ -9,8 +9,8 @@ from typing import Any
 import aiohuesyncbox
 import voluptuous as vol  # type: ignore
 
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.components import zeroconf
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import (
     CONF_ACCESS_TOKEN,
     CONF_HOST,
@@ -21,8 +21,8 @@ from homeassistant.const import (
 )
 from homeassistant.exceptions import HomeAssistantError
 
-from .const import DEFAULT_PORT, DOMAIN, REGISTRATION_ID
 from . import HueSyncBoxConfigEntry
+from .const import DEFAULT_PORT, DOMAIN, REGISTRATION_ID
 
 _LOGGER = logging.getLogger(__name__)
 

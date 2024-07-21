@@ -3,10 +3,7 @@ from typing import Callable, Coroutine
 
 import aiohuesyncbox
 
-from homeassistant.components.number import (
-    NumberEntity,
-    NumberEntityDescription,
-)
+from homeassistant.components.number import NumberEntity, NumberEntityDescription
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
