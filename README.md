@@ -36,8 +36,9 @@ The following features are available:
 * Bridge ID ⁺
 * IP address ⁺
 * Wifi quality ⁺
+* Content info ⁺
 
-Entities marked with ⁺ are default disabled.
+Entities marked with ⁺ are disabled by default.
 
 ### Behavior
 
