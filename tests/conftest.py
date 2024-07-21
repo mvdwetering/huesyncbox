@@ -2,6 +2,8 @@
 
 from dataclasses import dataclass
 from typing import Type
+from typing_extensions import Generator
+
 from unittest.mock import Mock, patch
 import pytest
 
@@ -30,6 +32,16 @@ from custom_components import huesyncbox
 def auto_enable_custom_integrations(enable_custom_integrations):
     """Enable custom integrations"""
     yield
+
+# Copied from HA tests/components/conftest.py
+@pytest.fixture
+def entity_registry_enabled_by_default() -> Generator[None]:
+    """Test fixture that ensures all entities are enabled in the registry."""
+    with patch(
+        "homeassistant.helpers.entity.Entity.entity_registry_enabled_default",
+        return_value=True,
+    ):
+        yield
 
 
 @pytest.fixture
@@ -110,7 +122,6 @@ class Integration:
 async def setup_integration(
     hass: HomeAssistant,
     mock_api,
-    disable_enable_default_all=False,
     mock_config_entry: MockConfigEntry | None = None,
     entry_id="entry_id",
 ):
@@ -132,23 +143,6 @@ async def setup_integration(
         },
     )
     entry.add_to_hass(hass)
-
-    if not disable_enable_default_all:
-        # Pre-create registry entries for default disabled ones
-        er = entity_registry.async_get(hass)
-        for default_disabled_sensor in [
-            "ip_address",
-            "wifi_strength",
-            "bridge_unique_id",
-            "bridge_connection_state",
-        ]:
-            er.async_get_or_create(
-                "sensor",
-                huesyncbox.DOMAIN,
-                f"{default_disabled_sensor}_unique_id",
-                suggested_object_id=f"name_{default_disabled_sensor}",
-                disabled_by=None,
-            )
 
     with patch("aiohuesyncbox.HueSyncBox", return_value=mock_api):
         await hass.config_entries.async_setup(entry.entry_id)
