@@ -13,7 +13,7 @@ async def test_sensor(hass: HomeAssistant, mock_api):
 
 async def test_sensor_default_disabled(hass: HomeAssistant, mock_api):
     await setup_integration(hass, mock_api)
-    assert hass.states.async_entity_ids_count("sensor") == 5
+    assert hass.states.async_entity_ids_count("sensor") == 4
 
 
 async def test_hdmi_status(hass: HomeAssistant, mock_api):
@@ -80,6 +80,7 @@ async def test_wifi_strength(hass: HomeAssistant, mock_api):
     assert entity.state == "fair"
     assert entity.attributes["icon"] == "mdi:wifi-strength-2"
 
+@pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_content_info(hass: HomeAssistant, mock_api):
     await setup_integration(hass, mock_api)
 
