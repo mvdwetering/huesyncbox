@@ -57,7 +57,6 @@ ENTITY_DESCRIPTIONS = [
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="hdmi1_status",  # type: ignore
         icon="mdi:video-input-hdmi",  # type: ignore
-        entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         device_class=SensorDeviceClass.ENUM,  # type: ignore
         options=["unplugged", "plugged", "linked", "unknown"],  # type: ignore
         get_value=lambda api: api.hdmi.input1.status,
@@ -65,7 +64,6 @@ ENTITY_DESCRIPTIONS = [
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="hdmi2_status",  # type: ignore
         icon="mdi:video-input-hdmi",  # type: ignore
-        entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         device_class=SensorDeviceClass.ENUM,  # type: ignore
         options=["unplugged", "plugged", "linked", "unknown"],  # type: ignore
         get_value=lambda api: api.hdmi.input2.status,
@@ -73,7 +71,6 @@ ENTITY_DESCRIPTIONS = [
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="hdmi3_status",  # type: ignore
         icon="mdi:video-input-hdmi",  # type: ignore
-        entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         device_class=SensorDeviceClass.ENUM,  # type: ignore
         options=["unplugged", "plugged", "linked", "unknown"],  # type: ignore
         get_value=lambda api: api.hdmi.input3.status,
@@ -81,7 +78,6 @@ ENTITY_DESCRIPTIONS = [
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="hdmi4_status",  # type: ignore
         icon="mdi:video-input-hdmi",  # type: ignore
-        entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         device_class=SensorDeviceClass.ENUM,  # type: ignore
         options=["unplugged", "plugged", "linked", "unknown"],  # type: ignore
         get_value=lambda api: api.hdmi.input4.status,
