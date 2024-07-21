@@ -1,14 +1,15 @@
 """Helpers for the Philips Hue Play HDMI Sync Box integration."""
 
 from typing import List
+
+import aiohuesyncbox
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 
 from .const import DOMAIN, LOGGER, MANUFACTURER_NAME
-
-import aiohuesyncbox
 
 
 async def update_device_registry(

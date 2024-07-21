@@ -1,4 +1,5 @@
 """Constants for the Philips Hue Play HDMI Sync Box integration."""
+
 from datetime import timedelta
 import logging
 
