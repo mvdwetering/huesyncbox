@@ -12,6 +12,7 @@ from .helpers import update_config_entry_title, update_device_registry
 
 MAX_CONSECUTIVE_ERRORS = 5
 
+
 class HueSyncBoxCoordinator(DataUpdateCoordinator):
     """My custom coordinator."""
 

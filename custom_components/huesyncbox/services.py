@@ -1,4 +1,5 @@
 """The Philips Hue Play HDMI Sync Box integration."""
+
 import aiohuesyncbox
 import voluptuous as vol  # type: ignore
 
@@ -72,13 +73,18 @@ async def async_register_services(hass: HomeAssistant):
             # can return config entries from other integrations also
             # (e.g. area id or devices with entities from multiple integrations)
             if config_entry := hass.config_entries.async_get_entry(config_entry_id):
-                 if config_entry.domain == DOMAIN and config_entry.runtime_data is not None:
-    
+                if (
+                    config_entry.domain == DOMAIN
+                    and config_entry.runtime_data is not None
+                ):
+
                     bridge_id = call.data.get(ATTR_BRIDGE_ID)
                     username = call.data.get(ATTR_BRIDGE_USERNAME)
                     clientkey = call.data.get(ATTR_BRIDGE_CLIENTKEY)
-    
-                    await config_entry.runtime_data.coordinator.api.hue.set_bridge(bridge_id, username, clientkey)
+
+                    await config_entry.runtime_data.coordinator.api.hue.set_bridge(
+                        bridge_id, username, clientkey
+                    )
 
     hass.services.async_register(
         DOMAIN,
@@ -96,7 +102,10 @@ async def async_register_services(hass: HomeAssistant):
             # can return config entries from other integrations also
             # (e.g. area id or devices with entities from multiple integrations)
             if config_entry := hass.config_entries.async_get_entry(config_entry_id):
-                 if config_entry.domain == DOMAIN and config_entry.runtime_data is not None:
+                if (
+                    config_entry.domain == DOMAIN
+                    and config_entry.runtime_data is not None
+                ):
                     coordinator = config_entry.runtime_data.coordinator
 
                     sync_state = call.data
@@ -112,11 +121,13 @@ async def async_register_services(hass: HomeAssistant):
                         "sync_active": sync_state.get(ATTR_SYNC, None),
                         "mode": sync_state.get(ATTR_MODE, None),
                         "hdmi_source": sync_state.get(ATTR_INPUT, None),
-                        "brightness": BrightnessRangeConverter.ha_to_api(
-                            sync_state[ATTR_BRIGHTNESS]
-                        )
-                        if ATTR_BRIGHTNESS in sync_state
-                        else None,
+                        "brightness": (
+                            BrightnessRangeConverter.ha_to_api(
+                                sync_state[ATTR_BRIGHTNESS]
+                            )
+                            if ATTR_BRIGHTNESS in sync_state
+                            else None
+                        ),
                         "intensity": sync_state.get(ATTR_INTENSITY, None),
                         "hue_target": hue_target,
                     }

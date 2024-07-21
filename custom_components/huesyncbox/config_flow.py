@@ -135,7 +135,6 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
 
         return await self.async_step_configure(user_input=user_input)
 
-
     async def async_step_configure(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -145,10 +144,8 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
             if self.configure_reason is ConfigureReason.RECONFIGURE:
                 assert self.connection_info is not None
                 data_schema = self.add_suggested_values_to_schema(
-                (
-                    RECONFIGURE_DATA_SCHEMA
-                ),
-                asdict(self.connection_info))
+                    (RECONFIGURE_DATA_SCHEMA), asdict(self.connection_info)
+                )
 
             return self.async_show_form(
                 step_id="configure",

@@ -48,7 +48,9 @@ ENTITY_DESCRIPTIONS = [
 ]
 
 
-async def async_setup_entry(hass, config_entry: HueSyncBoxConfigEntry, async_add_entities):
+async def async_setup_entry(
+    hass, config_entry: HueSyncBoxConfigEntry, async_add_entities
+):
 
     coordinator = config_entry.runtime_data.coordinator
 

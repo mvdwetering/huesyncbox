@@ -1,4 +1,5 @@
 """The Philips Hue Play HDMI Sync Box integration."""
+
 import asyncio
 from dataclasses import dataclass
 
@@ -21,6 +22,7 @@ from .services import async_register_services
 class HueSyncBoxRuntimeData:
     coordinator: HueSyncBoxCoordinator
 
+
 type HueSyncBoxConfigEntry = ConfigEntry[HueSyncBoxRuntimeData]
 
 
@@ -36,7 +38,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Philips Hue Play HDMI Sync Box integration."""
     await async_register_services(hass)
     return True
-    
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: HueSyncBoxConfigEntry) -> bool:
     """Set up Philips Hue Play HDMI Sync Box from a config entry."""
 
