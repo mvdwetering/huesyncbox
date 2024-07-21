@@ -9,8 +9,8 @@ from typing import Any
 import aiohuesyncbox
 import voluptuous as vol  # type: ignore
 
-from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult
 from homeassistant.components import zeroconf
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import (
     CONF_ACCESS_TOKEN,
     CONF_HOST,
@@ -21,6 +21,7 @@ from homeassistant.const import (
 )
 from homeassistant.exceptions import HomeAssistantError
 
+from . import HueSyncBoxConfigEntry
 from .const import DEFAULT_PORT, DOMAIN, REGISTRATION_ID
 
 _LOGGER = logging.getLogger(__name__)
@@ -64,7 +65,7 @@ def entry_data_from_connection_info(connection_info: ConnectionInfo):
     }
 
 
-def connection_info_from_entry(entry: ConfigEntry) -> ConnectionInfo:
+def connection_info_from_entry(entry: HueSyncBoxConfigEntry) -> ConnectionInfo:
     return ConnectionInfo(
         entry.data[CONF_HOST],
         entry.data[CONF_UNIQUE_ID],
@@ -102,7 +103,7 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
     MINOR_VERSION = 2
 
     link_task: asyncio.Task | None = None
-    config_entry: ConfigEntry | None = None
+    config_entry: HueSyncBoxConfigEntry | None = None
 
     configure_reason = ConfigureReason.USER
 
@@ -134,7 +135,6 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
 
         return await self.async_step_configure(user_input=user_input)
 
-
     async def async_step_configure(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -144,10 +144,8 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
             if self.configure_reason is ConfigureReason.RECONFIGURE:
                 assert self.connection_info is not None
                 data_schema = self.add_suggested_values_to_schema(
-                (
-                    RECONFIGURE_DATA_SCHEMA
-                ),
-                asdict(self.connection_info))
+                    (RECONFIGURE_DATA_SCHEMA), asdict(self.connection_info)
+                )
 
             return self.async_show_form(
                 step_id="configure",

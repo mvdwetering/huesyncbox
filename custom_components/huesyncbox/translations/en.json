@@ -137,6 +137,9 @@
           "good": "Good",
           "excellent": "Excellent"
         }
+      },
+      "content_info": {
+        "name": "Content info"
       }
     },
     "switch": {

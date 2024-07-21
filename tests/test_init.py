@@ -72,7 +72,6 @@ async def test_unload_entry(hass: HomeAssistant, mock_api):
     assert mock_api.close.call_count == 1
 
     # Check data and services are still there
-    assert huesyncbox.DOMAIN in hass.data
     assert hass.services.has_service(huesyncbox.DOMAIN, "set_bridge")
     assert hass.services.has_service(huesyncbox.DOMAIN, "set_sync_state")
 

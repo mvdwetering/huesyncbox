@@ -44,7 +44,7 @@ async def test_diagnostics_no_response_yet(hass: HomeAssistant, mock_api):
 async def test_diagnostics_not_setup(hass: HomeAssistant, mock_api):
 
     integration = await setup_integration(hass, mock_api)
-    hass.data[huesyncbox.DOMAIN].pop(integration.entry.entry_id)
+    integration.entry.runtime_data = None
 
     diagnostics = await async_get_config_entry_diagnostics(hass, integration.entry)
 

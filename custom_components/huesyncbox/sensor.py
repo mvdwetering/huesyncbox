@@ -101,11 +101,18 @@ ENTITY_DESCRIPTIONS = [
         entity_registry_enabled_default=False,  # type: ignore
         get_value=lambda api: WIFI_STRENGTH_STATES[api.device.wifi.strength],  # type: ignore
     ),
+    HueSyncBoxSensorEntityDescription(  # type: ignore
+        key="content_info",  # type: ignore
+        icon="mdi:aspect-ratio",  # type: ignore
+        entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
+        entity_registry_enabled_default=False,  # type: ignore
+        get_value=lambda api: api.hdmi.content_specs,  # type: ignore
+    ),
 ]
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
-    coordinator: HueSyncBoxCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    coordinator = config_entry.runtime_data.coordinator
 
     entities: list[SensorEntity] = []
 
@@ -121,6 +128,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class HueSyncBoxSensor(CoordinatorEntity, SensorEntity):
+    """Representation of a HueSyncBox sensor"""
+
     _attr_has_entity_name = True
 
     def __init__(
@@ -128,8 +137,7 @@ class HueSyncBoxSensor(CoordinatorEntity, SensorEntity):
         coordinator: HueSyncBoxCoordinator,
         entity_description: HueSyncBoxSensorEntityDescription,
     ):
-        """Pass coordinator to CoordinatorEntity."""
-        super().__init__(coordinator)
+        super().__init__(coordinator)  # Pass coordinator to CoordinatorEntity
         self.coordinator: HueSyncBoxCoordinator
 
         self.entity_description: HueSyncBoxSensorEntityDescription = entity_description
@@ -144,6 +152,7 @@ class HueSyncBoxSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def native_value(self) -> str | None:
+        """Return the state of the sensor."""
         return self.entity_description.get_value(self.coordinator.api)
 
     @property

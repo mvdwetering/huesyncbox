@@ -3,10 +3,7 @@ from typing import Callable, Coroutine
 
 import aiohuesyncbox
 
-from homeassistant.components.number import (
-    NumberEntity,
-    NumberEntityDescription,
-)
+from homeassistant.components.number import NumberEntity, NumberEntityDescription
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -44,7 +41,7 @@ ENTITY_DESCRIPTIONS = [
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
-    coordinator: HueSyncBoxCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    coordinator = config_entry.runtime_data.coordinator
 
     entities: list[NumberEntity] = []
 

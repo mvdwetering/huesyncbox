@@ -4,9 +4,10 @@ from typing import Any, Callable, Coroutine
 import aiohuesyncbox
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
-from homeassistant.helpers.entity import EntityCategory, DeviceInfo
+from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from . import HueSyncBoxConfigEntry
 from .const import DOMAIN
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import stop_sync_and_retry_on_invalid_state
@@ -47,9 +48,11 @@ ENTITY_DESCRIPTIONS = [
 ]
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass, config_entry: HueSyncBoxConfigEntry, async_add_entities
+):
 
-    coordinator: HueSyncBoxCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    coordinator = config_entry.runtime_data.coordinator
 
     entities: list[SwitchEntity] = []
 

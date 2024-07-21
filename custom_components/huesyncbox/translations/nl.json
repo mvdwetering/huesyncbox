@@ -95,8 +95,8 @@
       "hdmi1_status": {
         "name": "HDMI1 status",
         "state": {
-          "unplugged": "Niet verbonden",
-          "plugged": "Verbonden",
+          "unplugged": "Niet aangesloten",
+          "plugged": "Aangesloten",
           "linked": "Gereed",
           "unknown": "Onbekend"
         }
@@ -104,8 +104,8 @@
       "hdmi2_status": {
         "name": "HDMI2 status",
         "state": {
-          "unplugged": "Niet verbonden",
-          "plugged": "Verbonden",
+          "unplugged": "Niet aangesloten",
+          "plugged": "Aangesloten",
           "linked": "Gereed",
           "unknown": "Onbekend"
         }
@@ -113,8 +113,8 @@
       "hdmi3_status": {
         "name": "HDMI3 status",
         "state": {
-          "unplugged": "Niet verbonden",
-          "plugged": "Verbonden",
+          "unplugged": "Niet aangesloten",
+          "plugged": "Aangesloten",
           "linked": "Gereed",
           "unknown": "Onbekend"
         }
@@ -122,8 +122,8 @@
       "hdmi4_status": {
         "name": "HDMI4 status",
         "state": {
-          "unplugged": "Niet verbonden",
-          "plugged": "Verbonden",
+          "unplugged": "Niet aangesloten",
+          "plugged": "Aangesloten",
           "linked": "Gereed",
           "unknown": "Onbekend"
         }
@@ -137,6 +137,9 @@
           "good": "Goed",
           "excellent": "Uitstekend"
         }
+      },
+      "content_info": {
+        "name": "Signaal info"
       }
     },
     "switch": {

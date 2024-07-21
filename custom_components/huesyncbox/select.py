@@ -1,21 +1,15 @@
 from dataclasses import dataclass
 from typing import Callable, Coroutine
 
+import aiohuesyncbox
+
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .const import DOMAIN, INTENSITIES, SYNC_MODES
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import get_hue_target_from_id, stop_sync_and_retry_on_invalid_state
-
-from .const import (
-    DOMAIN,
-    INTENSITIES,
-    SYNC_MODES,
-)
-
-import aiohuesyncbox
-
 
 LED_INDICATOR_MODES = ["off", "normal", "dimmed"]
 INPUTS = ["input1", "input2", "input3", "input4"]
@@ -163,7 +157,7 @@ ENTITY_DESCRIPTIONS = [
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
 
-    coordinator: HueSyncBoxCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    coordinator = config_entry.runtime_data.coordinator
 
     entities: list[SelectEntity] = []
 

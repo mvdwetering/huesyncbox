@@ -1,25 +1,30 @@
 """The Philips Hue Play HDMI Sync Box integration."""
+
 import asyncio
+from dataclasses import dataclass
+
 import aiohuesyncbox
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
-from homeassistant.helpers import (
-    entity_registry,
-)
-from homeassistant.helpers import issue_registry
+from homeassistant.helpers import entity_registry, issue_registry
 from homeassistant.helpers.typing import ConfigType
 
+from .const import DOMAIN, LOGGER
+from .coordinator import HueSyncBoxCoordinator
+from .helpers import update_config_entry_title, update_device_registry
 from .services import async_register_services
 
-from .const import (
-    DOMAIN,
-    LOGGER,
-)
-from .coordinator import HueSyncBoxCoordinator
-from .helpers import update_device_registry, update_config_entry_title
+
+@dataclass
+class HueSyncBoxRuntimeData:
+    coordinator: HueSyncBoxCoordinator
+
+
+type HueSyncBoxConfigEntry = ConfigEntry[HueSyncBoxRuntimeData]
+
 
 PLATFORMS: list[Platform] = [
     Platform.NUMBER,
@@ -31,11 +36,11 @@ PLATFORMS: list[Platform] = [
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Philips Hue Play HDMI Sync Box integration."""
-    hass.data[DOMAIN] = {}
     await async_register_services(hass)
     return True
-    
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: HueSyncBoxConfigEntry) -> bool:
     """Set up Philips Hue Play HDMI Sync Box from a config entry."""
 
     api = aiohuesyncbox.HueSyncBox(
@@ -62,23 +67,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     update_config_entry_title(hass, entry, api.device.name)
 
     coordinator = HueSyncBoxCoordinator(hass, api)
+    entry.runtime_data = HueSyncBoxRuntimeData(coordinator)
 
-    hass.data[DOMAIN][entry.entry_id] = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: HueSyncBoxConfigEntry) -> bool:
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        coordinator = hass.data[DOMAIN].pop(entry.entry_id)
+        coordinator = entry.runtime_data.coordinator
         await coordinator.api.close()
 
     return unload_ok
 
 
-async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+async def async_remove_entry(hass: HomeAssistant, entry: HueSyncBoxConfigEntry) -> None:
     # Best effort cleanup. User might not even have the device anymore or had it factory reset.
     # Note that the entry already has been unloaded, so need to create API again
     try:
@@ -97,7 +102,7 @@ async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
         )
 
 
-async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_migrate_entry(hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry):
     """Migrate old entry."""
     from_version = config_entry.version
     LOGGER.debug("Migrating from version %s", from_version)
@@ -117,7 +122,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     return True
 
 
-def migrate_v1_to_v2(hass: HomeAssistant, config_entry: ConfigEntry):
+def migrate_v1_to_v2(hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry):
     # Mediaplayer entities are obsolete
     # cleanup so the user does not have to
     registry = entity_registry.async_get(hass)
@@ -132,16 +137,13 @@ def migrate_v1_to_v2(hass: HomeAssistant, config_entry: ConfigEntry):
             # There used to be a repair created here
             # Removed due to adding dependency on automation
 
-    config_entry.version = 2
-    hass.config_entries.async_update_entry(config_entry)
+    hass.config_entries.async_update_entry(config_entry, version=2, minor_version=1)
 
 
-def migrate_v2_1_to_v2_2(hass: HomeAssistant, config_entry: ConfigEntry):
+def migrate_v2_1_to_v2_2(hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry):
     # Remove any pending repairs
     issue_registry.async_delete_issue(
         hass, DOMAIN, f"automations_using_deleted_mediaplayer_{config_entry.entry_id}"
     )
 
-    config_entry.version = 2
-    config_entry.minor_version = 2
-    hass.config_entries.async_update_entry(config_entry)
+    hass.config_entries.async_update_entry(config_entry, version=2, minor_version=2)
