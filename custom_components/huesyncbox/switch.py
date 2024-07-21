@@ -10,6 +10,8 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import DOMAIN
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import stop_sync_and_retry_on_invalid_state
+from . import HueSyncBoxConfigEntry
+
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -47,7 +49,7 @@ ENTITY_DESCRIPTIONS = [
 ]
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(hass, config_entry: HueSyncBoxConfigEntry, async_add_entities):
 
     coordinator = config_entry.runtime_data.coordinator
 

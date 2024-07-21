@@ -9,7 +9,7 @@ from typing import Any
 import aiohuesyncbox
 import voluptuous as vol  # type: ignore
 
-from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.components import zeroconf
 from homeassistant.const import (
     CONF_ACCESS_TOKEN,
@@ -22,6 +22,7 @@ from homeassistant.const import (
 from homeassistant.exceptions import HomeAssistantError
 
 from .const import DEFAULT_PORT, DOMAIN, REGISTRATION_ID
+from . import HueSyncBoxConfigEntry
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -64,7 +65,7 @@ def entry_data_from_connection_info(connection_info: ConnectionInfo):
     }
 
 
-def connection_info_from_entry(entry: ConfigEntry) -> ConnectionInfo:
+def connection_info_from_entry(entry: HueSyncBoxConfigEntry) -> ConnectionInfo:
     return ConnectionInfo(
         entry.data[CONF_HOST],
         entry.data[CONF_UNIQUE_ID],
@@ -102,7 +103,7 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
     MINOR_VERSION = 2
 
     link_task: asyncio.Task | None = None
-    config_entry: ConfigEntry | None = None
+    config_entry: HueSyncBoxConfigEntry | None = None
 
     configure_reason = ConfigureReason.USER
 
