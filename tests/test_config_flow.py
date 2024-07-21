@@ -168,9 +168,7 @@ async def test_user_box_connection_errors_during_link(
 
     # Filling in correct data (at least it maches the schema)
     # it will start link phase which tries to connect to the API so setup up front
-    with patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance:
-        # __aenter__ stuff needed because used as context manager
-        huesyncbox_instance.return_value.__aenter__.return_value = mock_api
+    with patch("aiohuesyncbox.HueSyncBox.__aenter__", return_value=mock_api):
         mock_api.is_registered.return_value = False
         mock_api.register.side_effect = side_effect
 
@@ -207,9 +205,7 @@ async def test_user_box_abort_flow_during_link(hass: HomeAssistant, mock_api) ->
 
     # Filling in correct data (at least it maches the schema)
     # it will start link phase which tries to connect to the API so setup up front
-    with patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance:
-        # __aenter__ stuff needed because used as context manager
-        huesyncbox_instance.return_value.__aenter__.return_value = mock_api
+    with patch("aiohuesyncbox.HueSyncBox.__aenter__", return_value=mock_api):
         mock_api.is_registered.return_value = False
         mock_api.register.side_effect = aiohuesyncbox.InvalidState
 
@@ -366,9 +362,7 @@ async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
     assert result["step_id"] == "reauth_confirm"
 
     # Confirming will start link phase which tries to connect to the API so setup up front
-    with patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance:
-        # __aenter__ stuff needed because used as context manager
-        huesyncbox_instance.return_value.__aenter__.return_value = mock_api
+    with patch("aiohuesyncbox.HueSyncBox.__aenter__", return_value=mock_api):
 
         # First attempt button not pressed yet, second try return value
         mock_api.register.return_value = {
