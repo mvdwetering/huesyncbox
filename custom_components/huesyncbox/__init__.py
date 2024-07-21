@@ -132,8 +132,7 @@ def migrate_v1_to_v2(hass: HomeAssistant, config_entry: ConfigEntry):
             # There used to be a repair created here
             # Removed due to adding dependency on automation
 
-    config_entry.version = 2
-    hass.config_entries.async_update_entry(config_entry)
+    hass.config_entries.async_update_entry(config_entry, version=2, minor_version=1)
 
 
 def migrate_v2_1_to_v2_2(hass: HomeAssistant, config_entry: ConfigEntry):
@@ -142,6 +141,4 @@ def migrate_v2_1_to_v2_2(hass: HomeAssistant, config_entry: ConfigEntry):
         hass, DOMAIN, f"automations_using_deleted_mediaplayer_{config_entry.entry_id}"
     )
 
-    config_entry.version = 2
-    config_entry.minor_version = 2
-    hass.config_entries.async_update_entry(config_entry)
+    hass.config_entries.async_update_entry(config_entry, version=2, minor_version=2)
