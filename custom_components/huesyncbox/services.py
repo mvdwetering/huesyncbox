@@ -73,12 +73,14 @@ async def async_register_services(hass: HomeAssistant):
             # Need to check if it is our config entry since async_extract_config_entry_ids
             # can return config entries from other integrations also
             # (e.g. area id or devices with entities from multiple integrations)
-            if coordinator := hass.data[DOMAIN].get(config_entry_id):
-                bridge_id = call.data.get(ATTR_BRIDGE_ID)
-                username = call.data.get(ATTR_BRIDGE_USERNAME)
-                clientkey = call.data.get(ATTR_BRIDGE_CLIENTKEY)
-
-                await coordinator.api.hue.set_bridge(bridge_id, username, clientkey)
+            if config_entry := hass.config_entries.async_get_entry(config_entry_id):
+                 if config_entry.domain == DOMAIN and config_entry.runtime_data is not None:
+    
+                    bridge_id = call.data.get(ATTR_BRIDGE_ID)
+                    username = call.data.get(ATTR_BRIDGE_USERNAME)
+                    clientkey = call.data.get(ATTR_BRIDGE_CLIENTKEY)
+    
+                    await config_entry.runtime_data.coordinator.api.hue.set_bridge(bridge_id, username, clientkey)
 
     hass.services.async_register(
         DOMAIN,
@@ -95,44 +97,47 @@ async def async_register_services(hass: HomeAssistant):
             # Need to check if it is our config entry since async_extract_config_entry_ids
             # can return config entries from other integrations also
             # (e.g. area id or devices with entities from multiple integrations)
-            if coordinator := hass.data[DOMAIN].get(config_entry_id):
-                sync_state = call.data
+            if config_entry := hass.config_entries.async_get_entry(config_entry_id):
+                 if config_entry.domain == DOMAIN and config_entry.runtime_data is not None:
+                    coordinator = config_entry.runtime_data.coordinator
 
-                # Resolve entertainment area
-                group = get_group_from_area_name(
-                    coordinator.api, sync_state.get(ATTR_ENTERTAINMENT_AREA, None)
-                )
-                hue_target = get_hue_target_from_id(group.id) if group else None
+                    sync_state = call.data
 
-                state = {
-                    "hdmi_active": sync_state.get(ATTR_POWER, None),
-                    "sync_active": sync_state.get(ATTR_SYNC, None),
-                    "mode": sync_state.get(ATTR_MODE, None),
-                    "hdmi_source": sync_state.get(ATTR_INPUT, None),
-                    "brightness": BrightnessRangeConverter.ha_to_api(
-                        sync_state[ATTR_BRIGHTNESS]
+                    # Resolve entertainment area
+                    group = get_group_from_area_name(
+                        coordinator.api, sync_state.get(ATTR_ENTERTAINMENT_AREA, None)
                     )
-                    if ATTR_BRIGHTNESS in sync_state
-                    else None,
-                    "intensity": sync_state.get(ATTR_INTENSITY, None),
-                    "hue_target": hue_target,
-                }
+                    hue_target = get_hue_target_from_id(group.id) if group else None
 
-                async def set_state(api: aiohuesyncbox.HueSyncBox, **kwargs):
-                    await api.execution.set_state(**kwargs)
-
-                try:
-                    await stop_sync_and_retry_on_invalid_state(
-                        set_state, coordinator.api, **state
-                    )
-                except aiohuesyncbox.RequestError as ex:
-                    if "13: Invalid Key" in ex.args[0]:
-                        # Clarify this specific case as people will run into it
-                        LOGGER.warning(
-                            "The service call resulted in an empty message to the syncbox. Make sure some data is provided)."
+                    state = {
+                        "hdmi_active": sync_state.get(ATTR_POWER, None),
+                        "sync_active": sync_state.get(ATTR_SYNC, None),
+                        "mode": sync_state.get(ATTR_MODE, None),
+                        "hdmi_source": sync_state.get(ATTR_INPUT, None),
+                        "brightness": BrightnessRangeConverter.ha_to_api(
+                            sync_state[ATTR_BRIGHTNESS]
                         )
-                    else:
-                        raise
+                        if ATTR_BRIGHTNESS in sync_state
+                        else None,
+                        "intensity": sync_state.get(ATTR_INTENSITY, None),
+                        "hue_target": hue_target,
+                    }
+
+                    async def set_state(api: aiohuesyncbox.HueSyncBox, **kwargs):
+                        await api.execution.set_state(**kwargs)
+
+                    try:
+                        await stop_sync_and_retry_on_invalid_state(
+                            set_state, coordinator.api, **state
+                        )
+                    except aiohuesyncbox.RequestError as ex:
+                        if "13: Invalid Key" in ex.args[0]:
+                            # Clarify this specific case as people will run into it
+                            LOGGER.warning(
+                                "The service call resulted in an empty message to the syncbox. Make sure some data is provided)."
+                            )
+                        else:
+                            raise
 
     hass.services.async_register(
         DOMAIN,

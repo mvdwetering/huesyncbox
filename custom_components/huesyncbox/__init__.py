@@ -1,5 +1,6 @@
 """The Philips Hue Play HDMI Sync Box integration."""
 import asyncio
+from dataclasses import dataclass
 import aiohuesyncbox
 
 from homeassistant.config_entries import ConfigEntry
@@ -21,6 +22,13 @@ from .const import (
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import update_device_registry, update_config_entry_title
 
+@dataclass
+class HueSyncBoxRuntimeData:
+    coordinator: HueSyncBoxCoordinator
+
+type HueSyncBoxConfigEntry = ConfigEntry[HueSyncBoxRuntimeData]
+
+
 PLATFORMS: list[Platform] = [
     Platform.NUMBER,
     Platform.SELECT,
@@ -31,11 +39,10 @@ PLATFORMS: list[Platform] = [
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the Philips Hue Play HDMI Sync Box integration."""
-    hass.data[DOMAIN] = {}
     await async_register_services(hass)
     return True
     
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: HueSyncBoxConfigEntry) -> bool:
     """Set up Philips Hue Play HDMI Sync Box from a config entry."""
 
     api = aiohuesyncbox.HueSyncBox(
@@ -62,17 +69,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     update_config_entry_title(hass, entry, api.device.name)
 
     coordinator = HueSyncBoxCoordinator(hass, api)
+    entry.runtime_data = HueSyncBoxRuntimeData(coordinator)
 
-    hass.data[DOMAIN][entry.entry_id] = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: HueSyncBoxConfigEntry) -> bool:
     """Unload a config entry."""
     if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        coordinator = hass.data[DOMAIN].pop(entry.entry_id)
+        coordinator = entry.runtime_data.coordinator
         await coordinator.api.close()
 
     return unload_ok
