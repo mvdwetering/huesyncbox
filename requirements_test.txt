@@ -1,6 +1,6 @@
 -r requirements.txt
 
-mypy==1.4.0
+mypy==1.11.0
 
 pytest-homeassistant-custom-component==0.13.144
 
