@@ -14,9 +14,9 @@
     "aiohuesyncbox"
   ],
   "requirements": [
-    "aiohuesyncbox==0.0.27"
+    "aiohuesyncbox==0.0.28"
   ],
-  "version": "2.2.2",
+  "version": "2.2.3",
   "zeroconf": [
     "_huesync._tcp.local."
   ]
