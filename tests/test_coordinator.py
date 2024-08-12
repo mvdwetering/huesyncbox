@@ -19,7 +19,7 @@ async def test_update_device_registry_and_config_entry_on_name_change(
 
     # Verify current name
     dr = device_registry.async_get(hass)
-    device = dr.async_get_device(identifiers={(huesyncbox.DOMAIN, "unique_id")})
+    device = dr.async_get_device(identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")})
     assert device is not None
     assert device.name == "Name"
 
@@ -34,7 +34,7 @@ async def test_update_device_registry_and_config_entry_on_name_change(
     await force_coordinator_update(hass)
 
     # Check device registry and config entry got updated
-    device = dr.async_get_device(identifiers={(huesyncbox.DOMAIN, "unique_id")})
+    device = dr.async_get_device(identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")})
     assert device is not None
     assert device.name == "New name"
 
