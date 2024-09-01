@@ -6,7 +6,7 @@ Custom integration for the Philips Hue Play HDMI Sync Box.
 
 - [About](#about)
   - [Behavior](#behavior)
-  - [Services](#services)
+  - [Actions](#actions)
 - [Updating from before version 2](#updating-from-before-version-20)
 - [Installation](#installation)
   - [Home Assistant Community Store (recommended)](#home-assistant-community-store-hacs)
@@ -46,15 +46,15 @@ A few notes on behavior when changing entities. Note that this behavior is just 
 
 * Enabling light sync will also power on the box
 * Setting sync mode will also power on the box and start light sync on the selected mode
-* When you want to change multiple entities the order is important. For example, Intensity applies to the current selected mode. So if you want to change both the `intensity` and `mode` you _first_ have to change the mode and then set the intensity. Otherwise, the intensity is applied to the "old" mode. If you want to avoid ordering issues you can use the `set_sync_state` service which will take care of the ordering and is more efficient than sending everything separately.
+* When you want to change multiple entities the order is important. For example, Intensity applies to the current selected mode. So if you want to change both the `intensity` and `mode` you _first_ have to change the mode and then set the intensity. Otherwise, the intensity is applied to the "old" mode. If you want to avoid ordering issues you can use the `set_sync_state` action which will take care of the ordering and is more efficient than sending everything separately.
 
-### Services
+### Actions
 
-The integration exposes some additional services.
+The integration exposes some additional actions.
 
-For the parameter descriptions use the Services tab in the Home Assistant Developer tools and search for `huesyncbox` in the services list.
+For the parameter descriptions use the Actions tab in the Home Assistant Developer tools and search for `huesyncbox` in the actions list.
 
-| Service name | Description |
+| Action name | Description |
 |---|---|
 | set_bridge | Set the bridge to be used by the Philips Hue Play HDMI Syncbox. |
 | set_sync_state | Set the state of multiple features of the Philips Hue Play HDMI Syncbox at once. Makes sure everything is set in the correct order and is more efficient compared to using separate commands. |

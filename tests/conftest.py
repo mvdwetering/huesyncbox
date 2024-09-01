@@ -55,7 +55,7 @@ def mock_api(hass):
     mock_api.device.api_level = 7
     mock_api.device.device_type = "HSB1"
     mock_api.device.firmware_version = "firmwareversion"
-    mock_api.device.unique_id = "unique_id"
+    mock_api.device.unique_id = "123456ABCDEF"  # Make sure it resembles real value
     mock_api.device.led_mode = 1
     mock_api.device.ip_address = "1.2.3.4"
     mock_api.device.wifi = Mock(aiohuesyncbox.device.Wifi)
@@ -130,7 +130,7 @@ async def setup_integration(
         minor_version=2,
         domain=huesyncbox.DOMAIN,
         entry_id=entry_id,
-        unique_id="unique_id",
+        unique_id="123456ABCDEF",  # Make sure it resembles the real format
         title="HUESYNCBOX TITLE",
         data={
             CONF_HOST: "host_value",

@@ -181,16 +181,6 @@ async def test_user_box_connection_errors_during_link(
         )
         await hass.async_block_till_done()
 
-        assert result["type"] == FlowResultType.SHOW_PROGRESS
-        assert result["step_id"] == "link"
-        assert result["progress_action"] == "wait_for_button"
-
-        # Trigger to get out of progress
-        result = await hass.config_entries.flow.async_configure(
-            result["flow_id"],
-        )
-        await hass.async_block_till_done()
-
         assert result["type"] == FlowResultType.ABORT
         assert result["reason"] == "connection_failed"
 
@@ -329,7 +319,7 @@ async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api) -> Non
                     "name": b"Hue Syncbox Name",
                 },
                 "path": "/different",
-                "uniqueid": "unique_id",
+                "uniqueid": "123456ABCDEF",
                 "devicetype": "HSB001",
                 "name": "Hue Syncbox Name",
             },

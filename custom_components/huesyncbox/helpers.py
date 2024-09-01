@@ -27,6 +27,7 @@ async def update_device_registry(
         sw_version=api.device.firmware_version,
         # Uniqueid seems to be the mac. Adding the connection allows other integrations
         # like e.g. Mikrotik Router to link their entities to this device
+        # HA will normalize the mac address
         connections={(CONNECTION_NETWORK_MAC, api.device.unique_id)},
     )
 

@@ -44,8 +44,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Zip custom components dir
-        working-directory: "custom_components"
-        run: zip -r huesyncbox.zip huesyncbox/*
+        working-directory: "custom_components/huesyncbox"
+        run: zip -r huesyncbox.zip ./*
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1  # Official Github action
@@ -67,6 +67,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./custom_components/huesyncbox.zip
+          asset_path: ./custom_components/huesyncbox/huesyncbox.zip
           asset_name: huesyncbox.zip
           asset_content_type: application/zip
