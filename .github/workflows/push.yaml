@@ -8,7 +8,7 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+'
       - 'v[0-9]+.[0-9]+.[0-9]a[0-9]+'
       - 'v[0-9]+.[0-9]+.[0-9]b[0-9]+'
-      - '*'  # temp for testing
+      - 'v_dummy_release_[0-9]+'
   pull_request:
   schedule:
     - cron: "0 0 * * *"
