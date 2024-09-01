@@ -44,8 +44,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Zip custom components dir
-        working-directory: "custom_components"
-        run: zip -r huesyncbox.zip huesyncbox/*
+        working-directory: "custom_components/huesyncbox"
+        run: zip -r huesyncbox.zip ./*
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1  # Official Github action
