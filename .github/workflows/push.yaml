@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - dev
-    tags:
   pull_request:
   schedule:
     - cron: "0 0 * * *"
