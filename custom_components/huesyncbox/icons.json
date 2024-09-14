@@ -1,6 +1,90 @@
 {
-    "services": {
-        "set_bridge": "mdi:bridge",
-        "set_sync_state": "mdi:sync"
+  "entity": {
+    "number": {
+      "brightness": {
+        "default": "mdi:brightness-5"
+      }
+    },
+    "select": {
+      "hdmi_input": {
+        "default": "mdi:hdmi-port"
+      },
+      "entertainment_area": {
+        "default": "mdi:lamps"
+      },
+      "intensity": {
+        "default": "mdi:sine-wave"
+      },
+      "sync_mode": {
+        "state": {
+          "video": "mdi:movie-open",
+          "music": "mdi:music",
+          "game": "mdi:gamepad-variant"
+        }
+      },
+      "led_indicator_mode": {
+        "default": "mdi:led-variant-on",
+        "state": {
+          "off": "mdi:led-variant-off",
+          "dimmed": "mdi:led-variant-on",
+          "normal": "mdi:led-on"
+        }
+      }
+    },
+    "sensor": {
+      "bridge_connection_state": {
+        "default": "mdi:connection"
+      },
+      "bridge_unique_id": {
+        "default": "mdi:bridge"
+      },
+      "hdmi1_status": {
+        "default": "mdi:video-input-hdmi"
+      },
+      "hdmi2_status": {
+        "default": "mdi:video-input-hdmi"
+      },
+      "hdmi3_status": {
+        "default": "mdi:video-input-hdmi"
+      },
+      "hdmi4_status": {
+        "default": "mdi:video-input-hdmi"
+      },
+      "ip_address": {
+        "default": "mdi:ip-network"
+      },
+      "wifi_strength": {
+        "default": "mdi:wifi-strength-outline",
+        "state": {
+          "not_connected": "mdi:wifi-strength-off-outline",
+          "weak": "mdi:wifi-strength-1",
+          "fair": "mdi:wifi-strength-2",
+          "good": "mdi:wifi-strength-3",
+          "excellent": "mdi:wifi-strength-4"
+        }
+      },
+      "content_info": {
+        "default": "mdi:aspect-ratio"
+      }
+    },
+    "switch": {
+      "power": {
+        "default": "mdi:power"
+      },
+      "light_sync": {
+        "default": "mdi:television-ambient-light"
+      },
+      "dolby_vision_compatibility": {
+        "default": "mdi:hdr"
+      }
     }
+  },
+  "services": {
+    "set_bridge": {
+      "service": "mdi:bridge"
+    },
+    "set_sync_state": {
+      "service": "mdi:sync"
+    }
+  }
 }
