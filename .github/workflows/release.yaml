@@ -33,6 +33,6 @@ jobs:
         run: |
           gh release create "$tag" "./custom_components/${{ env.INTEGRATION_NAME }}/${{ env.INTEGRATION_NAME }}.zip" \
               --repo="$GITHUB_REPOSITORY" \
-              --title="${GITHUB_REPOSITORY#*/} $tag" \
+              --title="$tag" \
               --generate-notes \
               --draft
