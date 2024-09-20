@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Type
 from typing_extensions import Generator
 
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 import pytest
 
 from homeassistant.const import (
@@ -44,7 +44,7 @@ def entity_registry_enabled_by_default() -> Generator[None]:
 
 
 @pytest.fixture
-def mock_api(hass):
+def mock_api():
     """Create a mocked HueSyncBox instance."""
     mock_api = Mock(
         spec=aiohuesyncbox.HueSyncBox,
