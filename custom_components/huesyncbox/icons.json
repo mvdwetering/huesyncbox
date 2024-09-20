@@ -15,13 +15,6 @@
       "intensity": {
         "default": "mdi:sine-wave"
       },
-      "sync_mode": {
-        "state": {
-          "video": "mdi:movie-open",
-          "music": "mdi:music",
-          "game": "mdi:gamepad-variant"
-        }
-      },
       "led_indicator_mode": {
         "default": "mdi:led-variant-on",
         "state": {
