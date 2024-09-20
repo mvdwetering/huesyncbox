@@ -1,0 +1,38 @@
+name: Create release from tag
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  release:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          echo Checkout done for $GITHUB_REF
+
+      - name: Figure out integration name
+        run: |
+          INTEGRATION_SUBDIR=$(ls -d custom_components/*/)
+          echo "INTEGRATION_NAME=$(echo $INTEGRATION_SUBDIR | cut -d'/' -f2)" >> $GITHUB_ENV
+          echo Integration name: ${{ env.INTEGRATION_NAME }}
+
+      - name: Zip custom components dir
+        working-directory: "custom_components/${{ env.INTEGRATION_NAME }}"
+        run: zip -r ${{ env.INTEGRATION_NAME }}.zip ./*
+
+      - name: Create Release
+        # Started from: https://stackoverflow.com/questions/75679683/how-can-i-auto-generate-a-release-note-and-create-a-release-using-github-actions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+        # --discussion-category "General" not possible for draft releases :/
+        run: |
+          gh release create "$tag" "./custom_components/${{ env.INTEGRATION_NAME }}/${{ env.INTEGRATION_NAME }}.zip" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/} $tag" \
+              --generate-notes \
+              --draft
