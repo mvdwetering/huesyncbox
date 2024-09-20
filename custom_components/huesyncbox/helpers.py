@@ -23,7 +23,11 @@ async def update_device_registry(
         identifiers={(DOMAIN, api.device.unique_id)},
         manufacturer=MANUFACTURER_NAME,
         name=api.device.name,
-        model=api.device.device_type,
+        model={
+            "HSB1": "Philips Hue Play HDMI sync box 4K",
+            "HSB2": "Philips Hue Play HDMI sync box 8K",
+        }.get(api.device.device_type),
+        model_id=api.device.device_type,
         sw_version=api.device.firmware_version,
         # Uniqueid seems to be the mac. Adding the connection allows other integrations
         # like e.g. Mikrotik Router to link their entities to this device
