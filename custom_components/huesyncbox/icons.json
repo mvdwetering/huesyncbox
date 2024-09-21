@@ -15,6 +15,9 @@
       "intensity": {
         "default": "mdi:sine-wave"
       },
+      "sync_mode": {
+        "default": "mdi:multimedia"
+      },
       "led_indicator_mode": {
         "default": "mdi:led-variant-on",
         "state": {
