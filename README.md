@@ -2,7 +2,8 @@
 
 [![Contributors](https://img.shields.io/github/contributors/mvdwetering/huesyncbox.svg)](https://github.com/mvdwetering/huesyncbox/graphs/contributors)
 
-Custom integration for the Philips Hue Play HDMI Sync Box.
+Custom integration for the Philips Hue Play HDMI Sync Box. 
+Both 4K and 8K are supported.
 
 - [About](#about)
   - [Behavior](#behavior)
@@ -30,7 +31,7 @@ The following features are available:
 * Brightness control
 * Entertainment area selection
 * HDMI input connection status
-* Dolby Vision compatibility on/off
+* Dolby Vision compatibility on/off (only on 4K)
 * LED indicator mode
 * Bridge connection status ⁺
 * Bridge ID ⁺
@@ -57,7 +58,7 @@ For the parameter descriptions use the Actions tab in the Home Assistant Develop
 | Action name | Description |
 |---|---|
 | set_bridge | Set the bridge to be used by the Philips Hue Play HDMI Syncbox. |
-| set_sync_state | Set the state of multiple features of the Philips Hue Play HDMI Syncbox at once. Makes sure everything is set in the correct order and is more efficient compared to using separate commands. |
+| set_sync_state | Set the state of multiple features of the Philips Hue Play HDMI Syncbox at once. Makes sure everything is set in the correct order and is more efficient than using separate commands. |
 
 ## Updating from before version 2.0
 
