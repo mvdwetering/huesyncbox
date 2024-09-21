@@ -27,7 +27,6 @@ async def set_brightness(api: aiohuesyncbox.HueSyncBox, brightness):
 ENTITY_DESCRIPTIONS = [
     HueSyncBoxNumberEntityDescription(  # type: ignore
         key="brightness",  # type: ignore
-        icon="mdi:brightness-5",  # type: ignore
         native_max_value=100,  # type: ignore
         native_min_value=1,  # type: ignore
         native_step=1,  # type: ignore

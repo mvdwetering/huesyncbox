@@ -18,7 +18,6 @@ from .const import DOMAIN
 @dataclass(frozen=True, kw_only=True)
 class HueSyncBoxSensorEntityDescription(SensorEntityDescription):
     get_value: Callable[[aiohuesyncbox.HueSyncBox], str] = None  # type: ignore[assignment]
-    icons: dict[str, str] | None = None
 
 
 WIFI_STRENGTH_STATES = {
@@ -29,34 +28,32 @@ WIFI_STRENGTH_STATES = {
     4: "excellent",
 }
 
-WIFI_STRENGTH_ICONS = {
-    "not_connected": "mdi:wifi-strength-off-outline",
-    "weak": "mdi:wifi-strength-1",
-    "fair": "mdi:wifi-strength-2",
-    "good": "mdi:wifi-strength-3",
-    "excellent": "mdi:wifi-strength-4",
-}
-
 ENTITY_DESCRIPTIONS = [
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="bridge_connection_state",  # type: ignore
-        icon="mdi:connection",  # type: ignore
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         entity_registry_enabled_default=False,  # type: ignore
         device_class=SensorDeviceClass.ENUM,  # type: ignore
-        options=["uninitialized", "disconnected", "connecting", "unauthorized", "connected", "invalidgroup", "streaming", "busy"],  # type: ignore
+        options=[
+            "uninitialized",
+            "disconnected",
+            "connecting",
+            "unauthorized",
+            "connected",
+            "invalidgroup",
+            "streaming",
+            "busy",
+        ],  # type: ignore
         get_value=lambda api: api.hue.connection_state,
     ),
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="bridge_unique_id",  # type: ignore
-        icon="mdi:bridge",  # type: ignore
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         entity_registry_enabled_default=False,  # type: ignore
         get_value=lambda api: api.hue.bridge_unique_id,
     ),
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="hdmi1_status",  # type: ignore
-        icon="mdi:video-input-hdmi",  # type: ignore
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         device_class=SensorDeviceClass.ENUM,  # type: ignore
         options=["unplugged", "plugged", "linked", "unknown"],  # type: ignore
@@ -64,7 +61,6 @@ ENTITY_DESCRIPTIONS = [
     ),
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="hdmi2_status",  # type: ignore
-        icon="mdi:video-input-hdmi",  # type: ignore
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         device_class=SensorDeviceClass.ENUM,  # type: ignore
         options=["unplugged", "plugged", "linked", "unknown"],  # type: ignore
@@ -72,7 +68,6 @@ ENTITY_DESCRIPTIONS = [
     ),
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="hdmi3_status",  # type: ignore
-        icon="mdi:video-input-hdmi",  # type: ignore
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         device_class=SensorDeviceClass.ENUM,  # type: ignore
         options=["unplugged", "plugged", "linked", "unknown"],  # type: ignore
@@ -80,7 +75,6 @@ ENTITY_DESCRIPTIONS = [
     ),
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="hdmi4_status",  # type: ignore
-        icon="mdi:video-input-hdmi",  # type: ignore
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         device_class=SensorDeviceClass.ENUM,  # type: ignore
         options=["unplugged", "plugged", "linked", "unknown"],  # type: ignore
@@ -88,22 +82,18 @@ ENTITY_DESCRIPTIONS = [
     ),
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="ip_address",  # type: ignore
-        icon="mdi:ip-network",  # type: ignore
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         entity_registry_enabled_default=False,  # type: ignore
         get_value=lambda api: api.device.ip_address,
     ),
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="wifi_strength",  # type: ignore
-        # icon="mdi:wifi",  # type: ignore
-        icons=WIFI_STRENGTH_ICONS,
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         entity_registry_enabled_default=False,  # type: ignore
         get_value=lambda api: WIFI_STRENGTH_STATES[api.device.wifi.strength],  # type: ignore
     ),
     HueSyncBoxSensorEntityDescription(  # type: ignore
         key="content_info",  # type: ignore
-        icon="mdi:aspect-ratio",  # type: ignore
         entity_category=EntityCategory.DIAGNOSTIC,  # type: ignore
         entity_registry_enabled_default=False,  # type: ignore
         get_value=lambda api: api.hdmi.content_specs,  # type: ignore
@@ -154,12 +144,3 @@ class HueSyncBoxSensor(CoordinatorEntity, SensorEntity):
     def native_value(self) -> str | None:
         """Return the state of the sensor."""
         return self.entity_description.get_value(self.coordinator.api)
-
-    @property
-    def icon(self) -> str | None:
-        """Return the icon."""
-        if self.entity_description.icons is not None:
-            return self.entity_description.icons[
-                self.entity_description.get_value(self.coordinator.api)
-            ]
-        return super().icon
