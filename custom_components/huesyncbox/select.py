@@ -118,14 +118,12 @@ async def select_led_indicator_mode(api: aiohuesyncbox.HueSyncBox, mode):
 ENTITY_DESCRIPTIONS = [
     HueSyncBoxSelectEntityDescription(  # type: ignore
         key="hdmi_input",  # type: ignore
-        icon="mdi:hdmi-port",  # type: ignore
         options_fn=available_inputs,
         current_option_fn=current_input,
         select_option_fn=select_input,
     ),
     HueSyncBoxSelectEntityDescription(  # type: ignore
         key="entertainment_area",  # type: ignore
-        icon="mdi:lamps",  # type: ignore
         entity_category=EntityCategory.CONFIG,  # type: ignore
         options_fn=available_entertainment_areas,
         current_option_fn=current_entertainment_area,
@@ -133,7 +131,6 @@ ENTITY_DESCRIPTIONS = [
     ),
     HueSyncBoxSelectEntityDescription(  # type: ignore
         key="intensity",  # type: ignore
-        icon="mdi:sine-wave",  # type: ignore
         options=INTENSITIES,  # type: ignore
         current_option_fn=current_intensity,
         select_option_fn=select_intensity,
@@ -146,7 +143,6 @@ ENTITY_DESCRIPTIONS = [
     ),
     HueSyncBoxSelectEntityDescription(  # type: ignore
         key="led_indicator_mode",  # type: ignore
-        icon="mdi:alarm-light",  # type: ignore
         entity_category=EntityCategory.CONFIG,  # type: ignore
         options=sorted(LED_INDICATOR_MODES),  # type: ignore
         current_option_fn=current_led_indicator_mode,

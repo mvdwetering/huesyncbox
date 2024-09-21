@@ -78,7 +78,7 @@ async def test_wifi_strength(hass: HomeAssistant, mock_api):
     entity = hass.states.get("sensor.name_wifi_quality")
     assert entity is not None
     assert entity.state == "fair"
-    assert entity.attributes["icon"] == "mdi:wifi-strength-2"
+
 
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")
 async def test_content_info(hass: HomeAssistant, mock_api):
@@ -87,4 +87,3 @@ async def test_content_info(hass: HomeAssistant, mock_api):
     entity = hass.states.get("sensor.name_content_info")
     assert entity is not None
     assert entity.state == "1920 x 1080 @ 60 - SDR"
-

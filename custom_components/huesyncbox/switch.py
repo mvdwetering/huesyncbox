@@ -24,21 +24,18 @@ class HueSyncBoxSwitchEntityDescription(SwitchEntityDescription):
 ENTITY_DESCRIPTIONS = [
     HueSyncBoxSwitchEntityDescription(  # type: ignore
         key="power",  # type: ignore
-        icon="mdi:power",  # type: ignore
         is_on=lambda api: api.execution.mode != "powersave",
         turn_on=lambda api: api.execution.set_state(mode="passthrough"),
         turn_off=lambda api: api.execution.set_state(mode="powersave"),
     ),
     HueSyncBoxSwitchEntityDescription(  # type: ignore
         key="light_sync",  # type: ignore
-        icon="mdi:television-ambient-light",  # type: ignore
         is_on=lambda api: api.execution.mode not in ["powersave", "passthrough"],
         turn_on=lambda api: api.execution.set_state(sync_active=True),
         turn_off=lambda api: api.execution.set_state(sync_active=False),
     ),
     HueSyncBoxSwitchEntityDescription(  # type: ignore
         key="dolby_vision_compatibility",  # type: ignore
-        icon="mdi:hdr",  # type: ignore
         entity_category=EntityCategory.CONFIG,  # type: ignore
         is_on=lambda api: api.behavior.force_dovi_native == 1,
         turn_on=lambda api: api.behavior.set_force_dovi_native(1),
