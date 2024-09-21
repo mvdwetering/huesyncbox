@@ -356,7 +356,7 @@ def main(args):
 
 
     print("Done!")
-    print(f"Currently on branch: {Git.get_current_branch()}")
+    print(f"Currently on branch: {Git.get_current_branch().name}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
