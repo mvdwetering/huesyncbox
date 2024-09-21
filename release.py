@@ -348,10 +348,11 @@ def main(args):
         Git.commit_changes(f"Update version to {bump_version_after_release}")
 
     if input("Push to origin? [Y/n]: ") != "n":
-        if Git.get_current_branch() == MASTER:
+        if Git.get_current_branch().name == MASTER:
             Git.push_to_origin(MASTER)
         Git.push_to_origin(release_branch_name)
         Git.push_to_origin(tag_name)
+    else:
         print("Don't forget to push later or revert changes!")
 
 
