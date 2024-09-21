@@ -183,7 +183,7 @@ def get_integration_name():
     dir_list = [
         name
         for name in os.listdir("custom_components")
-        if os.path.isdir(os.path.join("custom_components", name))
+        if os.path.isdir(os.path.join("custom_components", name)) and name != "__pycache__"
     ]
     if len(dir_list) != 1:
         raise ValueError(
