@@ -323,7 +323,8 @@ def main(args):
         Git.commit_changes(f"Update version to {next_version}")
 
     if not next_version.modifier:
-        # Merge to master
+        # Merge to master, ideally this would be done with a PR
+        # but I don't know how to specify the merge strategy
         Git.checkout(MASTER)
         Git.pull()
         subprocess.run(
