@@ -334,7 +334,8 @@ def main(args):
                 "theirs",
                 "-m",
                 f"Release v{next_version}",
-            ]
+            ],
+            check=True,
         )
 
     Git.create_tag(tag_name)
