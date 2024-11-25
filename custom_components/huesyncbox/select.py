@@ -124,7 +124,6 @@ ENTITY_DESCRIPTIONS = [
     ),
     HueSyncBoxSelectEntityDescription(  # type: ignore
         key="entertainment_area",  # type: ignore
-        entity_category=EntityCategory.CONFIG,  # type: ignore
         options_fn=available_entertainment_areas,
         current_option_fn=current_entertainment_area,
         select_option_fn=select_entertainment_area,
