@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Type
 from typing_extensions import Generator
 
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import Mock, patch
 import pytest
 
 from homeassistant.const import (
