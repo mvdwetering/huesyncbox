@@ -57,40 +57,39 @@ class Git:
 
     @staticmethod
     def checkout(branch):
-        subprocess.run(["git", "checkout", branch])
+        subprocess.run(["git", "checkout", branch], check=True)
 
     @staticmethod
     def add_changes():
-        subprocess.run(["git", "add", "--all"])
+        subprocess.run(["git", "add", "--all"], check=True)
 
     @staticmethod
     def commit_changes(message):
-        subprocess.run(["git", "commit", "-m", message])
+        subprocess.run(["git", "commit", "-m", message], check=True)
 
     @staticmethod
     def pull():
-        subprocess.run(["git", "pull"])
+        subprocess.run(["git", "pull"], check=True)
 
     @staticmethod
     def delete_branch(name):
-        subprocess.run(["git", "branch", "-D", name])
+        subprocess.run(["git", "branch", "-D", name], check=True)
 
     @staticmethod
     def create_branch(name):
-        subprocess.run(["git", "branch", name])
+        subprocess.run(["git", "branch", name], check=True)
 
     @staticmethod
     def create_tag(name):
-        subprocess.run(["git", "tag", name])
+        subprocess.run(["git", "tag", name], check=True)
 
     @staticmethod
     def push_to_origin(name):
-        subprocess.run(["git", "push", "origin", name])
+        subprocess.run(["git", "push", "origin", name], check=True)
 
     @staticmethod
     def fetch_tags():
-        subprocess.run(["git", "fetch", "--tags"])
-
+        subprocess.run(["git", "fetch", "--tags"], check=True)
 
 def menu(title, choices):
     while True:
@@ -287,8 +286,7 @@ def main(args):
             )
 
             # Changing from alpha to beta should bump the version before release
-            version_diff = next_manifest_version - manifest_version
-            if version_diff.modifier:
+            if manifest_version.alpha and next_manifest_version.beta:
                 next_version = next_manifest_version
             else:
                 next_version = manifest_version
@@ -323,8 +321,7 @@ def main(args):
         Git.commit_changes(f"Update version to {next_version}")
 
     if not next_version.modifier:
-        # Merge to master, ideally this would be done with a PR
-        # but I don't know how to specify the merge strategy
+        # Merge to master
         Git.checkout(MASTER)
         Git.pull()
         subprocess.run(
@@ -349,13 +346,12 @@ def main(args):
         Git.commit_changes(f"Update version to {bump_version_after_release}")
 
     if input("Push to origin? [Y/n]: ") != "n":
-        if Git.get_current_branch().name == MASTER:
+        if Git.get_current_branch() == MASTER:
             Git.push_to_origin(MASTER)
         Git.push_to_origin(release_branch_name)
         Git.push_to_origin(tag_name)
     else:
         print("Don't forget to push later or revert changes!")
-
 
     print("Done!")
     print(f"Currently on branch: {Git.get_current_branch().name}")
