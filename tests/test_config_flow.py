@@ -351,8 +351,10 @@ async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "reauth_confirm"
 
-    # # Confirming will start link phase which tries to connect to the API so setup upfront
-    with patch("aiohuesyncbox.HueSyncBox.__aenter__", return_value=mock_api):
+    # Confirming will start link phase which tries to connect to the API so setup upfront
+    with (patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance,):
+        huesyncbox_instance.return_value.__aenter__.return_value = mock_api
+
         # First attempt button not pressed yet, second try return value
         mock_api.register.return_value = {
             "registration_id": "NewRegistrationId",
