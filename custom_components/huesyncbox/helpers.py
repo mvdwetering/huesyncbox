@@ -26,7 +26,7 @@ async def update_device_registry(
         model={
             "HSB1": "Philips Hue Play HDMI sync box 4K",
             "HSB2": "Philips Hue Play HDMI sync box 8K",
-        }.get(api.device.device_type),
+        }.get(api.device.device_type, None),
         model_id=api.device.device_type,
         sw_version=api.device.firmware_version,
         # Uniqueid seems to be the mac. Adding the connection allows other integrations
