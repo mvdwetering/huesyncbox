@@ -30,7 +30,8 @@ async def test_device_info(hass: HomeAssistant, mock_api):
     assert device is not None
     assert device.name == "Name"
     assert device.manufacturer == "Signify"
-    assert device.model == "HSB1"
+    assert device.model == "Philips Hue Play HDMI sync box 4K"
+    assert device.model_id == "HSB1"
     assert device.sw_version == "firmwareversion"
     assert device.connections == {("mac", "12:34:56:ab:cd:ef")}
 
