@@ -351,8 +351,9 @@ async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "reauth_confirm"
 
-    # Confirming will start link phase which tries to connect to the API so setup up front
-    with patch("aiohuesyncbox.HueSyncBox.__aenter__", return_value=mock_api):
+    # Confirming will start link phase which tries to connect to the API so setup upfront
+    with (patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance,):
+        huesyncbox_instance.return_value.__aenter__.return_value = mock_api
 
         # First attempt button not pressed yet, second try return value
         mock_api.register.return_value = {
@@ -373,17 +374,17 @@ async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
         )
-        await hass.async_block_till_done()
+        # await hass.async_block_till_done()
 
         assert result["type"] == FlowResultType.ABORT
         assert result["reason"] == "reauth_successful"
 
         # Config entry token and registration id should be updated,
+        assert integration.entry.data["access_token"] == "NewAccessToken"
+        assert integration.entry.data["registration_id"] == "NewRegistrationId"
         # rest should still be the same
         assert integration.entry.data["host"] == "host_value"
         assert integration.entry.data["port"] == 1234
         assert integration.entry.data["unique_id"] == "unique_id_value"
         assert integration.entry.data["path"] == "/path_value"
 
-        assert integration.entry.data["access_token"] == "NewAccessToken"
-        assert integration.entry.data["registration_id"] == "NewRegistrationId"
