@@ -1,0 +1,236 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Urządzenie jest już skonfigurowane",
+      "reauth_successful": "Pomyślnie ponownie połączono urządzenie Philips Hue Play HDMI Sync Box",
+      "reconfigure_successful": "Pomyślnie ponownie skonfigurowano Philips Hue Play HDMI Sync Box",
+      "connection_failed": "Konfiguracja nie powiodła się"
+    },
+    "error": {
+      "cannot_connect": "Nie udało się połączyć",
+      "invalid_auth": "Nieprawidłowe uwierzytelnienie",
+      "unknown": "Nieoczekiwany błąd"
+    },
+    "step": {
+      "configure": {
+        "title": "Wprowadź informacje o urządzeniu",
+        "description": "Szczegółowe informacje można znaleźć w głównej aplikacji Hue.\n\nWybierz kartę Synchronizacja i upewnij się, że wybrano opcję Urządzenia Hue sync box. Następnie wybierz Urządzenie (np. Sync Box), a następnie zobacz Informacje o sieci dla adresu IP oraz Informacje o urządzeniu dla Identyfikatora.",
+        "data": {
+          "host": "Adres IP (e.g. 192.168.1.123)",
+          "unique_id": "Identyfikator (e.g. C42996000000)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Ponownie uwierzytelnij integrację",
+        "description": "Należy ponownie połączyć urządzenie Philips Hue Play HDMI Sync Box"
+      },
+      "zeroconf_confirm": {
+        "title": "Znaleziono urządzenie",
+        "description": "Należy połączyć urządzenie Philips Hue Play HDMI Sync Box. Naciśnij przycisk Dalej, aby rozpocząć proces łączenia."
+      }
+    },
+    "progress": {
+      "wait_for_button": "Naciśnij i przytrzymaj przycisk na urządzeniu Philips Hue Play HDMI Sync Box przez kilka sekund, aż zacznie migać na zielono, aby połączyć."
+    }
+  },
+  "entity": {
+    "number": {
+      "brightness": {
+        "name": "Jasność"
+      }
+    },
+    "select": {
+      "hdmi_input": {
+        "name": "Wejścia HDMI"
+      },
+      "entertainment_area": {
+        "name": "Obszar rozrywki"
+      },
+      "intensity": {
+        "name": "Intensywność",
+        "state": {
+          "subtle": "Niewielkie",
+          "moderate": "Umiarkowane",
+          "high": "Wysokie",
+          "intense": "Bardzo wysokie"
+        }
+      },
+      "led_indicator_mode": {
+        "name": "Jasność wskaźnika LED",
+        "state": {
+          "normal": "Normalna",
+          "off": "Wyłączony",
+          "dimmed": "Przyćmione"
+        }
+      },
+      "sync_mode": {
+        "name": "Tryb synchronizacji",
+        "state": {
+          "video": "Wideo",
+          "music": "Muzyka",
+          "game": "Gra"
+        }
+      }
+    },
+    "sensor": {
+      "bridge_unique_id": {
+        "name": "Identyfikator mostu"
+      },
+      "ip_address": {
+        "name": "Adres IP"
+      },
+      "bridge_connection_state": {
+        "name": "Status połączenia",
+        "state": {
+          "uninitialized": "Niezainicjowano",
+          "disconnected": "Rozłączono",
+          "connecting": "Łączenie",
+          "unauthorized": "Nieautoryzowano",
+          "connected": "Połączono",
+          "invalidgroup": "Nieprawidłowa grupa",
+          "streaming": "Transmisja",
+          "busy": "Zajęty"
+        }
+      },
+      "hdmi1_status": {
+        "name": "Stan HDMI1",
+        "state": {
+          "unplugged": "Nie wykryto wejścia",
+          "plugged": "Gotowe do synchronizacji",
+          "linked": "Trwa synchronizacja",
+          "unknown": "Nieznany"
+        }
+      },
+      "hdmi2_status": {
+        "name": "Stan HDMI2",
+        "state": {
+          "unplugged": "Nie wykryto wejścia",
+          "plugged": "Gotowe do synchronizacji",
+          "linked": "Trwa synchronizacja",
+          "unknown": "Nieznany"
+        }
+      },
+      "hdmi3_status": {
+        "name": "Stan HDMI3",
+        "state": {
+          "unplugged": "Nie wykryto wejścia",
+          "plugged": "Gotowe do synchronizacji",
+          "linked": "Trwa synchronizacja",
+          "unknown": "Nieznany"
+        }
+      },
+      "hdmi4_status": {
+        "name": "Stan HDMI4",
+        "state": {
+          "unplugged": "Nie wykryto wejścia",
+          "plugged": "Gotowe do synchronizacji",
+          "linked": "Trwa synchronizacja",
+          "unknown": "Nieznany"
+        }
+      },
+      "wifi_strength": {
+        "name": "Siła sygnału Wi-Fi",
+        "state": {
+          "not_connected": "Nie podłączono",
+          "weak": "Słaba",
+          "fair": "Umiarkowana",
+          "good": "Dobra",
+          "excellent": "Doskonała"
+        }
+      },
+      "content_info": {
+        "name": "Informacje o wejściu"
+      }
+    },
+    "switch": {
+      "power": {
+        "name": "Zasilanie"
+      },
+      "light_sync": {
+        "name": "Synchronizacja światła"
+      },
+      "dolby_vision_compatibility": {
+        "name": "Kompatybilność z Dolby Vision"
+      }
+    }
+  },
+  "selector": {
+    "modes": {
+      "options": {
+        "video": "Wideo",
+        "music": "Muzyka",
+        "game": "Gra"
+      }
+    },
+    "intensities": {
+      "options": {
+        "subtle": "Niewielkie",
+        "moderate": "Umiarkowane",
+        "high": "Wysokie",
+        "intense": "Bardzo wysokie"
+      }
+    },
+    "inputs": {
+      "options": {
+        "input1": "HDMI 1",
+        "input2": "HDMI 2",
+        "input3": "HDMI 3",
+        "input4": "HDMI 4"
+      }
+    }
+  },
+  "services": {
+    "set_bridge": {
+      "name": "Ustaw urządzenie",
+      "description": "Ustaw, które urządzenie będzie używane przez Philips Hue Play HDMI Syncbox. Pamiętaj, że zmiana urządzenia zajmuje trochę czasu (wydaje się, że około 15 sekund). Po zmianie urządzenia może być konieczne wybranie „Obszaru rozrywki”, jeśli status połączenia to „Nieprawidłowa grupa” zamiast „Połączono”.",
+      "fields": {
+        "bridge_id": {
+          "name": "Identyfikator mosta",
+          "description": "Identyfikator mostka. Kod szesnastkowy składający się z 16 znaków."
+        },
+        "bridge_username": {
+          "name": "Nazwa użytkownika",
+          "description": "Nazwa użytkownika (inaczej klucz aplikacji) obowiązująca dla mostu. Długi kod losowych znaków."
+        },
+        "bridge_clientkey": {
+          "name": "Klucz klienta",
+          "description": "Klucz klienta należący do nazwy użytkownika. Kod szesnastkowy składający się z 32 znaków."
+        }
+      }
+    },
+    "set_sync_state": {
+      "name": "Ustaw stan synchronizacji światła",
+      "description": "Kontroluj pełny stan synchronizacji światła urządzenia Philips Hue Play HDMI Syncbox za pomocą jednego połączenia.",
+      "fields": {
+        "power": {
+          "name": "Zasilanie",
+          "description": "Włącz lub wyłącz urządzenie."
+        },
+        "sync": {
+          "name": "Synchronizacja światła",
+          "description": "Włącz lub wyłącz stan synchronizacji oświetlenia. Włączenie tej opcji spowoduje również włączenie urządzenia."
+        },
+        "brightness": {
+          "name": "Jasność",
+          "description": "Ustawienie jasności."
+        },
+        "mode": {
+          "name": "Tryb",
+          "description": "Ustawienie trybu. Ustawienie trybu spowoduje również włączenie urządzenia i rozpoczęcie synchronizacji światła."
+        },
+        "intensity": {
+          "name": "Intensywność",
+          "description": "Ustawienie intensywności."
+        },
+        "input": {
+          "name": "Wejście",
+          "description": "Wybór wejście sygnału."
+        },
+        "entertainment_area": {
+          "name": "Obszar rozrywki",
+          "description": "Wybór obszaru rozrywki. Nazwa musi pasować _DOKŁADNIE_"
+        }
+      }
+    }
+  }
+}
