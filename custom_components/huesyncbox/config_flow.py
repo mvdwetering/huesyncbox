@@ -20,6 +20,7 @@ from homeassistant.const import (
     CONF_UNIQUE_ID,
 )
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 
 from . import HueSyncBoxConfigEntry
 from .const import DEFAULT_PORT, DOMAIN, REGISTRATION_ID
@@ -197,7 +198,7 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_zeroconf(
-        self, discovery_info: zeroconf.ZeroconfServiceInfo
+        self, discovery_info: ZeroconfServiceInfo
     ) -> ConfigFlowResult:
         """Handle zeroconf discovery."""
         _LOGGER.debug("async_step_zeroconf, %s", discovery_info)
