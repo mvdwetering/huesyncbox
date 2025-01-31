@@ -9,7 +9,6 @@ from typing import Any
 import aiohuesyncbox
 import voluptuous as vol  # type: ignore
 
-from homeassistant.components import zeroconf
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import (
     CONF_ACCESS_TOKEN,
