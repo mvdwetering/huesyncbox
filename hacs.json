@@ -1,6 +1,6 @@
 {
     "name": "Philips Hue Play HDMI Sync Box",
-    "homeassistant": "2024.8.0",
+    "homeassistant": "2025.2.0",
     "render_readme": true,
     "zip_release": true,
     "filename": "huesyncbox.zip"
