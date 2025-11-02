@@ -1,7 +1,5 @@
 set_bridge:
   target:
-    device:
-      integration: huesyncbox
     entity:
       integration: huesyncbox
   fields:
@@ -23,8 +21,6 @@ set_bridge:
 
 set_sync_state:
   target:
-    device:
-      integration: huesyncbox
     entity:
       integration: huesyncbox
   fields:
