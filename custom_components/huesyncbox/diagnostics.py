@@ -18,8 +18,8 @@ async def async_get_config_entry_diagnostics(
     """Return diagnostics for a config entry."""
     data = {}
 
-    data["config_entry"] = async_redact_data(
-        entry.as_dict(), KEYS_TO_REDACT_CONFIG_ENTRY
+    data["config_entry_data"] = async_redact_data(
+        dict(entry.data), KEYS_TO_REDACT_CONFIG_ENTRY
     )
 
     if runtime_data := entry.runtime_data:
