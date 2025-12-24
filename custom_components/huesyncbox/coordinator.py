@@ -2,6 +2,7 @@
 
 import asyncio
 
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -13,10 +14,10 @@ from .helpers import update_config_entry_title, update_device_registry
 MAX_CONSECUTIVE_ERRORS = 5
 
 
-class HueSyncBoxCoordinator(DataUpdateCoordinator):
+class HueSyncBoxCoordinator(DataUpdateCoordinator[aiohuesyncbox.HueSyncBox]):
     """My custom coordinator."""
 
-    def __init__(self, hass, api: aiohuesyncbox.HueSyncBox) -> None:
+    def __init__(self, hass: HomeAssistant, api: aiohuesyncbox.HueSyncBox) -> None:
         """Initialize my coordinator."""
         super().__init__(
             hass,

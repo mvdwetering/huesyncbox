@@ -54,7 +54,7 @@ async def async_setup_entry(_hass: HomeAssistant, config_entry: ConfigEntry, asy
     async_add_entities(entities)
 
 
-class HueSyncBoxNumber(CoordinatorEntity, NumberEntity):
+class HueSyncBoxNumber(CoordinatorEntity[HueSyncBoxCoordinator], NumberEntity):
     _attr_has_entity_name = True
 
     def __init__(
@@ -64,7 +64,6 @@ class HueSyncBoxNumber(CoordinatorEntity, NumberEntity):
     ) -> None:
         """Pass coordinator to CoordinatorEntity."""
         super().__init__(coordinator)
-        self.coordinator: HueSyncBoxCoordinator
 
         self.entity_description: HueSyncBoxNumberEntityDescription = entity_description
         self._attr_translation_key = self.entity_description.key

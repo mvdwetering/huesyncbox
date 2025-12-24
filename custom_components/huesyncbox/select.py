@@ -165,7 +165,7 @@ async def async_setup_entry(_hass: HomeAssistant, config_entry: ConfigEntry, asy
     async_add_entities(entities)
 
 
-class HueSyncBoxSelect(CoordinatorEntity, SelectEntity):
+class HueSyncBoxSelect(CoordinatorEntity[HueSyncBoxCoordinator], SelectEntity):
     """Representation of a select entity on a Yamaha Ynca device."""
 
     entity_description: HueSyncBoxSelectEntityDescription
@@ -179,7 +179,6 @@ class HueSyncBoxSelect(CoordinatorEntity, SelectEntity):
     ) -> None:
         """Pass coordinator to CoordinatorEntity."""
         super().__init__(coordinator)
-        self.coordinator: HueSyncBoxCoordinator
 
         self.entity_description = entity_description
         self._attr_translation_key = self.entity_description.key

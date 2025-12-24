@@ -119,7 +119,7 @@ async def async_setup_entry(_hass: HomeAssistant, config_entry: ConfigEntry, asy
     async_add_entities(entities)
 
 
-class HueSyncBoxSensor(CoordinatorEntity, SensorEntity):
+class HueSyncBoxSensor(CoordinatorEntity[HueSyncBoxCoordinator], SensorEntity):
     """Representation of a HueSyncBox sensor."""
 
     _attr_has_entity_name = True
@@ -130,7 +130,6 @@ class HueSyncBoxSensor(CoordinatorEntity, SensorEntity):
         entity_description: HueSyncBoxSensorEntityDescription,
     ) -> None:
         super().__init__(coordinator)  # Pass coordinator to CoordinatorEntity
-        self.coordinator: HueSyncBoxCoordinator
 
         self.entity_description: HueSyncBoxSensorEntityDescription = entity_description
         self._attr_translation_key = self.entity_description.key

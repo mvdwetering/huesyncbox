@@ -62,7 +62,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class HueSyncBoxSwitch(CoordinatorEntity, SwitchEntity):
+class HueSyncBoxSwitch(CoordinatorEntity[HueSyncBoxCoordinator], SwitchEntity):
     _attr_has_entity_name = True
 
     def __init__(
@@ -72,7 +72,6 @@ class HueSyncBoxSwitch(CoordinatorEntity, SwitchEntity):
     ) -> None:
         """Pass coordinator to CoordinatorEntity."""
         super().__init__(coordinator)
-        self.coordinator: HueSyncBoxCoordinator
 
         self.entity_description: HueSyncBoxSwitchEntityDescription = entity_description
         self._attr_translation_key = self.entity_description.key
