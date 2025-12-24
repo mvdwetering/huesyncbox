@@ -67,7 +67,7 @@ async def async_register_services(hass: HomeAssistant):
         I have seen the bridge change to take around 15 seconds.
         """
 
-        config_entry_ids = await async_extract_config_entry_ids(hass, call)
+        config_entry_ids = await async_extract_config_entry_ids(call)
         for config_entry_id in config_entry_ids:
             # Need to check if it is our config entry since async_extract_config_entry_ids
             # can return config entries from other integrations also
@@ -96,7 +96,7 @@ async def async_register_services(hass: HomeAssistant):
     async def async_set_sync_state(call):
         """Set sync state, allow combining of all options."""
 
-        config_entry_ids = await async_extract_config_entry_ids(hass, call)
+        config_entry_ids = await async_extract_config_entry_ids(call)
         for config_entry_id in config_entry_ids:
             # Need to check if it is our config entry since async_extract_config_entry_ids
             # can return config entries from other integrations also
