@@ -3,9 +3,9 @@ from dataclasses import dataclass
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -171,8 +171,6 @@ async def async_setup_entry(
 
 
 class HueSyncBoxSelect(CoordinatorEntity[HueSyncBoxCoordinator], SelectEntity):
-    """Representation of a select entity on a Yamaha Ynca device."""
-
     entity_description: HueSyncBoxSelectEntityDescription
 
     _attr_has_entity_name = True
