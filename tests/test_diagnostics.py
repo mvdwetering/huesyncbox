@@ -1,18 +1,21 @@
-from custom_components import huesyncbox
-from custom_components.huesyncbox.diagnostics import async_get_config_entry_diagnostics
+from unittest.mock import Mock
+
 from homeassistant.core import HomeAssistant
+
+from custom_components.huesyncbox.diagnostics import async_get_config_entry_diagnostics
 
 from .conftest import setup_integration
 
 REDACTED = "**REDACTED**"
 
 
-async def test_diagnostics(hass: HomeAssistant, mock_api):
-
-    API_RESPONSE = {"uniqueId": "abc", "bridgeUniqueId": "def", "ssid": "ghi"}
-
+async def test_diagnostics(hass: HomeAssistant, mock_api: Mock) -> None:
     integration = await setup_integration(hass, mock_api)
-    integration.mock_api.last_response = API_RESPONSE
+    integration.mock_api.last_response = {
+        "uniqueId": "abc",
+        "bridgeUniqueId": "def",
+        "ssid": "ghi",
+    }
 
     diagnostics = await async_get_config_entry_diagnostics(hass, integration.entry)
 
@@ -26,8 +29,7 @@ async def test_diagnostics(hass: HomeAssistant, mock_api):
     assert diagnostics["api"]["ssid"] == REDACTED
 
 
-async def test_diagnostics_no_response_yet(hass: HomeAssistant, mock_api):
-
+async def test_diagnostics_no_response_yet(hass: HomeAssistant, mock_api: Mock) -> None:
     integration = await setup_integration(hass, mock_api)
     integration.mock_api.last_response = None
 
@@ -41,8 +43,7 @@ async def test_diagnostics_no_response_yet(hass: HomeAssistant, mock_api):
     assert diagnostics["api"] == {}
 
 
-async def test_diagnostics_not_setup(hass: HomeAssistant, mock_api):
-
+async def test_diagnostics_not_setup(hass: HomeAssistant, mock_api: Mock) -> None:
     integration = await setup_integration(hass, mock_api)
     integration.entry.runtime_data = None
 

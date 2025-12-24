@@ -1,11 +1,8 @@
 """Common fixtures  for the Philips Hue Play HDMI Sync Box integration tests."""
 
+from collections.abc import Generator
 from dataclasses import dataclass
-from typing import Type
-from typing_extensions import Generator
-
 from unittest.mock import Mock, patch
-import pytest
 
 from homeassistant.const import (
     CONF_ACCESS_TOKEN,
@@ -16,21 +13,21 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.util import dt as dt_util
-
-from pytest_homeassistant_custom_component.common import async_fire_time_changed
-from pytest_homeassistant_custom_component.common import (
+import pytest
+from pytest_homeassistant_custom_component.common import (  # type: ignore[import]
     MockConfigEntry,
+    async_fire_time_changed,
 )
 
 import aiohuesyncbox
-
 from custom_components import huesyncbox
 
 
 @pytest.fixture(autouse=True)
-def auto_enable_custom_integrations(enable_custom_integrations):
-    """Enable custom integrations"""
-    yield
+def auto_enable_custom_integrations(enable_custom_integrations) -> Generator[None]:  # noqa: ANN001, ARG001
+    """Enable custom integrations."""
+    yield  # noqa: PT022
+
 
 # Copied from HA tests/components/conftest.py
 @pytest.fixture
@@ -44,7 +41,7 @@ def entity_registry_enabled_by_default() -> Generator[None]:
 
 
 @pytest.fixture
-def mock_api():
+def mock_api() -> Mock:
     """Create a mocked HueSyncBox instance."""
     mock_api = Mock(
         spec=aiohuesyncbox.HueSyncBox,
@@ -115,16 +112,15 @@ def mock_api():
 @dataclass
 class Integration:
     entry: MockConfigEntry
-    mock_api: Type[Mock]
+    mock_api: Mock
 
 
 async def setup_integration(
     hass: HomeAssistant,
-    mock_api,
+    mock_api: Mock,
     mock_config_entry: MockConfigEntry | None = None,
-    entry_id="entry_id",
-):
-
+    entry_id: str = "entry_id",
+) -> Integration:
     entry = mock_config_entry or MockConfigEntry(
         version=2,
         minor_version=2,
@@ -150,7 +146,7 @@ async def setup_integration(
     return Integration(entry, mock_api)
 
 
-async def force_coordinator_update(hass: HomeAssistant):
+async def force_coordinator_update(hass: HomeAssistant) -> None:
     async_fire_time_changed(
         hass, dt_util.utcnow() + huesyncbox.const.COORDINATOR_UPDATE_INTERVAL
     )

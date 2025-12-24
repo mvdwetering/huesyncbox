@@ -1,22 +1,22 @@
-from unittest.mock import call, patch
+from unittest.mock import Mock, call
 
 from homeassistant.core import HomeAssistant
 import pytest
 
-from .conftest import setup_integration
+import aiohuesyncbox
 from custom_components.huesyncbox.services import async_register_services
 
-import aiohuesyncbox
+from .conftest import setup_integration
 
 
 async def test_register_service_can_be_called_multiple_times(
-    hass: HomeAssistant, mock_api
-):
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
     await setup_integration(hass, mock_api)
     await async_register_services(hass)
 
 
-async def test_set_bridge(hass: HomeAssistant, mock_api):
+async def test_set_bridge(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
 
     await hass.services.async_call(
@@ -36,7 +36,7 @@ async def test_set_bridge(hass: HomeAssistant, mock_api):
     )
 
 
-async def test_set_sync_state(hass: HomeAssistant, mock_api):
+async def test_set_sync_state(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
 
     await hass.services.async_call(
@@ -65,7 +65,7 @@ async def test_set_sync_state(hass: HomeAssistant, mock_api):
     )
 
 
-async def test_set_sync_state_no_data(hass: HomeAssistant, mock_api):
+async def test_set_sync_state_no_data(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
 
     # The box will give back an error when setting nothing
@@ -91,12 +91,13 @@ async def test_set_sync_state_no_data(hass: HomeAssistant, mock_api):
     )
 
 
-async def test_set_sync_state_exception(hass: HomeAssistant, mock_api):
+async def test_set_sync_state_exception(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
 
     # Make sure other exceptions are not eaten by empty message logic
+    mock_api.execution.set_state.side_effect = aiohuesyncbox.RequestError("Other")
+
     with pytest.raises(aiohuesyncbox.RequestError):
-        mock_api.execution.set_state.side_effect = aiohuesyncbox.RequestError("Other")
         await hass.services.async_call(
             "huesyncbox",
             "set_sync_state",
@@ -105,12 +106,13 @@ async def test_set_sync_state_exception(hass: HomeAssistant, mock_api):
             },
             blocking=True,
         )
-        assert mock_api.execution.set_state.call_args == call(
-            hdmi_active=None,
-            sync_active=None,
-            mode=None,
-            hdmi_source=None,
-            brightness=None,
-            intensity=None,
-            hue_target=None,
-        )
+
+    assert mock_api.execution.set_state.call_args == call(
+        hdmi_active=None,
+        sync_active=None,
+        mode=None,
+        hdmi_source=None,
+        brightness=None,
+        intensity=None,
+        hue_target=None,
+    )

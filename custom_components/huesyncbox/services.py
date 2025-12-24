@@ -1,13 +1,15 @@
-"""The Philips Hue Play HDMI Sync Box integration."""
+"""The Philips Hue Play HDMI Sync Box integration services."""
 
-import aiohuesyncbox
-import voluptuous as vol  # type: ignore
+from typing import Any
 
 from homeassistant.components.light import ATTR_BRIGHTNESS
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.config_validation import make_entity_service_schema
 from homeassistant.helpers.service import async_extract_config_entry_ids
+import voluptuous as vol
+
+import aiohuesyncbox
 
 from .const import (
     ATTR_BRIDGE_CLIENTKEY,
@@ -57,27 +59,24 @@ HUESYNCBOX_SET_SYNC_STATE_SCHEMA = make_entity_service_schema(
 )
 
 
-async def async_register_services(hass: HomeAssistant):
+async def async_register_set_bridge_service(hass: HomeAssistant) -> None:
+    async def async_set_bridge(call: ServiceCall) -> None:
+        """Set bridge for the syncb, note that this change is not instant.
 
-    async def async_set_bridge(call):
-        """
-        Set bridge, note that this change is not instant.
         After calling you will have to wait until the `bridge_unique_id` matches the new bridge id
         and the bridge_connection_state is `connected`, `invalidgroup`, `streaming` or `busy`, other status means it is connecting.
         I have seen the bridge change to take around 15 seconds.
         """
-
         config_entry_ids = await async_extract_config_entry_ids(call)
         for config_entry_id in config_entry_ids:
             # Need to check if it is our config entry since async_extract_config_entry_ids
             # can return config entries from other integrations also
             # (e.g. area id or devices with entities from multiple integrations)
-            if config_entry := hass.config_entries.async_get_entry(config_entry_id):
+            if config_entry := hass.config_entries.async_get_entry(config_entry_id):  # noqa: SIM102
                 if (
                     config_entry.domain == DOMAIN
                     and config_entry.runtime_data is not None
                 ):
-
                     bridge_id = call.data.get(ATTR_BRIDGE_ID)
                     username = call.data.get(ATTR_BRIDGE_USERNAME)
                     clientkey = call.data.get(ATTR_BRIDGE_CLIENTKEY)
@@ -93,15 +92,16 @@ async def async_register_services(hass: HomeAssistant):
         schema=HUESYNCBOX_SET_BRIDGE_SCHEMA,
     )
 
-    async def async_set_sync_state(call):
-        """Set sync state, allow combining of all options."""
 
+async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
+    async def async_set_sync_state(call: ServiceCall) -> None:
+        """Set sync state, allow combining of all options."""
         config_entry_ids = await async_extract_config_entry_ids(call)
         for config_entry_id in config_entry_ids:
             # Need to check if it is our config entry since async_extract_config_entry_ids
             # can return config entries from other integrations also
             # (e.g. area id or devices with entities from multiple integrations)
-            if config_entry := hass.config_entries.async_get_entry(config_entry_id):
+            if config_entry := hass.config_entries.async_get_entry(config_entry_id):  # noqa: SIM102
                 if (
                     config_entry.domain == DOMAIN
                     and config_entry.runtime_data is not None
@@ -132,8 +132,10 @@ async def async_register_services(hass: HomeAssistant):
                         "hue_target": hue_target,
                     }
 
-                    async def set_state(api: aiohuesyncbox.HueSyncBox, **kwargs):
-                        await api.execution.set_state(**kwargs)
+                    async def set_state(
+                        api: aiohuesyncbox.HueSyncBox, **kwargs: Any
+                    ) -> None:
+                        await api.execution.set_state(**kwargs)  # type: ignore  # noqa: PGH003
 
                     try:
                         await stop_sync_and_retry_on_invalid_state(
@@ -154,3 +156,9 @@ async def async_register_services(hass: HomeAssistant):
         async_set_sync_state,
         schema=HUESYNCBOX_SET_SYNC_STATE_SCHEMA,
     )
+
+
+async def async_register_services(hass: HomeAssistant) -> None:
+    """Register services for the Hue Sync Box integration."""
+    await async_register_set_bridge_service(hass)
+    await async_register_set_sync_state_service(hass)
