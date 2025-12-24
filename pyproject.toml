@@ -45,8 +45,8 @@ Repository = "https://github.com/mvdwetering/huesyncbox"
 
 [project.optional-dependencies]
 dev = [
-  "mypy==1.15.0",
-  "ruff==0.9.7",
+  "mypy==1.17.0",
+  "ruff==0.14.10",
   "pytest>=7.0.0",
   "pytest-cov",
   "pytest-mock",
