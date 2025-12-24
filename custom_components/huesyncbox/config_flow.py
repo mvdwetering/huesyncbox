@@ -101,7 +101,6 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
     MINOR_VERSION = 2
 
     link_task: asyncio.Task | None = None
-    config_entry: HueSyncBoxConfigEntry | None = None
 
     connection_info: ConnectionInfo
     device_name = "Default syncbox name"
@@ -131,7 +130,6 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is None:
             data_schema = USER_DATA_SCHEMA
             if self.source is SOURCE_RECONFIGURE:
-                assert self.connection_info is not None  # noqa: S101
                 data_schema = self.add_suggested_values_to_schema(
                     (RECONFIGURE_DATA_SCHEMA), asdict(self.connection_info)
                 )
@@ -267,7 +265,6 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> ConfigFlowResult:
         """Handle the linking step."""
         _LOGGER.debug("async_step_link, %s", self.connection_info)
-        assert self.connection_info  # noqa: S101
 
         if not self.link_task:
             _LOGGER.debug("async_step_link, async_create_task")
@@ -304,7 +301,6 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
     ) -> ConfigFlowResult:
         """Finish flow."""
         _LOGGER.debug("async_step_finish, %s", user_input)
-        assert self.connection_info  # noqa: S101
 
         if self.source is SOURCE_REAUTH:
             config_entry = self._get_reauth_entry()
