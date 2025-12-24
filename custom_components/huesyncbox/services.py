@@ -3,7 +3,7 @@
 from typing import Any
 
 from homeassistant.components.light import ATTR_BRIGHTNESS
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.config_validation import make_entity_service_schema
 from homeassistant.helpers.service import async_extract_config_entry_ids
@@ -60,7 +60,7 @@ HUESYNCBOX_SET_SYNC_STATE_SCHEMA = make_entity_service_schema(
 
 
 async def async_register_set_bridge_service(hass: HomeAssistant) -> None:
-    async def async_set_bridge(call) -> None:
+    async def async_set_bridge(call: ServiceCall) -> None:
         """Set bridge for the syncb, note that this change is not instant.
 
         After calling you will have to wait until the `bridge_unique_id` matches the new bridge id
@@ -94,7 +94,7 @@ async def async_register_set_bridge_service(hass: HomeAssistant) -> None:
 
 async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
 
-    async def async_set_sync_state(call) -> None:
+    async def async_set_sync_state(call: ServiceCall) -> None:
         """Set sync state, allow combining of all options."""
         config_entry_ids = await async_extract_config_entry_ids(call)
         for config_entry_id in config_entry_ids:
