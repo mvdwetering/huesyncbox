@@ -133,7 +133,7 @@ async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
                     }
 
                     async def set_state(
-                        api: aiohuesyncbox.HueSyncBox, **kwargs: dict[str, Any]
+                        api: aiohuesyncbox.HueSyncBox, **kwargs: Any
                     ) -> None:
                         await api.execution.set_state(**kwargs)  # type: ignore  # noqa: PGH003
 
