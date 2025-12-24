@@ -30,6 +30,17 @@ async def test_input(hass: HomeAssistant, mock_api):
     )
     assert mock_api.execution.set_state.call_args == call(hdmi_source="input3")
 
+async def test_input_unsupported_value(hass: HomeAssistant, mock_api):
+    entity_under_test = "select.name_hdmi_input"
+    mock_api.execution.hdmi_source = "invalid_input"
+
+    await setup_integration(hass, mock_api)
+
+    # Initial value
+    entity = hass.states.get(entity_under_test)
+    assert entity is not None
+    assert entity.state == "unknown"  # HA seems to map unsupported values to "unknown"
+
 
 async def test_intensity(hass: HomeAssistant, mock_api):
     entity_under_test = "select.name_intensity"

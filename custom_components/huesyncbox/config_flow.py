@@ -269,7 +269,6 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         except aiohuesyncbox.AiohuesyncboxException:
             _LOGGER.exception("Unknown Philips Hue Play HDMI Sync Box error occurred")
             return False
-        return False
 
     async def async_step_link(self, _user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Handle the linking step."""
