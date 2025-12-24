@@ -32,6 +32,7 @@ def auto_enable_custom_integrations(enable_custom_integrations):
     """Enable custom integrations"""
     yield
 
+
 # Copied from HA tests/components/conftest.py
 @pytest.fixture
 def entity_registry_enabled_by_default() -> Generator[None]:
@@ -124,7 +125,6 @@ async def setup_integration(
     mock_config_entry: MockConfigEntry | None = None,
     entry_id="entry_id",
 ):
-
     entry = mock_config_entry or MockConfigEntry(
         version=2,
         minor_version=2,

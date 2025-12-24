@@ -8,7 +8,6 @@ REDACTED = "**REDACTED**"
 
 
 async def test_diagnostics(hass: HomeAssistant, mock_api):
-
     API_RESPONSE = {"uniqueId": "abc", "bridgeUniqueId": "def", "ssid": "ghi"}
 
     integration = await setup_integration(hass, mock_api)
@@ -27,7 +26,6 @@ async def test_diagnostics(hass: HomeAssistant, mock_api):
 
 
 async def test_diagnostics_no_response_yet(hass: HomeAssistant, mock_api):
-
     integration = await setup_integration(hass, mock_api)
     integration.mock_api.last_response = None
 
@@ -42,7 +40,6 @@ async def test_diagnostics_no_response_yet(hass: HomeAssistant, mock_api):
 
 
 async def test_diagnostics_not_setup(hass: HomeAssistant, mock_api):
-
     integration = await setup_integration(hass, mock_api)
     integration.entry.runtime_data = None
 

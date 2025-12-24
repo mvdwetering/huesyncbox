@@ -86,7 +86,6 @@ async def test_user_new_box(hass: HomeAssistant, mock_api) -> None:
 
 
 async def test_reconfigure_host(hass: HomeAssistant, mock_api) -> None:
-
     integration = await setup_integration(hass, mock_api)
     assert integration.entry.data["host"] != "1.2.3.4"
 
@@ -335,7 +334,6 @@ async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api) -> Non
 
 
 async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
-
     integration = await setup_integration(hass, mock_api)
 
     assert integration.entry.data["access_token"] == "token_value"
@@ -352,7 +350,9 @@ async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
     assert result["step_id"] == "reauth_confirm"
 
     # Confirming will start link phase which tries to connect to the API so setup upfront
-    with (patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance,):
+    with (
+        patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance,
+    ):
         huesyncbox_instance.return_value.__aenter__.return_value = mock_api
 
         # First attempt button not pressed yet, second try return value
@@ -387,4 +387,3 @@ async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
         assert integration.entry.data["port"] == 1234
         assert integration.entry.data["unique_id"] == "unique_id_value"
         assert integration.entry.data["path"] == "/path_value"
-
