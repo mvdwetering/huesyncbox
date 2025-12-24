@@ -139,7 +139,6 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         if user_input is None:
-
             data_schema = USER_DATA_SCHEMA
             if self.configure_reason is ConfigureReason.RECONFIGURE:
                 assert self.connection_info is not None

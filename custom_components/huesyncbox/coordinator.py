@@ -40,7 +40,6 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
             # handled by the data update coordinator.
             async with asyncio.timeout(5):
-
                 old_device = self.api.device
                 await self.api.update()
                 self._consecutive_errors = 0

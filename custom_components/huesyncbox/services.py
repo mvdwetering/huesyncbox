@@ -58,7 +58,6 @@ HUESYNCBOX_SET_SYNC_STATE_SCHEMA = make_entity_service_schema(
 
 
 async def async_register_services(hass: HomeAssistant):
-
     async def async_set_bridge(call):
         """
         Set bridge, note that this change is not instant.
@@ -77,7 +76,6 @@ async def async_register_services(hass: HomeAssistant):
                     config_entry.domain == DOMAIN
                     and config_entry.runtime_data is not None
                 ):
-
                     bridge_id = call.data.get(ATTR_BRIDGE_ID)
                     username = call.data.get(ATTR_BRIDGE_USERNAME)
                     clientkey = call.data.get(ATTR_BRIDGE_CLIENTKEY)
