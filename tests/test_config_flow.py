@@ -295,7 +295,7 @@ async def test_zeroconf_new_box(hass: HomeAssistant, mock_api: Mock) -> None:
 async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api: Mock) -> None:
     integration = await setup_integration(hass, mock_api)
 
-    # Make sure there is different data befroe
+    # Make sure there is different data before
     assert integration.entry.data["host"] != "1.2.3.4"
     assert integration.entry.data["port"] != 443
     assert integration.entry.data["path"] != "/different"
