@@ -1,16 +1,16 @@
-from unittest.mock import call
+from unittest.mock import Mock, call
 
 from homeassistant.core import HomeAssistant
 
 from .conftest import force_coordinator_update, setup_integration
 
 
-async def test_switch(hass: HomeAssistant, mock_api):
+async def test_switch(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
     assert hass.states.async_entity_ids_count("switch") == 3
 
 
-async def test_power(hass: HomeAssistant, mock_api):
+async def test_power(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "switch.name_power"
 
     await setup_integration(hass, mock_api)
@@ -45,7 +45,7 @@ async def test_power(hass: HomeAssistant, mock_api):
     assert mock_api.execution.set_state.call_args == call(mode="passthrough")
 
 
-async def test_lightsync(hass: HomeAssistant, mock_api):
+async def test_lightsync(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "switch.name_light_sync"
 
     await setup_integration(hass, mock_api)
@@ -74,7 +74,7 @@ async def test_lightsync(hass: HomeAssistant, mock_api):
     assert mock_api.execution.set_state.call_args == call(sync_active=True)
 
 
-async def test_dolby_vision_compatibility_not_supported(hass: HomeAssistant, mock_api):
+async def test_dolby_vision_compatibility_not_supported(hass: HomeAssistant, mock_api: Mock) -> None:
     mock_api.behavior.force_dovi_native = None
     await setup_integration(hass, mock_api)
 
@@ -82,7 +82,7 @@ async def test_dolby_vision_compatibility_not_supported(hass: HomeAssistant, moc
     assert entity is None
 
 
-async def test_dolby_vision_compatibility_supported(hass: HomeAssistant, mock_api):
+async def test_dolby_vision_compatibility_supported(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "switch.name_dolby_vision_compatibility"
     await setup_integration(hass, mock_api)
 

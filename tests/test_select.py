@@ -1,16 +1,16 @@
-from unittest.mock import call
+from unittest.mock import Mock, call
 
 from homeassistant.core import HomeAssistant
 
 from .conftest import force_coordinator_update, setup_integration
 
 
-async def test_select(hass: HomeAssistant, mock_api):
+async def test_select(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
     assert hass.states.async_entity_ids_count("select") == 5
 
 
-async def test_input(hass: HomeAssistant, mock_api):
+async def test_input(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "select.name_hdmi_input"
 
     await setup_integration(hass, mock_api)
@@ -30,7 +30,7 @@ async def test_input(hass: HomeAssistant, mock_api):
     )
     assert mock_api.execution.set_state.call_args == call(hdmi_source="input3")
 
-async def test_input_unsupported_value(hass: HomeAssistant, mock_api):
+async def test_input_unsupported_value(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "select.name_hdmi_input"
     mock_api.execution.hdmi_source = "invalid_input"
 
@@ -42,7 +42,7 @@ async def test_input_unsupported_value(hass: HomeAssistant, mock_api):
     assert entity.state == "unknown"  # HA seems to map unsupported values to "unknown"
 
 
-async def test_intensity(hass: HomeAssistant, mock_api):
+async def test_intensity(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "select.name_intensity"
 
     await setup_integration(hass, mock_api)
@@ -63,7 +63,7 @@ async def test_intensity(hass: HomeAssistant, mock_api):
     assert mock_api.execution.set_state.call_args == call(music={"intensity": "high"})
 
 
-async def test_mode(hass: HomeAssistant, mock_api):
+async def test_mode(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "select.name_sync_mode"
 
     await setup_integration(hass, mock_api)
@@ -91,7 +91,7 @@ async def test_mode(hass: HomeAssistant, mock_api):
     assert mock_api.execution.set_state.call_args == call(mode="video")
 
 
-async def test_entertainment_area(hass: HomeAssistant, mock_api):
+async def test_entertainment_area(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "select.name_entertainment_area"
 
     await setup_integration(hass, mock_api)
@@ -112,7 +112,7 @@ async def test_entertainment_area(hass: HomeAssistant, mock_api):
     assert mock_api.execution.set_state.call_args == call(hue_target="id1")
 
 
-async def test_led_indicator(hass: HomeAssistant, mock_api):
+async def test_led_indicator(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "select.name_led_indicator"
 
     await setup_integration(hass, mock_api)

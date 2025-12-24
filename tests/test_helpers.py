@@ -1,16 +1,19 @@
-import aiohuesyncbox
+from typing import Any
+from unittest.mock import Mock, call
+
+from homeassistant.core import HomeAssistant
 import pytest
+
+import aiohuesyncbox
 from custom_components.huesyncbox.helpers import (
     LinearRangeConverter,
     get_group_from_area_name,
 )
-from homeassistant.core import HomeAssistant
-from unittest.mock import call
 
 from .conftest import setup_integration
 
 
-def test_linear_range_converter():
+def test_linear_range_converter() -> None:
     lrc = LinearRangeConverter([-1, 1], [-11, 11])
 
     assert lrc.range_1_to_range_2(-1) == -11
@@ -22,7 +25,7 @@ def test_linear_range_converter():
     assert lrc.range_2_to_range_1(0) == 0
 
 
-def test_group_from_area_name(mock_api):
+def test_group_from_area_name(mock_api: Mock) -> None:
     assert get_group_from_area_name(mock_api, "does not exist") is None
 
     group = get_group_from_area_name(mock_api, "Name 1")
@@ -31,8 +34,8 @@ def test_group_from_area_name(mock_api):
 
 
 async def test_retry_on_invalid_state_nothing_streaming_so_no_retry(
-    hass: HomeAssistant, mock_api
-):
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
     entity_under_test = "switch.name_power"
     await setup_integration(hass, mock_api)
 
@@ -51,7 +54,7 @@ async def test_retry_on_invalid_state_nothing_streaming_so_no_retry(
 
 
 @pytest.mark.parametrize(
-    "entity_platform, entity_under_test, service, service_data",
+    ("entity_platform", "entity_under_test", "service", "service_data"),
     [
         ("switch", "switch.name_power", "turn_off", {}),
         ("switch", "switch.name_power", "turn_on", {}),
@@ -62,13 +65,13 @@ async def test_retry_on_invalid_state_nothing_streaming_so_no_retry(
 )
 async def test_retry_on_invalid_state_streaming_so_retry(
     hass: HomeAssistant,
-    mock_api,
-    entity_platform,
-    entity_under_test,
-    service,
-    service_data,
-):
-    mock_api.hue.groups[1]._raw["active"] = True
+    mock_api: Mock,
+    entity_platform: str,
+    entity_under_test: str,
+    service: str,
+    service_data: dict[str, Any],
+) -> None:
+    mock_api.hue.groups[1]._raw["active"] = True  # noqa: SLF001
     await setup_integration(hass, mock_api)
 
     entity = hass.states.get(entity_under_test)
