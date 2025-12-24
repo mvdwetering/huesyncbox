@@ -1,13 +1,11 @@
 """Config flow for Philips Hue Play HDMI Sync Box integration."""
 
 import asyncio
+import contextlib
 from dataclasses import asdict, dataclass
-from enum import Enum, auto, unique
+from enum import Enum, auto
 import logging
 from typing import Any
-
-import aiohuesyncbox
-import voluptuous as vol  # type: ignore
 
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import (
@@ -20,6 +18,9 @@ from homeassistant.const import (
 )
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
+import voluptuous as vol
+
+import aiohuesyncbox
 
 from . import HueSyncBoxConfigEntry
 from .const import DEFAULT_PORT, DOMAIN, REGISTRATION_ID
@@ -56,7 +57,7 @@ class ConnectionInfo:
     path: str = "/api"
 
 
-def entry_data_from_connection_info(connection_info: ConnectionInfo):
+def entry_data_from_connection_info(connection_info: ConnectionInfo) -> dict[str, Any]:
     return {
         CONF_HOST: connection_info.host,
         CONF_UNIQUE_ID: connection_info.unique_id,
@@ -78,7 +79,6 @@ def connection_info_from_entry(entry: HueSyncBoxConfigEntry) -> ConnectionInfo:
 
 async def try_connection(connection_info: ConnectionInfo) -> bool:
     """Check if the connection_info allows us to connect."""
-
     async with aiohuesyncbox.HueSyncBox(
         connection_info.host,
         connection_info.unique_id,
@@ -91,9 +91,9 @@ async def try_connection(connection_info: ConnectionInfo) -> bool:
             return await huesyncbox.is_registered()
         # Note that Unauthorized exception can not occur with the call to `is_registered`
         # Leave it here to make clear why it is not handled
-        # except aiohuesyncbox.Unauthorized:
-        except aiohuesyncbox.RequestError:
-            raise CannotConnect
+        # except aiohuesyncbox.Unauthorized:  # noqa: ERA001
+        except aiohuesyncbox.RequestError as err:
+            raise CannotConnectError from err
 
 
 class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -130,7 +130,7 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
             self.context["entry_id"]
         )
 
-        assert self.config_entry is not None
+        assert self.config_entry is not None  # noqa: S101
         self.connection_info = connection_info_from_entry(self.config_entry)
 
         return await self.async_step_configure(user_input=user_input)
@@ -141,7 +141,7 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         if user_input is None:
             data_schema = USER_DATA_SCHEMA
             if self.configure_reason is ConfigureReason.RECONFIGURE:
-                assert self.connection_info is not None
+                assert self.connection_info is not None  # noqa: S101
                 data_schema = self.add_suggested_values_to_schema(
                     (RECONFIGURE_DATA_SCHEMA), asdict(self.connection_info)
                 )
@@ -164,7 +164,7 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
 
         try:
             is_registered = await try_connection(connection_info)
-        except CannotConnect:
+        except CannotConnectError:
             errors["base"] = "cannot_connect"
         except Exception:  # pylint: disable=broad-except
             _LOGGER.exception("Unexpected exception")
@@ -226,7 +226,7 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         # and it seems to get stuck. Go through intermediate dialog like with reauth.
         return await self.async_step_zeroconf_confirm()
 
-    async def async_step_zeroconf_confirm(self, user_input=None) -> ConfigFlowResult:
+    async def async_step_zeroconf_confirm(self, user_input:dict[str, Any] | None = None) -> ConfigFlowResult:
         """Dialog that informs the user that device is found and needs to be linked."""
         _LOGGER.debug("async_step_zeroconf_confirm, %s", user_input)
         if user_input is None:
@@ -235,7 +235,7 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def _async_register(
         self, ha_instance_name: str, connection_info: ConnectionInfo
-    ):
+    ) -> bool:
         _LOGGER.debug("_async_register, %s", connection_info)
 
         try:
@@ -248,13 +248,11 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
             ) as huesyncbox:
                 registration_info = None
                 while not registration_info:
-                    try:
+                    # InvalidState is expected because syncbox will be in invalid state until button is pressed
+                    with contextlib.suppress(aiohuesyncbox.InvalidState):
                         registration_info = await huesyncbox.register(
                             "Home Assistant", ha_instance_name
                         )
-                    except aiohuesyncbox.InvalidState:
-                        # This is expected as syncbox will be in invalid state until button is pressed
-                        pass
                     await asyncio.sleep(1)
 
                 self.connection_info.access_token = registration_info[CONF_ACCESS_TOKEN]
@@ -266,17 +264,17 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
                 self.device_name = huesyncbox.device.name
 
                 return True
-
         except aiohuesyncbox.RequestError:
             return False
         except aiohuesyncbox.AiohuesyncboxException:
             _LOGGER.exception("Unknown Philips Hue Play HDMI Sync Box error occurred")
             return False
+        return False
 
-    async def async_step_link(self, user_input=None) -> ConfigFlowResult:
+    async def async_step_link(self, _user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Handle the linking step."""
         _LOGGER.debug("async_step_link, %s", self.connection_info)
-        assert self.connection_info
+        assert self.connection_info  # noqa: S101
 
         if not self.link_task:
             _LOGGER.debug("async_step_link, async_create_task")
@@ -308,13 +306,13 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
             next_step_id="finish" if registered else "abort"
         )
 
-    async def async_step_finish(self, user_input=None) -> ConfigFlowResult:
-        """Finish flow"""
+    async def async_step_finish(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        """Finish flow."""
         _LOGGER.debug("async_step_finish, %s", user_input)
-        assert self.connection_info
+        assert self.connection_info  # noqa: S101
 
         if self.configure_reason is not ConfigureReason.USER:
-            assert self.config_entry is not None
+            assert self.config_entry is not None  # noqa: S101
             return self.async_update_reload_and_abort(
                 self.config_entry,
                 data=asdict(self.connection_info),
@@ -329,12 +327,12 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
             title=self.device_name, data=asdict(self.connection_info)
         )
 
-    async def async_step_abort(self, user_input=None) -> ConfigFlowResult:
-        """Abort flow"""
+    async def async_step_abort(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+        """Abort flow."""
         _LOGGER.debug("async_step_abort, %s", user_input)
         return self.async_abort(reason="connection_failed")
 
-    async def async_step_reauth(self, user_input=None):
+    async def async_step_reauth(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         """Reauth is triggered when token is not valid anymore, retrigger link flow."""
         _LOGGER.debug("async_step_reauth, %s", user_input)
 
@@ -343,12 +341,12 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
             self.context["entry_id"]
         )
 
-        assert self.config_entry is not None
+        assert self.config_entry is not None  # noqa: S101
         self.connection_info = connection_info_from_entry(self.config_entry)
 
         return await self.async_step_reauth_confirm()
 
-    async def async_step_reauth_confirm(self, user_input=None) -> ConfigFlowResult:
+    async def async_step_reauth_confirm(self, user_input:dict[str, Any]|None = None) -> ConfigFlowResult:
         """Dialog that informs the user that reauth is required."""
         _LOGGER.debug("async_step_reauth_confirm, %s", user_input)
         if user_input is None:
@@ -356,9 +354,9 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         return await self.async_step_link()
 
 
-class CannotConnect(HomeAssistantError):
+class CannotConnectError(HomeAssistantError):
     """Error to indicate we cannot connect."""
 
 
-class InvalidAuth(HomeAssistantError):
+class InvalidAuthError(HomeAssistantError):
     """Error to indicate there is invalid auth."""

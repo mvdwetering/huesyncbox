@@ -2,10 +2,10 @@
 
 import asyncio
 
-import aiohuesyncbox
-
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+
+import aiohuesyncbox
 
 from .const import COORDINATOR_UPDATE_INTERVAL, LOGGER
 from .helpers import update_config_entry_title, update_device_registry
@@ -16,7 +16,7 @@ MAX_CONSECUTIVE_ERRORS = 5
 class HueSyncBoxCoordinator(DataUpdateCoordinator):
     """My custom coordinator."""
 
-    def __init__(self, hass, api: aiohuesyncbox.HueSyncBox):
+    def __init__(self, hass, api: aiohuesyncbox.HueSyncBox) -> None:
         """Initialize my coordinator."""
         super().__init__(
             hass,
@@ -29,12 +29,12 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
         self.api = api
         self._consecutive_errors = 0
 
-    def _is_consecutive_error_reached(self):
+    def _is_consecutive_error_reached(self) -> bool:
         self._consecutive_errors += 1
         LOGGER.debug("Consecutive errors = %s", self._consecutive_errors)
         return self._consecutive_errors >= MAX_CONSECUTIVE_ERRORS
 
-    async def _async_update_data(self):
+    async def _async_update_data(self) -> aiohuesyncbox.HueSyncBox:
         """Fetch data from API endpoint."""
         try:
             # Note: asyncio.TimeoutError and aiohttp.ClientError are already
@@ -58,7 +58,7 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator):
             LOGGER.debug("aiohuesyncbox.RequestError while updating data: %s", err)
             if self._is_consecutive_error_reached():
                 raise UpdateFailed(err) from err
-        except asyncio.TimeoutError:
+        except TimeoutError:
             LOGGER.debug("asyncio.TimeoutError while updating data")
             if self._is_consecutive_error_reached():
                 raise

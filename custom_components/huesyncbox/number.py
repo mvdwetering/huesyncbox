@@ -1,11 +1,14 @@
+from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
-from typing import Callable, Coroutine
-
-import aiohuesyncbox
 
 from homeassistant.components.number import NumberEntity, NumberEntityDescription
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+
+import aiohuesyncbox
 
 from .const import DOMAIN
 from .coordinator import HueSyncBoxCoordinator
@@ -18,19 +21,19 @@ class HueSyncBoxNumberEntityDescription(NumberEntityDescription):
     set_value_fn: Callable[[aiohuesyncbox.HueSyncBox, float], Coroutine] = None  # type: ignore[assignment]
 
 
-async def set_brightness(api: aiohuesyncbox.HueSyncBox, brightness):
+async def set_brightness(api: aiohuesyncbox.HueSyncBox, brightness: float) -> None:
     await api.execution.set_state(
         brightness=BrightnessRangeConverter.ha_to_api(brightness)
     )
 
 
 ENTITY_DESCRIPTIONS = [
-    HueSyncBoxNumberEntityDescription(  # type: ignore
-        key="brightness",  # type: ignore
-        native_max_value=100,  # type: ignore
-        native_min_value=1,  # type: ignore
-        native_step=1,  # type: ignore
-        native_unit_of_measurement="%",  # type: ignore
+    HueSyncBoxNumberEntityDescription(
+        key="brightness",
+        native_max_value=100,
+        native_min_value=1,
+        native_step=1,
+        native_unit_of_measurement="%",
         get_value=lambda api: BrightnessRangeConverter.api_to_ha(
             api.execution.brightness
         ),
@@ -39,14 +42,14 @@ ENTITY_DESCRIPTIONS = [
 ]
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(_hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities:AddEntitiesCallback) -> None:
     coordinator = config_entry.runtime_data.coordinator
 
-    entities: list[NumberEntity] = []
-
-    for entity_description in ENTITY_DESCRIPTIONS:
-        if entity_description.get_value(coordinator.api) is not None:
-            entities.append(HueSyncBoxNumber(coordinator, entity_description))
+    entities: list[NumberEntity] = [
+        HueSyncBoxNumber(coordinator, entity_description)
+        for entity_description in ENTITY_DESCRIPTIONS
+        if entity_description.get_value(coordinator.api) is not None
+    ]
 
     async_add_entities(entities)
 
@@ -58,7 +61,7 @@ class HueSyncBoxNumber(CoordinatorEntity, NumberEntity):
         self,
         coordinator: HueSyncBoxCoordinator,
         entity_description: HueSyncBoxNumberEntityDescription,
-    ):
+    ) -> None:
         """Pass coordinator to CoordinatorEntity."""
         super().__init__(coordinator)
         self.coordinator: HueSyncBoxCoordinator

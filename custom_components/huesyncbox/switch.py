@@ -1,13 +1,16 @@
+from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
-from typing import Any, Callable, Coroutine
+from typing import Any
+
+from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import DeviceInfo, EntityCategory
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 import aiohuesyncbox
 
-from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
-from homeassistant.helpers.entity import DeviceInfo, EntityCategory
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
-
-from . import HueSyncBoxConfigEntry
 from .const import DOMAIN
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import stop_sync_and_retry_on_invalid_state
@@ -22,21 +25,21 @@ class HueSyncBoxSwitchEntityDescription(SwitchEntityDescription):
 
 
 ENTITY_DESCRIPTIONS = [
-    HueSyncBoxSwitchEntityDescription(  # type: ignore
-        key="power",  # type: ignore
+    HueSyncBoxSwitchEntityDescription(
+        key="power",
         is_on=lambda api: api.execution.mode != "powersave",
         turn_on=lambda api: api.execution.set_state(mode="passthrough"),
         turn_off=lambda api: api.execution.set_state(mode="powersave"),
     ),
-    HueSyncBoxSwitchEntityDescription(  # type: ignore
-        key="light_sync",  # type: ignore
+    HueSyncBoxSwitchEntityDescription(
+        key="light_sync",
         is_on=lambda api: api.execution.mode not in ["powersave", "passthrough"],
         turn_on=lambda api: api.execution.set_state(sync_active=True),
         turn_off=lambda api: api.execution.set_state(sync_active=False),
     ),
-    HueSyncBoxSwitchEntityDescription(  # type: ignore
-        key="dolby_vision_compatibility",  # type: ignore
-        entity_category=EntityCategory.CONFIG,  # type: ignore
+    HueSyncBoxSwitchEntityDescription(
+        key="dolby_vision_compatibility",
+        entity_category=EntityCategory.CONFIG,
         is_on=lambda api: api.behavior.force_dovi_native == 1,
         turn_on=lambda api: api.behavior.set_force_dovi_native(1),
         turn_off=lambda api: api.behavior.set_force_dovi_native(0),
@@ -46,15 +49,15 @@ ENTITY_DESCRIPTIONS = [
 
 
 async def async_setup_entry(
-    hass, config_entry: HueSyncBoxConfigEntry, async_add_entities
-):
+    _hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+) -> None:
     coordinator = config_entry.runtime_data.coordinator
 
-    entities: list[SwitchEntity] = []
-
-    for entity_description in ENTITY_DESCRIPTIONS:
-        if entity_description.is_supported(coordinator.api):
-            entities.append(HueSyncBoxSwitch(coordinator, entity_description))
+    entities: list[SwitchEntity] = [
+        HueSyncBoxSwitch(coordinator, entity_description)
+        for entity_description in ENTITY_DESCRIPTIONS
+        if entity_description.is_supported(coordinator.api)
+    ]
 
     async_add_entities(entities)
 
@@ -66,7 +69,7 @@ class HueSyncBoxSwitch(CoordinatorEntity, SwitchEntity):
         self,
         coordinator: HueSyncBoxCoordinator,
         entity_description: HueSyncBoxSwitchEntityDescription,
-    ):
+    ) -> None:
         """Pass coordinator to CoordinatorEntity."""
         super().__init__(coordinator)
         self.coordinator: HueSyncBoxCoordinator
@@ -86,14 +89,14 @@ class HueSyncBoxSwitch(CoordinatorEntity, SwitchEntity):
         """Return True if entity is on."""
         return self.entity_description.is_on(self.coordinator.api)
 
-    async def async_turn_on(self, **kwargs):
+    async def async_turn_on(self, **_kwargs: Any) -> None:
         """Turn the entity on."""
         await stop_sync_and_retry_on_invalid_state(
             self.entity_description.turn_on, self.coordinator.api
         )
         await self.coordinator.async_request_refresh()
 
-    async def async_turn_off(self, **kwargs: Any):
+    async def async_turn_off(self, **_kwargs: Any) -> None:
         """Turn the entity off."""
         await stop_sync_and_retry_on_invalid_state(
             self.entity_description.turn_off, self.coordinator.api
