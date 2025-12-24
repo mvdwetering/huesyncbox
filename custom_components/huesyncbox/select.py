@@ -26,10 +26,6 @@ class HueSyncBoxSelectEntityDescription(SelectEntityDescription):
     select_option_fn: Callable[[aiohuesyncbox.HueSyncBox, str], Coroutine] = None  # type: ignore[assignment]
 
 
-class NO_INPUT:  # noqa: N801
-    name: None
-
-
 def get_sync_mode(api: aiohuesyncbox.HueSyncBox) -> str:
     """Get mode."""
     mode = api.execution.mode
