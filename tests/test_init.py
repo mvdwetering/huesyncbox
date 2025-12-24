@@ -29,7 +29,9 @@ async def test_device_info(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
 
     device_registry = dr.async_get(hass)
-    device = device_registry.async_get_device(identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")})
+    device = device_registry.async_get_device(
+        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    )
 
     assert device is not None
     assert device.name == "Name"
@@ -40,7 +42,9 @@ async def test_device_info(hass: HomeAssistant, mock_api: Mock) -> None:
     assert device.connections == {("mac", "12:34:56:ab:cd:ef")}
 
 
-async def test_handle_authentication_error_during_setup(hass: HomeAssistant, mock_api: Mock) -> None:
+async def test_handle_authentication_error_during_setup(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
     mock_api.initialize.side_effect = aiohuesyncbox.Unauthorized
     integration = await setup_integration(hass, mock_api)
 
@@ -52,7 +56,9 @@ async def test_handle_authentication_error_during_setup(hass: HomeAssistant, moc
     assert mock_api.close.call_count == 1
 
 
-async def test_handle_communication_error_during_setup(hass: HomeAssistant, mock_api: Mock) -> None:
+async def test_handle_communication_error_during_setup(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
     mock_api.initialize.side_effect = aiohuesyncbox.RequestError
     integration = await setup_integration(hass, mock_api)
 
@@ -88,7 +94,9 @@ async def test_unload_entry(hass: HomeAssistant, mock_api: Mock) -> None:
         (aiohuesyncbox.AiohuesyncboxException),
     ],
 )
-async def test_remove_entry(hass: HomeAssistant, mock_api: Mock, side_effect: Exception | None) -> None:
+async def test_remove_entry(
+    hass: HomeAssistant, mock_api: Mock, side_effect: Exception | None
+) -> None:
     integration = await setup_integration(hass, mock_api)
 
     # Manually unload to be able to isolate remove call

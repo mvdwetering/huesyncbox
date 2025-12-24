@@ -92,8 +92,8 @@ async def async_register_set_bridge_service(hass: HomeAssistant) -> None:
         schema=HUESYNCBOX_SET_BRIDGE_SCHEMA,
     )
 
-async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
 
+async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
     async def async_set_sync_state(call: ServiceCall) -> None:
         """Set sync state, allow combining of all options."""
         config_entry_ids = await async_extract_config_entry_ids(call)
@@ -132,8 +132,10 @@ async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
                         "hue_target": hue_target,
                     }
 
-                    async def set_state(api: aiohuesyncbox.HueSyncBox, **kwargs:dict[str, Any]) -> None:
-                        await api.execution.set_state(**kwargs) # type: ignore  # noqa: PGH003
+                    async def set_state(
+                        api: aiohuesyncbox.HueSyncBox, **kwargs: dict[str, Any]
+                    ) -> None:
+                        await api.execution.set_state(**kwargs)  # type: ignore  # noqa: PGH003
 
                     try:
                         await stop_sync_and_retry_on_invalid_state(

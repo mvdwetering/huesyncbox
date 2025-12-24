@@ -43,7 +43,9 @@ def update_config_entry_title(
     hass.config_entries.async_update_entry(config_entry, title=new_title)
 
 
-async def stop_sync_and_retry_on_invalid_state(async_func: Callable, *args: Any, **kwargs: Any) -> None:
+async def stop_sync_and_retry_on_invalid_state(
+    async_func: Callable, *args: Any, **kwargs: Any
+) -> None:
     try:
         await async_func(*args, **kwargs)
     except aiohuesyncbox.InvalidState:
@@ -100,7 +102,9 @@ def get_hue_target_from_id(id_: str) -> str:
         return id_
 
 
-def get_group_from_area_name(api: aiohuesyncbox.HueSyncBox, area_name: str) -> aiohuesyncbox.Group | None:
+def get_group_from_area_name(
+    api: aiohuesyncbox.HueSyncBox, area_name: str
+) -> aiohuesyncbox.Group | None:
     """Get the group object by entertainment area name."""
     for group in api.hue.groups:
         if group.name == area_name:

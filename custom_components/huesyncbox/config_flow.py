@@ -226,7 +226,9 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
         # and it seems to get stuck. Go through intermediate dialog like with reauth.
         return await self.async_step_zeroconf_confirm()
 
-    async def async_step_zeroconf_confirm(self, user_input:dict[str, Any] | None = None) -> ConfigFlowResult:
+    async def async_step_zeroconf_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Dialog that informs the user that device is found and needs to be linked."""
         _LOGGER.debug("async_step_zeroconf_confirm, %s", user_input)
         if user_input is None:
@@ -270,7 +272,9 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
             _LOGGER.exception("Unknown Philips Hue Play HDMI Sync Box error occurred")
             return False
 
-    async def async_step_link(self, _user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+    async def async_step_link(
+        self, _user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Handle the linking step."""
         _LOGGER.debug("async_step_link, %s", self.connection_info)
         assert self.connection_info  # noqa: S101
@@ -305,7 +309,9 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
             next_step_id="finish" if registered else "abort"
         )
 
-    async def async_step_finish(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+    async def async_step_finish(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Finish flow."""
         _LOGGER.debug("async_step_finish, %s", user_input)
         assert self.connection_info  # noqa: S101
@@ -326,12 +332,16 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
             title=self.device_name, data=asdict(self.connection_info)
         )
 
-    async def async_step_abort(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+    async def async_step_abort(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Abort flow."""
         _LOGGER.debug("async_step_abort, %s", user_input)
         return self.async_abort(reason="connection_failed")
 
-    async def async_step_reauth(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
+    async def async_step_reauth(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Reauth is triggered when token is not valid anymore, retrigger link flow."""
         _LOGGER.debug("async_step_reauth, %s", user_input)
 
@@ -345,7 +355,9 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
 
         return await self.async_step_reauth_confirm()
 
-    async def async_step_reauth_confirm(self, user_input:dict[str, Any]|None = None) -> ConfigFlowResult:
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Dialog that informs the user that reauth is required."""
         _LOGGER.debug("async_step_reauth_confirm, %s", user_input)
         if user_input is None:

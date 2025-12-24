@@ -94,7 +94,7 @@ ENTITY_DESCRIPTIONS = [
         key="wifi_strength",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
-        get_value=lambda api: WIFI_STRENGTH_STATES[api.device.wifi.strength], # type: ignore[union-attr]
+        get_value=lambda api: WIFI_STRENGTH_STATES[api.device.wifi.strength],  # type: ignore[union-attr]
     ),
     HueSyncBoxSensorEntityDescription(
         key="content_info",
@@ -105,7 +105,11 @@ ENTITY_DESCRIPTIONS = [
 ]
 
 
-async def async_setup_entry(_hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities:AddEntitiesCallback) -> None:
+async def async_setup_entry(
+    _hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     coordinator = config_entry.runtime_data.coordinator
 
     entities: list[SensorEntity] = []

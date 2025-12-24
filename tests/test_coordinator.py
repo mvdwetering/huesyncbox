@@ -19,7 +19,9 @@ async def test_update_device_registry_and_config_entry_on_name_change(
 
     # Verify current name
     device_registry = dr.async_get(hass)
-    device = device_registry.async_get_device(identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")})
+    device = device_registry.async_get_device(
+        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    )
     assert device is not None
     assert device.name == "Name"
 
@@ -34,7 +36,9 @@ async def test_update_device_registry_and_config_entry_on_name_change(
     await force_coordinator_update(hass)
 
     # Check device registry and config entry got updated
-    device = device_registry.async_get_device(identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")})
+    device = device_registry.async_get_device(
+        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    )
     assert device is not None
     assert device.name == "New name"
 
@@ -43,7 +47,9 @@ async def test_update_device_registry_and_config_entry_on_name_change(
     assert config_entry.title == "New name"
 
 
-async def test_authentication_error_starts_reauth_flow(hass: HomeAssistant, mock_api: Mock) -> None:
+async def test_authentication_error_starts_reauth_flow(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
     integration = await setup_integration(hass, mock_api)
 
     # Make sure we start as expected

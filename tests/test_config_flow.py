@@ -184,7 +184,9 @@ async def test_user_box_connection_errors_during_link(
 
 
 # asyncio.CancelledError
-async def test_user_box_abort_flow_during_link(hass: HomeAssistant, mock_api: Mock) -> None:
+async def test_user_box_abort_flow_during_link(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
     )

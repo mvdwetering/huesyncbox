@@ -49,7 +49,9 @@ ENTITY_DESCRIPTIONS = [
 
 
 async def async_setup_entry(
-    _hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    _hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator = config_entry.runtime_data.coordinator
 

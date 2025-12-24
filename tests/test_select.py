@@ -30,6 +30,7 @@ async def test_input(hass: HomeAssistant, mock_api: Mock) -> None:
     )
     assert mock_api.execution.set_state.call_args == call(hdmi_source="input3")
 
+
 async def test_input_unsupported_value(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "select.name_hdmi_input"
     mock_api.execution.hdmi_source = "invalid_input"

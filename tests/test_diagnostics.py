@@ -11,7 +11,11 @@ REDACTED = "**REDACTED**"
 
 async def test_diagnostics(hass: HomeAssistant, mock_api: Mock) -> None:
     integration = await setup_integration(hass, mock_api)
-    integration.mock_api.last_response = {"uniqueId": "abc", "bridgeUniqueId": "def", "ssid": "ghi"}
+    integration.mock_api.last_response = {
+        "uniqueId": "abc",
+        "bridgeUniqueId": "def",
+        "ssid": "ghi",
+    }
 
     diagnostics = await async_get_config_entry_diagnostics(hass, integration.entry)
 

@@ -40,7 +40,6 @@ class Branch:
 
 
 class Git:
-
     @staticmethod
     def get_current_branch() -> Branch:
         branch_name = subprocess.check_output(["git", "branch", "--show-current"])
@@ -90,6 +89,7 @@ class Git:
     @staticmethod
     def fetch_tags():
         subprocess.run(["git", "fetch", "--tags"], check=True)
+
 
 def menu(title, choices):
     while True:
@@ -182,7 +182,8 @@ def get_integration_name():
     dir_list = [
         name
         for name in os.listdir("custom_components")
-        if os.path.isdir(os.path.join("custom_components", name)) and name != "__pycache__"
+        if os.path.isdir(os.path.join("custom_components", name))
+        and name != "__pycache__"
     ]
     if len(dir_list) != 1:
         raise ValueError(
@@ -356,6 +357,7 @@ def main(args):
 
     print("Done!")
     print(f"Currently on branch: {Git.get_current_branch().name}")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

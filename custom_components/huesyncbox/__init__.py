@@ -88,7 +88,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: HueSyncBoxConfigEntry) 
     return unload_ok
 
 
-async def async_remove_entry(_hass: HomeAssistant, entry: HueSyncBoxConfigEntry) -> None:
+async def async_remove_entry(
+    _hass: HomeAssistant, entry: HueSyncBoxConfigEntry
+) -> None:
     # Best effort cleanup. User might not even have the device anymore or had it factory reset.
     # Note that the entry already has been unloaded, so need to create API again
     try:
@@ -107,7 +109,9 @@ async def async_remove_entry(_hass: HomeAssistant, entry: HueSyncBoxConfigEntry)
         )
 
 
-async def async_migrate_entry(hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry) -> bool:
+async def async_migrate_entry(
+    hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry
+) -> bool:
     """Migrate old entry."""
     from_version = config_entry.version
     LOGGER.debug("Migrating from version %s", from_version)
@@ -130,9 +134,7 @@ def migrate_v1_to_v2(hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry) -
     # Mediaplayer entities are obsolete
     # cleanup so the user does not have to
     registry = er.async_get(hass)
-    entities = er.async_entries_for_config_entry(
-        registry, config_entry.entry_id
-    )
+    entities = er.async_entries_for_config_entry(registry, config_entry.entry_id)
 
     for entity in entities:
         if entity.domain == Platform.MEDIA_PLAYER:
@@ -144,7 +146,9 @@ def migrate_v1_to_v2(hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry) -
     hass.config_entries.async_update_entry(config_entry, version=2, minor_version=1)
 
 
-def migrate_v2_1_to_v2_2(hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry) -> None:
+def migrate_v2_1_to_v2_2(
+    hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry
+) -> None:
     # Remove any pending repairs
     ir.async_delete_issue(
         hass, DOMAIN, f"automations_using_deleted_mediaplayer_{config_entry.entry_id}"
