@@ -75,6 +75,7 @@ testpaths = ["tests"]
 [tool.ruff]
 src = ["custom_components/huesyncbox"]
 
+# Most ignores are taken from Home Assistant configuration
 [tool.ruff.lint]
 ignore = [
   "A005",   # It is just wrong
