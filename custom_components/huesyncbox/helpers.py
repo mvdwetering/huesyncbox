@@ -1,5 +1,8 @@
 """Helpers for the Philips Hue Play HDMI Sync Box integration."""
 
+from collections.abc import Callable
+from typing import Any
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
@@ -40,7 +43,7 @@ def update_config_entry_title(
     hass.config_entries.async_update_entry(config_entry, title=new_title)
 
 
-async def stop_sync_and_retry_on_invalid_state(async_func, *args, **kwargs) -> None:
+async def stop_sync_and_retry_on_invalid_state(async_func: Callable, *args: Any, **kwargs: Any) -> None:
     try:
         await async_func(*args, **kwargs)
     except aiohuesyncbox.InvalidState:
