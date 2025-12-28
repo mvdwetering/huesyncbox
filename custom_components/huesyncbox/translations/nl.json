@@ -187,11 +187,11 @@
   "services": {
     "set_bridge": {
       "name": "Stel bridge in",
-      "description": "Stel de bridge in die gebruikt moet worden door de Philips Hue Play HDMI Syncbox. Let op het aanpassen en opnieuw verbinden duurt een tijdje (ongeveer 15 seconden lijkt het). Nadat de bridge verbonden is kan het zijn dat de `entertainment_area` aangepast moet worden. Dit is te zien aaan 'connectionstate' die `invalidgroup` is ipv`connected`.",
+      "description": "Stel de bridge in die gebruikt moet worden door de Philips Hue Play HDMI Syncbox. Let op! Het aanpassen en opnieuw verbinden duurt een tijdje (ongeveer 15 seconden). Nadat de bridge verbonden is kan het zijn dat de `entertainment_area` aangepast moet worden. Dit is te zien aan 'connectionstate' die `invalidgroup` is ipv `connected`.",
       "fields": {
         "device_id": {
-           "name": "Syncbox apparaat-ID",
-           "description": "Home Assistant apparaat-ID van de Philips Hue Play HDMI Syncbox."
+          "name": "Syncbox apparaat-ID",
+          "description": "Home Assistant apparaat-ID van de Philips Hue Play HDMI Syncbox."
         },
         "bridge_id": {
           "name": "Bridge ID",
@@ -211,13 +211,13 @@
       "name": "Bedien syncbox",
       "description": "Bedien alle instellingen van de Philips Hue Play HDMI Syncbox in één keer.",
       "fields": {
-         "device_id": {
+        "device_id": {
           "name": "Syncbox apparaat-ID",
           "description": "Home Assistant apparaat-ID van de Philips Hue Play HDMI Syncbox."
         },
-       "power": {
+        "power": {
           "name": "Ingeschakeld",
-          "description": "Zet be box aan of uit."
+          "description": "Zet de box aan of uit."
         },
         "sync": {
           "name": "Light sync",

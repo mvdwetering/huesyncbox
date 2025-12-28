@@ -68,7 +68,7 @@ def syncbox_config_entry_for_device_id(
     device_registry = dr.async_get(hass)
 
     if device_entry := device_registry.async_get(device_id):
-        # Multiple configentries can be associated with a device.
+        # Multiple config entries can be associated with a device.
         # So need to find the correct one for this integration.
         for config_entry_id in device_entry.config_entries:
             entry = hass.config_entries.async_get_entry(config_entry_id)
@@ -150,7 +150,7 @@ async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
             if "13: Invalid Key" in ex.args[0]:
                 # Clarify this specific case as people will run into it
                 LOGGER.warning(
-                    "The service call resulted in an empty message to the syncbox. Make sure some data is provided)."
+                    "The service call resulted in an empty message to the syncbox. Make sure some data is provided."
                 )
             else:
                 raise
