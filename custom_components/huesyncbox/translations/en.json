@@ -189,6 +189,10 @@
       "name": "Set bridge",
       "description": "Set the bridge to be used by the Philips Hue Play HDMI Syncbox. Keep in mind that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to select the `entertainment_area` if connectionstate is `invalidgroup` instead of `connected`.",
       "fields": {
+        "device_id": {
+          "name": "Syncbox device ID",
+          "description": "Home Assistant device ID of the Philips Hue Play HDMI Syncbox."
+        },
         "bridge_id": {
           "name": "Bridge ID",
           "description": "ID of the bridge. A hexadecimal code of 16 characters."
@@ -207,6 +211,10 @@
       "name": "Set light sync state",
       "description": "Control the complete light sync state of the Philips Hue Play HDMI Syncbox with one call.",
       "fields": {
+        "device_id": {
+          "name": "Syncbox device ID",
+          "description": "Home Assistant device ID of the Philips Hue Play HDMI Syncbox."
+        },
         "power": {
           "name": "Power",
           "description": "Turn the box on or off."
