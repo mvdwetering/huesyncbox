@@ -1,4 +1,0 @@
--r requirements_test.txt
-
-awesomeversion>=24.0.0
-homeassistant-stubs==2025.2.0

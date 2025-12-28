@@ -1,25 +1,27 @@
 import asyncio
 from unittest.mock import Mock
 
-import aiohuesyncbox
-import pytest
-
-from custom_components import huesyncbox
 from homeassistant.config_entries import SOURCE_REAUTH
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import device_registry
+from homeassistant.helpers import device_registry as dr
+import pytest
+
+import aiohuesyncbox
+from custom_components import huesyncbox
 
 from .conftest import force_coordinator_update, setup_integration
 
 
 async def test_update_device_registry_and_config_entry_on_name_change(
-    hass: HomeAssistant, mock_api
-):
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
     integration = await setup_integration(hass, mock_api)
 
     # Verify current name
-    dr = device_registry.async_get(hass)
-    device = dr.async_get_device(identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")})
+    device_registry = dr.async_get(hass)
+    device = device_registry.async_get_device(
+        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    )
     assert device is not None
     assert device.name == "Name"
 
@@ -34,7 +36,9 @@ async def test_update_device_registry_and_config_entry_on_name_change(
     await force_coordinator_update(hass)
 
     # Check device registry and config entry got updated
-    device = dr.async_get_device(identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")})
+    device = device_registry.async_get_device(
+        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    )
     assert device is not None
     assert device.name == "New name"
 
@@ -43,7 +47,9 @@ async def test_update_device_registry_and_config_entry_on_name_change(
     assert config_entry.title == "New name"
 
 
-async def test_authentication_error_starts_reauth_flow(hass: HomeAssistant, mock_api):
+async def test_authentication_error_starts_reauth_flow(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
     integration = await setup_integration(hass, mock_api)
 
     # Make sure we start as expected
@@ -69,8 +75,8 @@ async def test_authentication_error_starts_reauth_flow(hass: HomeAssistant, mock
     ],
 )
 async def test_continued_communication_errors_mark_entities_unavailable(
-    hass: HomeAssistant, mock_api, side_effect
-):
+    hass: HomeAssistant, mock_api: Mock, side_effect: type[Exception]
+) -> None:
     entity_under_test = "switch.name_power"
     await setup_integration(hass, mock_api)
 

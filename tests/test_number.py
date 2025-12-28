@@ -1,16 +1,16 @@
-from unittest.mock import call
+from unittest.mock import Mock, call
 
 from homeassistant.core import HomeAssistant
 
 from .conftest import setup_integration
 
 
-async def test_number(hass: HomeAssistant, mock_api):
+async def test_number(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
     assert hass.states.async_entity_ids_count("number") == 1
 
 
-async def test_brightness(hass: HomeAssistant, mock_api):
+async def test_brightness(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "number.name_brightness"
 
     await setup_integration(hass, mock_api)

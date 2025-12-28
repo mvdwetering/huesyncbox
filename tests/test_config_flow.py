@@ -1,24 +1,23 @@
 """Test the Philips Hue Play HDMI Sync Box config flow."""
 
 import asyncio
-from unittest import mock
-from unittest.mock import patch
 from ipaddress import IPv4Address
+from unittest import mock
+from unittest.mock import Mock, patch
 
 from homeassistant import config_entries
-from homeassistant.components import zeroconf
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, UnknownFlow
+from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 import pytest
 
-from custom_components import huesyncbox
-
 import aiohuesyncbox
+from custom_components import huesyncbox
 
 from .conftest import setup_integration
 
 
-async def test_user_new_box(hass: HomeAssistant, mock_api) -> None:
+async def test_user_new_box(hass: HomeAssistant, mock_api: Mock) -> None:
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
@@ -85,8 +84,7 @@ async def test_user_new_box(hass: HomeAssistant, mock_api) -> None:
         assert entries[0].unique_id == "test_unique_id"
 
 
-async def test_reconfigure_host(hass: HomeAssistant, mock_api) -> None:
-
+async def test_reconfigure_host(hass: HomeAssistant, mock_api: Mock) -> None:
     integration = await setup_integration(hass, mock_api)
     assert integration.entry.data["host"] != "1.2.3.4"
 
@@ -115,14 +113,14 @@ async def test_reconfigure_host(hass: HomeAssistant, mock_api) -> None:
 
 
 @pytest.mark.parametrize(
-    "side_effect, error_message",
+    ("side_effect", "error_message"),
     [
         (aiohuesyncbox.RequestError, "cannot_connect"),
         (Exception, "unknown"),
     ],
 )
 async def test_connection_errors_during_connection_check(
-    hass: HomeAssistant, side_effect, error_message
+    hass: HomeAssistant, side_effect: type[Exception], error_message: str
 ) -> None:
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
@@ -158,7 +156,7 @@ async def test_connection_errors_during_connection_check(
     ],
 )
 async def test_user_box_connection_errors_during_link(
-    hass: HomeAssistant, mock_api, side_effect
+    hass: HomeAssistant, mock_api: Mock, side_effect: type[Exception]
 ) -> None:
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
@@ -186,7 +184,9 @@ async def test_user_box_connection_errors_during_link(
 
 
 # asyncio.CancelledError
-async def test_user_box_abort_flow_during_link(hass: HomeAssistant, mock_api) -> None:
+async def test_user_box_abort_flow_during_link(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
@@ -216,12 +216,12 @@ async def test_user_box_abort_flow_during_link(hass: HomeAssistant, mock_api) ->
             hass.config_entries.flow.async_get(result["flow_id"])
 
 
-async def test_zeroconf_new_box(hass: HomeAssistant, mock_api) -> None:
+async def test_zeroconf_new_box(hass: HomeAssistant, mock_api: Mock) -> None:
     # Triggered by discovery
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN,
         context={"source": config_entries.SOURCE_ZEROCONF},
-        data=zeroconf.ZeroconfServiceInfo(
+        data=ZeroconfServiceInfo(
             ip_address=IPv4Address("1.2.3.4"),
             ip_addresses=[IPv4Address("1.2.3.4")],
             port=443,
@@ -292,10 +292,10 @@ async def test_zeroconf_new_box(hass: HomeAssistant, mock_api) -> None:
         assert len(mock_setup_entry.mock_calls) == 1
 
 
-async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api) -> None:
+async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api: Mock) -> None:
     integration = await setup_integration(hass, mock_api)
 
-    # Make sure there is different data befroe
+    # Make sure there is different data before
     assert integration.entry.data["host"] != "1.2.3.4"
     assert integration.entry.data["port"] != 443
     assert integration.entry.data["path"] != "/different"
@@ -304,7 +304,7 @@ async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api) -> Non
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN,
         context={"source": config_entries.SOURCE_ZEROCONF},
-        data=zeroconf.ZeroconfServiceInfo(
+        data=ZeroconfServiceInfo(
             ip_address=IPv4Address("1.2.3.4"),
             ip_addresses=[IPv4Address("1.2.3.4")],
             port=443,
@@ -334,11 +334,10 @@ async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api) -> Non
     assert integration.entry.data["path"] == "/different"
 
 
-async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
-
+async def test_reauth_flow(hass: HomeAssistant, mock_api: Mock) -> None:
     integration = await setup_integration(hass, mock_api)
 
-    assert integration.entry.data["access_token"] == "token_value"
+    assert integration.entry.data["access_token"] == "token_value"  # noqa: S105
     assert integration.entry.data["registration_id"] == "registration_id_value"
 
     result = await hass.config_entries.flow.async_init(
@@ -352,7 +351,9 @@ async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
     assert result["step_id"] == "reauth_confirm"
 
     # Confirming will start link phase which tries to connect to the API so setup upfront
-    with (patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance,):
+    with (
+        patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance,
+    ):
         huesyncbox_instance.return_value.__aenter__.return_value = mock_api
 
         # First attempt button not pressed yet, second try return value
@@ -374,17 +375,16 @@ async def test_reauth_flow(hass: HomeAssistant, mock_api) -> None:
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
         )
-        # await hass.async_block_till_done()
+        await hass.async_block_till_done()
 
         assert result["type"] == FlowResultType.ABORT
         assert result["reason"] == "reauth_successful"
 
         # Config entry token and registration id should be updated,
-        assert integration.entry.data["access_token"] == "NewAccessToken"
+        assert integration.entry.data["access_token"] == "NewAccessToken"  # noqa: S105
         assert integration.entry.data["registration_id"] == "NewRegistrationId"
         # rest should still be the same
         assert integration.entry.data["host"] == "host_value"
         assert integration.entry.data["port"] == 1234
         assert integration.entry.data["unique_id"] == "unique_id_value"
         assert integration.entry.data["path"] == "/path_value"
-

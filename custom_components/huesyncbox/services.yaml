@@ -1,17 +1,19 @@
 set_bridge:
-  target:
-    device:
-      integration: huesyncbox
-    entity:
-      integration: huesyncbox
   fields:
+    device_id:
+      example: 11223344556677889900aabbccddeeff
+      required: true
+      selector:
+        device:
+          filter:
+            - integration: huesyncbox
     bridge_id:
       example: 001788FFFE000000
       required: true
       selector:
         text:
     bridge_username:
-      example: WB9xS1t0Baw-8ZqYKMcEhOaKRU42E84-NZBXwcIL
+      example: abcdefghijklmnopqrstuvwxyz1234567890ABCD
       required: true
       selector:
         text:
@@ -22,12 +24,14 @@ set_bridge:
         text:
 
 set_sync_state:
-  target:
-    device:
-      integration: huesyncbox
-    entity:
-      integration: huesyncbox
   fields:
+    device_id:
+      example: 11223344556677889900aabbccddeeff
+      required: true
+      selector:
+        device:
+          filter:
+            - integration: huesyncbox
     power:
       example: true
       selector:

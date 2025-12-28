@@ -32,6 +32,8 @@ INPUT_HDMI3 = "input3"
 INPUT_HDMI4 = "input4"
 INPUTS = [INPUT_HDMI1, INPUT_HDMI2, INPUT_HDMI3, INPUT_HDMI4]
 
+ATTR_DEVICE_ID = "device_id"
+
 SERVICE_SET_BRIDGE = "set_bridge"
 ATTR_BRIDGE_ID = "bridge_id"
 ATTR_BRIDGE_USERNAME = "bridge_username"

@@ -1,225 +1,142 @@
-# This file is copied from Home Assistant and might be out of date
+[build-system]
+requires = ["setuptools>=64.0"]
+build-backend = "setuptools.build_meta"
 
-# Removed HA project specific stuff
-
-[tool.black]
-target-version = ["py310"]
-extend-exclude = "/generated/"
-
-[tool.isort]
-# https://github.com/PyCQA/isort/wiki/isort-Settings
-profile = "black"
-# will group `import x` and `from x import` of the same module.
-force_sort_within_sections = true
-known_first_party = [
-    "homeassistant",
-    "tests",
+[project]
+name = "huesyncbox"
+version = "0.0.0"
+license = { text = "Apache-2.0" }
+description = "Custom integration for Home Assistant to control the Philips Hue Play HDMI Sync Box 4K or 8K."
+authors = [
+  { name = "Michel van de Wetering", email = "michel.van.de.wetering+huesyncbox@gmail.com" },
 ]
-forced_separate = [
-    "tests",
+maintainers = [
+  { name = "Michel van de Wetering", email = "michel.van.de.wetering+huesyncbox@gmail.com" },
 ]
-combine_as_imports = true
+readme = "README.md"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3",
+  "Topic :: Home Automation",
+]
+keywords = [
+  "custom component",
+  "custom integration",
+  "hacs",
+  "home-assistant",
+  "home-assistant-custom-component",
+  "homeassistant",
+  "integration",
+  "hue",
+  "huesyncbox",
+]
+requires-python = ">=3.13"
 
-[tool.pylint.MASTER]
+# Also update version in manifest.json
+dependencies = ["aiohuesyncbox==0.0.31"]
+
+[project.urls]
+Documentation = "https://github.com/mvdwetering/huesyncbox"
+Changelog = "https://github.com/mvdwetering/huesyncbox/releases"
+Issues = "https://github.com/mvdwetering/huesyncbox/issues"
+Repository = "https://github.com/mvdwetering/huesyncbox"
+
+[project.optional-dependencies]
+dev = [
+  "mypy==1.17.0",
+  "ruff==0.14.10",
+  "pytest>=7.0.0",
+  "pytest-cov",
+  "pytest-mock",
+  "pytest-homeassistant-custom-component==0.13.298",
+  "awesomeversion>=24.0.0",
+  "homeassistant-stubs==2025.12.0",
+
+  # Pin pycares to avoid aiodns incompatibility with pycares 5.0.0
+  # See: https://github.com/aio-libs/aiodns/issues/214
+  "pycares<5.0.0",
+]
+
+
+[tool.coverage.report]
+exclude_also = [
+  # TYPE_CHECKING block is only executed while running mypy
+  "if TYPE_CHECKING:",
+]
+
+[tool.pytest.ini_options]
+addopts = "--cov=custom_components/huesyncbox --cov-report=term-missing --cov-report=html"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[tool.ruff]
+src = ["custom_components/huesyncbox"]
+
+# Most ignores are taken from Home Assistant configuration
+[tool.ruff.lint]
 ignore = [
-    "tests",
-]
-# Use a conservative default here; 2 should speed up most setups and not hurt
-# any too bad. Override on command line as appropriate.
-jobs = 2
-init-hook = """\
-    from pathlib import Path; \
-    import sys; \
+  "A005",   # It is just wrong
+  "ANN401", # Opiniated warning on disallowing dynamically typed expressions
+  # Ignoring missing docstrings. Most things should be clear and they tend to get out of date which is worse.
+  "D100", # Missing docstrings for public module
+  "D101", # Missing docstrings for public classes
+  "D102", # Missing docstrings for public methods
+  "D103", # Missing docstrings for public functions
+  "D104", # Missing docstrings in public package
+  "D105", # Missing docstrings in magic method
+  "D107", # Missing docstrings in __init__
 
-    from pylint.config import find_default_config_files; \
+  "D203",   # Conflicts with other rules
+  "D213",   # Conflicts with other rules
+  "RUF012", # Just broken
+  "TID252", # Relative imports
 
-    sys.path.append( \
-        str(Path(next(find_default_config_files())).parent.joinpath('pylint/plugins'))
-    ) \
-    """
-load-plugins = [
-    "pylint.extensions.code_style",
-    "pylint.extensions.typing",
-    "hass_constructor",
-    "hass_enforce_type_hints",
-    "hass_imports",
-    "hass_logger",
-    "pylint_per_file_ignores",
+  # Formatter conflicts
+  "COM812",
+  "COM819",
+  "D206",
+  "E501",
+  "ISC001",
+  "Q000",
+  "Q001",
+  "Q002",
+  "Q003",
+  "W191",
 ]
-persistent = false
-extension-pkg-allow-list = [
-    "av.audio.stream",
-    "av.stream",
-    "ciso8601",
-    "orjson",
-    "cv2",
-]
-fail-on = [
-    "I",
+select = ["ALL"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+  "S101",    # Asserts in tests is ok
+  "PLR2004", # Magic values in tests is ok(-ish)
 ]
 
-[tool.pylint.BASIC]
-class-const-naming-style = "any"
-good-names = [
-    "_",
-    "ev",
-    "ex",
-    "fp",
-    "i",
-    "id",
-    "j",
-    "k",
-    "Run",
-    "ip",
-]
+[tool.ruff.lint.flake8-import-conventions.extend-aliases]
+"homeassistant.helpers.area_registry" = "ar"
+"homeassistant.helpers.config_validation" = "cv"
+"homeassistant.helpers.device_registry" = "dr"
+"homeassistant.helpers.entity_registry" = "er"
+"homeassistant.helpers.issue_registry" = "ir"
+voluptuous = "vol"
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["custom_components", "aiohuesyncbox"]
+known-third-party = ["homeassistant"]
+combine-as-imports = true
 
 [tool.pylint."MESSAGES CONTROL"]
 # Reasons disabled:
-# format - handled by black
-# locally-disabled - it spams too much
+# format - handled by ruff
 # duplicate-code - unavoidable
-# cyclic-import - doesn't test if both import on load
-# abstract-class-little-used - prevents from setting right foundation
-# unused-argument - generic callbacks and setup methods create a lot of warnings
-# too-many-* - are not enforced for the sake of readability
-# too-few-* - same as too-many-*
-# abstract-method - with intro of async there are always methods missing
-# inconsistent-return-statements - doesn't handle raise
-# too-many-ancestors - it's too strict.
-# wrong-import-order - isort guards this
-# consider-using-f-string - str.format sometimes more readable
-# ---
-# Enable once current issues are fixed:
-# consider-using-namedtuple-or-dataclass (Pylint CodeStyle extension)
-# consider-using-assignment-expr (Pylint CodeStyle extension)
-# ---
-# Temporary for the Python 3.10 update
-# consider-alternative-union-syntax
+# used-before-assignment - false positives with TYPE_CHECKING structures
 disable = [
-    "format",
-    "abstract-method",
-    "cyclic-import",
-    "duplicate-code",
-    "inconsistent-return-statements",
-    "locally-disabled",
-    "not-context-manager",
-    "too-few-public-methods",
-    "too-many-ancestors",
-    "too-many-arguments",
-    "too-many-branches",
-    "too-many-instance-attributes",
-    "too-many-lines",
-    "too-many-locals",
-    "too-many-public-methods",
-    "too-many-return-statements",
-    "too-many-statements",
-    "too-many-boolean-expressions",
-    "unused-argument",
-    "wrong-import-order",
-    "consider-using-f-string",
-    "consider-using-namedtuple-or-dataclass",
-    "consider-using-assignment-expr",
-    "consider-alternative-union-syntax",
+  "abstract-method",
+  "duplicate-code",
+  "format",
+  "unexpected-keyword-arg",
+  "used-before-assignment",
 ]
-enable = [
-    #"useless-suppression",  # temporarily every now and then to clean them up
-    "use-symbolic-message-instead",
-]
-
-[tool.pylint.REPORTS]
-score = false
-
-[tool.pylint.TYPECHECK]
-ignored-classes = [
-    "_CountingAttr",  # for attrs
-]
-mixin-class-rgx = ".*[Mm]ix[Ii]n"
-
-[tool.pylint.FORMAT]
-expected-line-ending-format = "LF"
-
-[tool.pylint.EXCEPTIONS]
-overgeneral-exceptions = [
-    "BaseException",
-    "Exception",
-    "HomeAssistantError",
-]
-
-[tool.pylint.TYPING]
-runtime-typing = false
-
-[tool.pylint.CODE_STYLE]
-max-line-length-suggestions = 72
-
-[tool.pylint-per-file-ignores]
-# hass-component-root-import: Tests test non-public APIs
-# protected-access: Tests do often test internals a lot
-# redefined-outer-name: Tests reference fixtures in the test function
-"/tests/"="hass-component-root-import,protected-access,redefined-outer-name"
-
-[tool.pytest.ini_options]
-testpaths = [
-    "tests",
-]
-norecursedirs = [
-    ".git",
-    "testing_config",
-]
-log_format = "%(asctime)s.%(msecs)03d %(levelname)-8s %(threadName)s %(name)s:%(filename)s:%(lineno)s %(message)s"
-log_date_format = "%Y-%m-%d %H:%M:%S"
-asyncio_mode = "auto"
-
-[tool.ruff]
-target-version = "py310"
-
-select = [
-    "C",  # complexity
-    "D",  # docstrings
-    "E",  # pycodestyle
-    "F",  # pyflakes/autoflake
-    "PGH004",  # Use specific rule codes when using noqa
-    "PLC0414", # Useless import alias. Import alias does not rename original package.
-    "SIM105", # Use contextlib.suppress({exception}) instead of try-except-pass
-    "SIM117", # Merge with-statements that use the same scope
-    "SIM401", # Use get from dict with default instead of an if block
-    "T20",  # flake8-print
-    "UP",  # pyupgrade
-    "W",  # pycodestyle
-]
-
-ignore = [
-    "D202",  # No blank lines allowed after function docstring
-    "D203",  # 1 blank line required before class docstring
-    "D212",  # Multi-line docstring summary should start at the first line
-    "D213",  # Multi-line docstring summary should start at the second line
-    "D404",  # First word of the docstring should not be This
-    "D406",  # Section name should end with a newline
-    "D407",  # Section name underlining
-    "D411",  # Missing blank line before section
-    "D418",  # Function decorated with `@overload` shouldn't contain a docstring
-    "E501",  # line too long
-    "E713",  # Test for membership should be 'not in'
-    "E731",  # do not assign a lambda expression, use a def
-]
-
-[tool.ruff.flake8-pytest-style]
-fixture-parentheses = false
-
-[tool.ruff.per-file-ignores]
-
-# TODO: these files have functions that are too complex, but flake8's and ruff's
-#       complexity (and/or nested-function) handling differs; trying to add a noqa doesn't work
-#       because the flake8-noqa plugin then disagrees on whether there should be a C901 noqa
-#       on that line.  So, for now, we just ignore C901s on these files as far as ruff is concerned.
-
-"homeassistant/components/light/__init__.py" = ["C901"]
-"homeassistant/components/mqtt/discovery.py" = ["C901"]
-"homeassistant/components/websocket_api/http.py" = ["C901"]
-
-# Allow for main entry & scripts to write to stdout
-"homeassistant/__main__.py" = ["T201"]
-"homeassistant/scripts/*" = ["T201"]
-"script/*" = ["T20"]
-
-[tool.ruff.mccabe]
-max-complexity = 25

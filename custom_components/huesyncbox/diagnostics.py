@@ -13,13 +13,13 @@ KEYS_TO_REDACT_API = ["uniqueId", "bridgeUniqueId", "ssid"]
 
 
 async def async_get_config_entry_diagnostics(
-    hass: HomeAssistant, entry: HueSyncBoxConfigEntry
+    _hass: HomeAssistant, entry: HueSyncBoxConfigEntry
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
     data = {}
 
-    data["config_entry"] = async_redact_data(
-        entry.as_dict(), KEYS_TO_REDACT_CONFIG_ENTRY
+    data["config_entry_data"] = async_redact_data(
+        dict(entry.data), KEYS_TO_REDACT_CONFIG_ENTRY
     )
 
     if runtime_data := entry.runtime_data:
