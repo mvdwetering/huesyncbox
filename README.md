@@ -19,7 +19,7 @@ Minimum required Home Assistant version is: 2025.12.0
 
 ## About
 
-> Please set up the Philips Hue Play HDMI Syncbox with the Hue App first and make sure it works before setting up this integration.
+> Please set up the Philips Hue Play HDMI Sync Box with the Hue App first and make sure it works before setting up this integration.
 
 This integration allows you to control and automate your Philips Hue Play HDMI Sync Box from Home Assistant. Use it in automations, dashboards, and scripts to improve your entertainment experience.
 
@@ -30,7 +30,7 @@ Both the 4K and 8K models are supported.
 ## Possible use-cases
 
 - Start light syncing in specific cases (e.g., when a specific app is running, or only after dark)
-- Turn the box on and control the selected input based on which devices are on (useful if syncbox automatic switching can not be used)
+- Turn the box on and control the selected input based on which devices are on (useful if the automatic switching can not be used)
 - Automate actions when light syncing starts (e.g., dim other lights, close blinds)
 
 ## Entities
@@ -73,13 +73,13 @@ The integration exposes two additional actions.
 
 ### Set bridge
 
-This action allows setting the bridge to be used by the Philips Hue Play HDMI Syncbox. For example when you have 2 different bridges you want to sync to and need to switch.
+This action allows setting the bridge to be used by the Philips Hue Play HDMI Sync Box. For example when you have 2 different bridges you want to sync to and need to switch.
 
 Note that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to (re)select the `entertainment_area` if connectionstate is `invalidgroup` instead of `connected`.
 
 | Parameter | Description | Example |
 | --- | --- | --- |
-| device_id | Home Assistant device ID of the Philips Hue Play HDMI Syncbox. | a0948f93fd32d46992c48f717f184d49 |
+| device_id | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. | a0948f93fd32d46992c48f717f184d49 |
 | bridge_id | ID of the bridge. A hexadecimal code of 16 characters. | 001788FFFE000000 |
 | bridge_username | Username (a.k.a. application key) valid for the bridge. A long code of random characters. | WB9xS1t0Baw-8ZqYKMcEhOaKRU42E84-NZBXwcIL |
 | bridge_clientkey | Clientkey that belongs with the username. A hexadecimal code of 32 characters. | 00112233445566778899AABBCCDDEEFF |
@@ -97,11 +97,11 @@ data:
 
 ### Set sync state
 
-Set the state of multiple entities of the Philips Hue Play HDMI Syncbox at once. Using this action makes sure everything is set in the correct order and is more efficient than using separate commands.
+Set the state of multiple entities of the Philips Hue Play HDMI Sync Box at once. Using this action makes sure everything is set in the correct order and is more efficient than using separate commands.
 
 | Parameter | Description | Example |
 | --- | --- | --- |
-| `device_id` | Home Assistant device ID of the Philips Hue Play HDMI Syncbox. | a0948f93fd32d46992c48f717f184d49 |
+| `device_id` | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. | a0948f93fd32d46992c48f717f184d49 |
 | `power` | Turn the box on or off. | true |
 | `sync` | Set light sync state on or off. Setting this to on will also turn on the box. | true |
 | `brightness` | Brightness value to set. | 42 |
