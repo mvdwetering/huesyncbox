@@ -1,7 +1,7 @@
 set_bridge:
   fields:
     device_id:
-      example: a0948f93fd32d46992c48f717f184d49
+      example: 11223344556677889900aabbccddeeff
       required: true
       selector:
         device:
@@ -13,7 +13,7 @@ set_bridge:
       selector:
         text:
     bridge_username:
-      example: WB9xS1t0Baw-8ZqYKMcEhOaKRU42E84-NZBXwcIL
+      example: abcdefghijklmnopqrstuvwxyz1234567890ABCD
       required: true
       selector:
         text:
@@ -26,7 +26,7 @@ set_bridge:
 set_sync_state:
   fields:
     device_id:
-      example: a0948f93fd32d46992c48f717f184d49
+      example: 11223344556677889900aabbccddeeff
       required: true
       selector:
         device:

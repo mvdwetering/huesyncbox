@@ -79,19 +79,19 @@ Note that changing the bridge by the box takes a while (about 15 seconds it seem
 
 | Parameter | Description | Example |
 | --- | --- | --- |
-| device_id | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. | a0948f93fd32d46992c48f717f184d49 |
+| device_id | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. | 11223344556677889900aabbccddeeff |
 | bridge_id | ID of the bridge. A hexadecimal code of 16 characters. | 001788FFFE000000 |
-| bridge_username | Username (a.k.a. application key) valid for the bridge. A long code of random characters. | WB9xS1t0Baw-8ZqYKMcEhOaKRU42E84-NZBXwcIL |
-| bridge_clientkey | Clientkey that belongs with the username. A hexadecimal code of 32 characters. | 00112233445566778899AABBCCDDEEFF |
+| bridge_username | Username (a.k.a. application key) valid for the bridge. A long code of random characters. | abcdefghijklmnopqrstuvwxyz1234567890ABCD |
+| bridge_clientkey | Client key that belongs with the username. A hexadecimal code of 32 characters. | 00112233445566778899AABBCCDDEEFF |
 
 YAML action call example:
 
 ```yaml
 action: huesyncbox.set_bridge
 data:
-  device_id: a0948f93fd32d46992c48f717f184d49
+  device_id: 11223344556677889900aabbccddeeff
   bridge_id: 001788FFFE000000
-  bridge_username: WB9xS1t0Baw-8ZqYKMcEhOaKRU42E84-NZBXwcIL
+  bridge_username: abcdefghijklmnopqrstuvwxyz1234567890ABCD
   bridge_clientkey: 00112233445566778899AABBCCDDEEFF
 ```
 
@@ -101,7 +101,7 @@ Set the state of multiple entities of the Philips Hue Play HDMI Sync Box at once
 
 | Parameter | Description | Example |
 | --- | --- | --- |
-| `device_id` | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. | a0948f93fd32d46992c48f717f184d49 |
+| `device_id` | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. | 11223344556677889900aabbccddeeff |
 | `power` | Turn the box on or off. | true |
 | `sync` | Set light sync state on or off. Setting this to on will also turn on the box. | true |
 | `brightness` | Brightness value to set. | 42 |
@@ -115,7 +115,7 @@ YAML action call example:
 ```yaml
 action: huesyncbox.set_sync_state
 data:
-  device_id: a0948f93fd32d46992c48f717f184d49
+  device_id: 11223344556677889900aabbccddeeff
   power: true
   sync: true
   brightness: 42
