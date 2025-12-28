@@ -45,6 +45,7 @@ RECONFIGURE_DATA_SCHEMA = vol.Schema(
     }
 )
 
+
 @dataclass
 class ConnectionInfo:
     host: str
@@ -307,9 +308,7 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
             return self.async_update_reload_and_abort(
                 config_entry,
                 data_updates=asdict(self.connection_info),
-                reason=(
-                    "reauth_successful"
-                ),
+                reason="reauth_successful",
             )
 
         if self.source is SOURCE_RECONFIGURE:
@@ -317,9 +316,7 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
             return self.async_update_reload_and_abort(
                 config_entry,
                 data_updates=asdict(self.connection_info),
-                reason=(
-                    "reconfigure_successful"
-                ),
+                reason="reconfigure_successful",
             )
 
         return self.async_create_entry(

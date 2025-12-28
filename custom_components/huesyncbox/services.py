@@ -3,10 +3,10 @@
 from typing import Any
 
 from homeassistant.components.light import ATTR_BRIGHTNESS
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall
-from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers.config_validation import make_entity_service_schema
-from homeassistant.helpers.service import async_extract_config_entry_ids
+from homeassistant.exceptions import ServiceValidationError
+from homeassistant.helpers import config_validation as cv, device_registry as dr
 import voluptuous as vol
 
 import aiohuesyncbox
@@ -15,6 +15,7 @@ from .const import (
     ATTR_BRIDGE_CLIENTKEY,
     ATTR_BRIDGE_ID,
     ATTR_BRIDGE_USERNAME,
+    ATTR_DEVICE_ID,
     ATTR_ENTERTAINMENT_AREA,
     ATTR_INPUT,
     ATTR_INTENSITY,
@@ -36,16 +37,18 @@ from .helpers import (
     stop_sync_and_retry_on_invalid_state,
 )
 
-HUESYNCBOX_SET_BRIDGE_SCHEMA = make_entity_service_schema(
+HUESYNCBOX_SET_BRIDGE_SCHEMA = vol.Schema(
     {
+        vol.Required(ATTR_DEVICE_ID): cv.string,
         vol.Required(ATTR_BRIDGE_ID): cv.string,
         vol.Required(ATTR_BRIDGE_USERNAME): cv.string,
         vol.Required(ATTR_BRIDGE_CLIENTKEY): cv.string,
     }
 )
 
-HUESYNCBOX_SET_SYNC_STATE_SCHEMA = make_entity_service_schema(
+HUESYNCBOX_SET_SYNC_STATE_SCHEMA = vol.Schema(
     {
+        vol.Required(ATTR_DEVICE_ID): cv.string,
         vol.Optional(ATTR_POWER): cv.boolean,
         vol.Optional(ATTR_SYNC): cv.boolean,
         vol.Optional(ATTR_BRIGHTNESS): vol.All(
@@ -59,31 +62,44 @@ HUESYNCBOX_SET_SYNC_STATE_SCHEMA = make_entity_service_schema(
 )
 
 
+def syncbox_config_entry_for_device_id(
+    hass: HomeAssistant, device_id: str
+) -> ConfigEntry:
+    device_registry = dr.async_get(hass)
+
+    if device_entry := device_registry.async_get(device_id):
+        # Multiple config entries can be associated with a device.
+        # So need to find the correct one for this integration.
+        for config_entry_id in device_entry.config_entries:
+            entry = hass.config_entries.async_get_entry(config_entry_id)
+            if entry is not None and entry.domain == DOMAIN:
+                return entry
+
+    raise ServiceValidationError(
+        translation_domain=DOMAIN,
+        translation_key="invalid_device_id",
+        translation_placeholders={"device_id": device_id},
+    )
+
+
 async def async_register_set_bridge_service(hass: HomeAssistant) -> None:
     async def async_set_bridge(call: ServiceCall) -> None:
-        """Set bridge for the syncb, note that this change is not instant.
+        """Set bridge for the syncbox, note that this change is not instant.
 
-        After calling you will have to wait until the `bridge_unique_id` matches the new bridge id
-        and the bridge_connection_state is `connected`, `invalidgroup`, `streaming` or `busy`, other status means it is connecting.
-        I have seen the bridge change to take around 15 seconds.
+        After calling it will take a while until the `bridge_unique_id` matches the new bridge id.
+        When the bridge_connection_state is `connected`, `invalidgroup`, `streaming` or `busy` it is done, other status means it is connecting.
+        The bridge change seems to take around 15 seconds.
         """
-        config_entry_ids = await async_extract_config_entry_ids(call)
-        for config_entry_id in config_entry_ids:
-            # Need to check if it is our config entry since async_extract_config_entry_ids
-            # can return config entries from other integrations also
-            # (e.g. area id or devices with entities from multiple integrations)
-            if config_entry := hass.config_entries.async_get_entry(config_entry_id):  # noqa: SIM102
-                if (
-                    config_entry.domain == DOMAIN
-                    and config_entry.runtime_data is not None
-                ):
-                    bridge_id = call.data.get(ATTR_BRIDGE_ID)
-                    username = call.data.get(ATTR_BRIDGE_USERNAME)
-                    clientkey = call.data.get(ATTR_BRIDGE_CLIENTKEY)
+        config_entry = syncbox_config_entry_for_device_id(
+            hass, call.data[ATTR_DEVICE_ID]
+        )
+        bridge_id = call.data.get(ATTR_BRIDGE_ID)
+        username = call.data.get(ATTR_BRIDGE_USERNAME)
+        clientkey = call.data.get(ATTR_BRIDGE_CLIENTKEY)
 
-                    await config_entry.runtime_data.coordinator.api.hue.set_bridge(
-                        bridge_id, username, clientkey
-                    )
+        await config_entry.runtime_data.coordinator.api.hue.set_bridge(
+            bridge_id, username, clientkey
+        )
 
     hass.services.async_register(
         DOMAIN,
@@ -95,60 +111,49 @@ async def async_register_set_bridge_service(hass: HomeAssistant) -> None:
 
 async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
     async def async_set_sync_state(call: ServiceCall) -> None:
-        """Set sync state, allow combining of all options."""
-        config_entry_ids = await async_extract_config_entry_ids(call)
-        for config_entry_id in config_entry_ids:
-            # Need to check if it is our config entry since async_extract_config_entry_ids
-            # can return config entries from other integrations also
-            # (e.g. area id or devices with entities from multiple integrations)
-            if config_entry := hass.config_entries.async_get_entry(config_entry_id):  # noqa: SIM102
-                if (
-                    config_entry.domain == DOMAIN
-                    and config_entry.runtime_data is not None
-                ):
-                    coordinator = config_entry.runtime_data.coordinator
+        """Set sync state, allows combining of all options."""
+        config_entry = syncbox_config_entry_for_device_id(
+            hass, call.data[ATTR_DEVICE_ID]
+        )
+        coordinator = config_entry.runtime_data.coordinator
 
-                    sync_state = call.data
+        target_sync_state = call.data
 
-                    # Resolve entertainment area
-                    group = get_group_from_area_name(
-                        coordinator.api, sync_state.get(ATTR_ENTERTAINMENT_AREA, None)
-                    )
-                    hue_target = get_hue_target_from_id(group.id) if group else None
+        # Resolve entertainment area
+        group = get_group_from_area_name(
+            coordinator.api, target_sync_state.get(ATTR_ENTERTAINMENT_AREA, None)
+        )
+        hue_target = get_hue_target_from_id(group.id) if group else None
 
-                    state = {
-                        "hdmi_active": sync_state.get(ATTR_POWER, None),
-                        "sync_active": sync_state.get(ATTR_SYNC, None),
-                        "mode": sync_state.get(ATTR_MODE, None),
-                        "hdmi_source": sync_state.get(ATTR_INPUT, None),
-                        "brightness": (
-                            BrightnessRangeConverter.ha_to_api(
-                                sync_state[ATTR_BRIGHTNESS]
-                            )
-                            if ATTR_BRIGHTNESS in sync_state
-                            else None
-                        ),
-                        "intensity": sync_state.get(ATTR_INTENSITY, None),
-                        "hue_target": hue_target,
-                    }
+        state = {
+            "hdmi_active": target_sync_state.get(ATTR_POWER, None),
+            "sync_active": target_sync_state.get(ATTR_SYNC, None),
+            "mode": target_sync_state.get(ATTR_MODE, None),
+            "hdmi_source": target_sync_state.get(ATTR_INPUT, None),
+            "brightness": (
+                BrightnessRangeConverter.ha_to_api(target_sync_state[ATTR_BRIGHTNESS])
+                if ATTR_BRIGHTNESS in target_sync_state
+                else None
+            ),
+            "intensity": target_sync_state.get(ATTR_INTENSITY, None),
+            "hue_target": hue_target,
+        }
 
-                    async def set_state(
-                        api: aiohuesyncbox.HueSyncBox, **kwargs: Any
-                    ) -> None:
-                        await api.execution.set_state(**kwargs)  # type: ignore  # noqa: PGH003
+        async def set_state(api: aiohuesyncbox.HueSyncBox, **kwargs: Any) -> None:
+            await api.execution.set_state(**kwargs)  # type: ignore  # noqa: PGH003
 
-                    try:
-                        await stop_sync_and_retry_on_invalid_state(
-                            set_state, coordinator.api, **state
-                        )
-                    except aiohuesyncbox.RequestError as ex:
-                        if "13: Invalid Key" in ex.args[0]:
-                            # Clarify this specific case as people will run into it
-                            LOGGER.warning(
-                                "The service call resulted in an empty message to the syncbox. Make sure some data is provided)."
-                            )
-                        else:
-                            raise
+        try:
+            await stop_sync_and_retry_on_invalid_state(
+                set_state, coordinator.api, **state
+            )
+        except aiohuesyncbox.RequestError as ex:
+            if "13: Invalid Key" in ex.args[0]:
+                # Clarify this specific case as people will run into it
+                LOGGER.warning(
+                    "The service call resulted in an empty message to the syncbox. Make sure some data is provided."
+                )
+            else:
+                raise
 
     hass.services.async_register(
         DOMAIN,
