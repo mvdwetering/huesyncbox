@@ -179,6 +179,11 @@
       }
     }
   },
+  "exceptions": {
+    "invalid_device_id": {
+      "message": "Device id {device_id} is not valid."
+    }
+  },
   "services": {
     "set_bridge": {
       "name": "Set bridge",

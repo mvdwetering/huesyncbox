@@ -1,8 +1,11 @@
 set_bridge:
-  target:
-    entity:
-      integration: huesyncbox
   fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          filter:
+            - integration: huesyncbox
     bridge_id:
       example: 001788FFFE000000
       required: true
@@ -20,10 +23,13 @@ set_bridge:
         text:
 
 set_sync_state:
-  target:
-    entity:
-      integration: huesyncbox
   fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          filter:
+            - integration: huesyncbox
     power:
       example: true
       selector:
