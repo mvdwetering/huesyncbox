@@ -1,6 +1,7 @@
 set_bridge:
   fields:
     device_id:
+      example: a0948f93fd32d46992c48f717f184d49
       required: true
       selector:
         device:
@@ -25,6 +26,7 @@ set_bridge:
 set_sync_state:
   fields:
     device_id:
+      example: a0948f93fd32d46992c48f717f184d49
       required: true
       selector:
         device:
