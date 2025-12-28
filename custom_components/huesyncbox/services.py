@@ -61,7 +61,10 @@ HUESYNCBOX_SET_SYNC_STATE_SCHEMA = vol.Schema(
     }
 )
 
-def syncbox_config_entry_for_device_id(hass: HomeAssistant, device_id: str) -> ConfigEntry:
+
+def syncbox_config_entry_for_device_id(
+    hass: HomeAssistant, device_id: str
+) -> ConfigEntry:
     device_registry = dr.async_get(hass)
 
     if device_entry := device_registry.async_get(device_id):
@@ -78,6 +81,7 @@ def syncbox_config_entry_for_device_id(hass: HomeAssistant, device_id: str) -> C
         translation_placeholders={"device_id": device_id},
     )
 
+
 async def async_register_set_bridge_service(hass: HomeAssistant) -> None:
     async def async_set_bridge(call: ServiceCall) -> None:
         """Set bridge for the syncbox, note that this change is not instant.
@@ -86,7 +90,9 @@ async def async_register_set_bridge_service(hass: HomeAssistant) -> None:
         When the bridge_connection_state is `connected`, `invalidgroup`, `streaming` or `busy` it is done, other status means it is connecting.
         The bridge change seems to take around 15 seconds.
         """
-        config_entry = syncbox_config_entry_for_device_id(hass, call.data[ATTR_DEVICE_ID])
+        config_entry = syncbox_config_entry_for_device_id(
+            hass, call.data[ATTR_DEVICE_ID]
+        )
         bridge_id = call.data.get(ATTR_BRIDGE_ID)
         username = call.data.get(ATTR_BRIDGE_USERNAME)
         clientkey = call.data.get(ATTR_BRIDGE_CLIENTKEY)
@@ -106,7 +112,9 @@ async def async_register_set_bridge_service(hass: HomeAssistant) -> None:
 async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
     async def async_set_sync_state(call: ServiceCall) -> None:
         """Set sync state, allows combining of all options."""
-        config_entry = syncbox_config_entry_for_device_id(hass, call.data[ATTR_DEVICE_ID])
+        config_entry = syncbox_config_entry_for_device_id(
+            hass, call.data[ATTR_DEVICE_ID]
+        )
         coordinator = config_entry.runtime_data.coordinator
 
         target_sync_state = call.data
@@ -123,9 +131,7 @@ async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
             "mode": target_sync_state.get(ATTR_MODE, None),
             "hdmi_source": target_sync_state.get(ATTR_INPUT, None),
             "brightness": (
-                BrightnessRangeConverter.ha_to_api(
-                    target_sync_state[ATTR_BRIGHTNESS]
-                )
+                BrightnessRangeConverter.ha_to_api(target_sync_state[ATTR_BRIGHTNESS])
                 if ATTR_BRIGHTNESS in target_sync_state
                 else None
             ),
@@ -133,9 +139,7 @@ async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
             "hue_target": hue_target,
         }
 
-        async def set_state(
-            api: aiohuesyncbox.HueSyncBox, **kwargs: Any
-        ) -> None:
+        async def set_state(api: aiohuesyncbox.HueSyncBox, **kwargs: Any) -> None:
             await api.execution.set_state(**kwargs)  # type: ignore  # noqa: PGH003
 
         try:

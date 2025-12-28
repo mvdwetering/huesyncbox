@@ -23,9 +23,10 @@ async def test_set_bridge(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
 
     device_registry = dr.async_get(hass)
-    device_entry = device_registry.async_get_device(identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")})
+    device_entry = device_registry.async_get_device(
+        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    )
     assert device_entry is not None
-
 
     await hass.services.async_call(
         huesyncbox.DOMAIN,
@@ -44,44 +45,32 @@ async def test_set_bridge(hass: HomeAssistant, mock_api: Mock) -> None:
     )
 
 
-async def test_set_bridge_unknown_device_id(hass: HomeAssistant, mock_api: Mock) -> None:
+async def test_set_bridge_unknown_device_id(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
     await setup_integration(hass, mock_api)
 
     with pytest.raises(ServiceValidationError):
         await hass.services.async_call(
-        huesyncbox.DOMAIN,
-        "set_bridge",
-        {
-            "device_id": "unknown_device_id",
-            "bridge_id": "001788FFFE000000",
-            "bridge_username": "bridge_username_value",
-            "bridge_clientkey": "00112233445566778899AABBCCDDEEFF",
-        },
-        blocking=True,
-    )
-
-async def test_set_bridge_device_id_not_for_this_integration(hass: HomeAssistant, mock_api: Mock) -> None:
-    await setup_integration(hass, mock_api)
-
-    with pytest.raises(ServiceValidationError):
-        await hass.services.async_call(
-        huesyncbox.DOMAIN,
-        "set_bridge",
-        {
-            "device_id": "unknown_device_id",
-            "bridge_id": "001788FFFE000000",
-            "bridge_username": "bridge_username_value",
-            "bridge_clientkey": "00112233445566778899AABBCCDDEEFF",
-        },
-        blocking=True,
-    )
+            huesyncbox.DOMAIN,
+            "set_bridge",
+            {
+                "device_id": "unknown_device_id",
+                "bridge_id": "001788FFFE000000",
+                "bridge_username": "bridge_username_value",
+                "bridge_clientkey": "00112233445566778899AABBCCDDEEFF",
+            },
+            blocking=True,
+        )
 
 
 async def test_set_sync_state(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
 
     device_registry = dr.async_get(hass)
-    device_entry = device_registry.async_get_device(identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")})
+    device_entry = device_registry.async_get_device(
+        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    )
     assert device_entry is not None
 
     await hass.services.async_call(
@@ -114,7 +103,9 @@ async def test_set_sync_state_no_data(hass: HomeAssistant, mock_api: Mock) -> No
     await setup_integration(hass, mock_api)
 
     device_registry = dr.async_get(hass)
-    device_entry = device_registry.async_get_device(identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")})
+    device_entry = device_registry.async_get_device(
+        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    )
     assert device_entry is not None
 
     # The box will give back an error when setting nothing
@@ -144,7 +135,9 @@ async def test_set_sync_state_exception(hass: HomeAssistant, mock_api: Mock) -> 
     await setup_integration(hass, mock_api)
 
     device_registry = dr.async_get(hass)
-    device_entry = device_registry.async_get_device(identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")})
+    device_entry = device_registry.async_get_device(
+        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    )
     assert device_entry is not None
 
     # Make sure other exceptions are not eaten by empty message logic
@@ -170,6 +163,7 @@ async def test_set_sync_state_exception(hass: HomeAssistant, mock_api: Mock) -> 
         hue_target=None,
     )
 
+
 async def test_set_sync_state_retry_on_invalid_state_streaming(
     hass: HomeAssistant,
     mock_api: Mock,
@@ -178,7 +172,9 @@ async def test_set_sync_state_retry_on_invalid_state_streaming(
     await setup_integration(hass, mock_api)
 
     device_registry = dr.async_get(hass)
-    device_entry = device_registry.async_get_device(identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")})
+    device_entry = device_registry.async_get_device(
+        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    )
     assert device_entry is not None
 
     mock_api.execution.set_state.side_effect = [aiohuesyncbox.InvalidState, None]
@@ -194,15 +190,18 @@ async def test_set_sync_state_retry_on_invalid_state_streaming(
     assert mock_api.hue.set_group_active.call_args == call("id2", active=False)
     assert mock_api.execution.set_state.call_count == 2
 
-async def test_set_sync_state_device_id_not_for_this_integration(hass: HomeAssistant, mock_api: Mock) -> None:
+
+async def test_set_sync_state_device_id_unknown(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
     await setup_integration(hass, mock_api)
 
     with pytest.raises(ServiceValidationError):
         await hass.services.async_call(
-        huesyncbox.DOMAIN,
-        "set_sync_state",
-        {
-            "device_id": "unknown_device_id",
-        },
-        blocking=True,
-    )
+            huesyncbox.DOMAIN,
+            "set_sync_state",
+            {
+                "device_id": "unknown_device_id",
+            },
+            blocking=True,
+        )
