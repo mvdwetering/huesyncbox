@@ -61,7 +61,7 @@ A few notes on behavior when changing entities. This behavior is just how the bo
 
 - Enabling light sync will also power on the box
 - Setting sync mode will also power on the box and start light sync on the selected mode
-- When you want to change multiple entities the order is important. For example, Intensity applies to the current selected mode. So if you want to change both the `intensity` and `mode` you _first_ have to change the mode and then set the intensity. Otherwise, the intensity is applied to the "old" mode. If you want to avoid ordering issues use the [`set_sync_state` action](#set-sync-state) which will take care of the ordering and is more efficient than sending everything separately.
+- When changing multiple entities the order is important. For example, Intensity applies to the current selected mode. So if you want to change both the `intensity` and `mode` you _first_ have to change the mode and then set the intensity. Otherwise, the intensity is applied to the "old" mode. To avoid ordering issues use the [`set_sync_state` action](#set-sync-state) which will take care of the ordering and is more efficient than sending everything separately.
 
 ## Data updates
 
