@@ -96,6 +96,8 @@ ENTITY_DESCRIPTIONS = [
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         get_value=lambda api: WIFI_STRENGTH_STATES[api.device.wifi.strength],  # type: ignore[union-attr]
+        device_class=SensorDeviceClass.ENUM,
+        options=["weak", "fair", "good", "excellent"],
     ),
     HueSyncBoxSensorEntityDescription(
         key="content_info",
