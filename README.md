@@ -77,12 +77,12 @@ This action allows setting the bridge to be used by the Philips Hue Play HDMI Sy
 
 Note that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to (re)select the `entertainment_area` if connectionstate is `invalidgroup` instead of `connected`.
 
-| Parameter | Description | Example |
+| Parameter | Optional | Description |
 | --- | --- | --- |
-| device_id | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. | 11223344556677889900aabbccddeeff |
-| bridge_id | ID of the bridge. A hexadecimal code of 16 characters. | 001788FFFE000000 |
-| bridge_username | Username (a.k.a. application key) valid for the bridge. A long code of random characters. | abcdefghijklmnopqrstuvwxyz1234567890ABCD |
-| bridge_clientkey | Client key that belongs with the username. A hexadecimal code of 32 characters. | 00112233445566778899AABBCCDDEEFF |
+| device_id | No | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. |
+| bridge_id | Yes | ID of the bridge. A hexadecimal code of 16 characters. |
+| bridge_username | Yes | Username (a.k.a. application key) valid for the bridge. A long code of random characters. |
+| bridge_clientkey | Yes | Client key that belongs with the username. A hexadecimal code of 32 characters. |
 
 YAML action call example:
 
@@ -99,16 +99,16 @@ data:
 
 Set the state of multiple entities of the Philips Hue Play HDMI Sync Box at once. Using this action makes sure everything is set in the correct order and is more efficient than using separate commands.
 
-| Parameter | Description | Example |
+| Parameter | Optional | Description |
 | --- | --- | --- |
-| `device_id` | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. | 11223344556677889900aabbccddeeff |
-| `power` | Turn the box on or off. | true |
-| `sync` | Set light sync state on or off. Setting this to on will also turn on the box. | true |
-| `brightness` | Brightness value to set. | 42 |
-| `intensity` | Intensity to set. | high |
-| `mode` | Mode to set. Setting the mode will also turn on the box and start light sync. | video |
-| `input` | Input to select. | input1 |
-| `entertainment_area` | Entertainment area to select. Name must match _exactly_. | TV Area |
+| device_id | No | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. |
+| power | Yes | Turn the box on or off. |
+| sync | Yes | Set light sync state on or off. Setting this to on will also turn on the box. |
+| brightness | Yes | Brightness value to set. |
+| intensity | Yes | Intensity to set. |
+| mode | Yes | Mode to set. Setting the mode will also turn on the box and start light sync. |
+| input | Yes | Input to select. |
+| entertainment_area | Yes | Entertainment area to select. Name must match _exactly_. |
 
 YAML action call example:
 
@@ -127,7 +127,6 @@ data:
 
 ## Installation
 
-> **Note**
 > Please set up the Philips Hue Play HDMI Sync Box with the Hue App first and make sure it works before setting up this integration.
 
 
