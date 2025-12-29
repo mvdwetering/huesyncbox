@@ -15,7 +15,6 @@ Minimum required Home Assistant version is: 2025.12.0
   - [Set sync state](#set-sync-state)
 - [Installation](#installation)
 - [Removal](#removal)
-- [Updating from before version 2.0](#updating-from-before-version-20)
 
 ## About
 
@@ -129,7 +128,6 @@ data:
 
 > Please set up the Philips Hue Play HDMI Sync Box with the Hue App first and make sure it works before setting up this integration.
 
-
 ### Downloading
 
 #### Home Assistant Community Store (HACS)
@@ -180,9 +178,3 @@ For manual configuration, provide the following parameters (found in the Hue app
 This integration follows standard integration removal. No extra steps are required.
 
 Go to "Settings > Devices & Services". Select Philips Hue Play HDMI Sync Box. Click the three dots ⋮ menu and then select Delete.
-
-## Updating from before version 2.0
-
-Version 2.0 is a complete rewrite, enabling multiple entities and modernizing the integration. It is a breaking change, but no functionality is lost—features have just moved.
-
-See the [release notes for 2.0.0](https://github.com/mvdwetering/huesyncbox/releases/tag/v2.0.0) for migration details.
