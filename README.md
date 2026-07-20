@@ -79,9 +79,9 @@ Note that changing the bridge by the box takes a while (about 15 seconds it seem
 | Parameter | Optional | Description |
 | --- | --- | --- |
 | device_id | No | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. |
-| bridge_id | Yes | ID of the bridge. A hexadecimal code of 16 characters. |
-| bridge_username | Yes | Username (a.k.a. application key) valid for the bridge. A long code of random characters. |
-| bridge_clientkey | Yes | Client key that belongs with the username. A hexadecimal code of 32 characters. |
+| bridge_id | No | ID of the bridge. A hexadecimal code of 16 characters. |
+| bridge_username | No | Username (a.k.a. application key) valid for the bridge. A long code of random characters. |
+| bridge_clientkey | No | Client key that belongs with the username. A hexadecimal code of 32 characters. |
 
 YAML action call example:
 
