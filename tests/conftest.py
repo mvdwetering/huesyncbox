@@ -1,7 +1,7 @@
 """Common fixtures  for the Philips Hue Play HDMI Sync Box integration tests."""
 
-from collections.abc import Generator
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, patch
 
 from homeassistant.const import (
@@ -11,7 +11,6 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_UNIQUE_ID,
 )
-from homeassistant.core import HomeAssistant
 from homeassistant.util import dt as dt_util
 import pytest
 from pytest_homeassistant_custom_component.common import (  # type: ignore[import]
@@ -21,6 +20,11 @@ from pytest_homeassistant_custom_component.common import (  # type: ignore[impor
 
 import aiohuesyncbox
 from custom_components import huesyncbox
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
+    from homeassistant.core import HomeAssistant
 
 
 @pytest.fixture(autouse=True)

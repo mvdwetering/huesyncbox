@@ -11,8 +11,6 @@ from homeassistant.const import EntityCategory
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-import aiohuesyncbox
-
 from . import HueSyncBoxCoordinator
 from .const import DOMAIN
 
@@ -22,6 +20,8 @@ if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    import aiohuesyncbox
 
 
 @dataclass(frozen=True, kw_only=True)

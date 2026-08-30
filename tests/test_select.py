@@ -1,10 +1,12 @@
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, call
-
-from homeassistant.core import HomeAssistant
 
 import aiohuesyncbox
 
 from .conftest import force_coordinator_update, setup_integration
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 
 async def test_select(hass: HomeAssistant, mock_api: Mock) -> None:

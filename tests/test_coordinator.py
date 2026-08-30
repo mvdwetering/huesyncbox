@@ -1,8 +1,8 @@
 import asyncio
+from typing import TYPE_CHECKING
 from unittest.mock import Mock
 
 from homeassistant.config_entries import SOURCE_REAUTH
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 import pytest
 
@@ -10,6 +10,9 @@ import aiohuesyncbox
 from custom_components import huesyncbox
 
 from .conftest import force_coordinator_update, setup_integration
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 
 async def test_update_device_registry_and_config_entry_on_name_change(

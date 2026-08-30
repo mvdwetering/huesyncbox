@@ -2,11 +2,11 @@
 
 import asyncio
 from ipaddress import IPv4Address
+from typing import TYPE_CHECKING
 from unittest import mock
 from unittest.mock import Mock, patch
 
 from homeassistant import config_entries
-from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, UnknownFlow
 from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 import pytest
@@ -15,6 +15,9 @@ import aiohuesyncbox
 from custom_components import huesyncbox
 
 from .conftest import setup_integration
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 
 async def test_user_new_box(hass: HomeAssistant, mock_api: Mock) -> None:

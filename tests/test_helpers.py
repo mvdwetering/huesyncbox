@@ -1,7 +1,6 @@
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from unittest.mock import Mock, call
 
-from homeassistant.core import HomeAssistant
 import pytest
 
 import aiohuesyncbox
@@ -11,6 +10,9 @@ from custom_components.huesyncbox.helpers import (
 )
 
 from .conftest import setup_integration
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 
 def test_linear_range_converter() -> None:

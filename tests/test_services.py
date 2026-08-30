@@ -1,6 +1,6 @@
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, call
 
-from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import device_registry as dr
 import pytest
@@ -10,6 +10,9 @@ from custom_components import huesyncbox
 from custom_components.huesyncbox.services import async_register_services
 
 from .conftest import setup_integration
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 
 async def test_register_service_can_be_called_multiple_times(
