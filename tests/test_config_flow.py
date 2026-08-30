@@ -125,7 +125,10 @@ async def test_reconfigure_host(hass: HomeAssistant, mock_api: Mock) -> None:
     ],
 )
 async def test_connection_errors_during_connection_check(
-    hass: HomeAssistant, side_effect: type[Exception], error_message: str
+    hass: HomeAssistant,
+    mock_api: Mock,
+    side_effect: type[Exception],
+    error_message: str,
 ) -> None:
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
@@ -133,22 +136,18 @@ async def test_connection_errors_during_connection_check(
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "configure"
 
-    with patch(
-        "aiohuesyncbox.HueSyncBox.is_registered",
-        return_value=False,
-        side_effect=side_effect,
-    ):
-        result = await hass.config_entries.flow.async_configure(
-            result["flow_id"],
-            {
-                "host": "1.1.1.1",
-                "unique_id": "test-unique_id",
-            },
-        )
+    mock_api.is_registered.side_effect = side_effect
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        {
+            "host": "1.1.1.1",
+            "unique_id": "test-unique_id",
+        },
+    )
 
-        assert result["type"] == FlowResultType.FORM
-        assert result["step_id"] == "configure"
-        assert result["errors"] == {"base": error_message}
+    assert result["type"] == FlowResultType.FORM
+    assert result["step_id"] == "configure"
+    assert result["errors"] == {"base": error_message}
 
 
 @pytest.mark.parametrize(
@@ -305,7 +304,6 @@ async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api: Mock) 
     assert integration.entry.data["port"] != 443
     assert integration.entry.data["path"] != "/different"
 
-    # Trigger flow
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN,
         context={"source": config_entries.SOURCE_ZEROCONF},

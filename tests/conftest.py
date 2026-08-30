@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 from homeassistant.const import (
     CONF_ACCESS_TOKEN,
@@ -26,10 +26,18 @@ if TYPE_CHECKING:
 
     from homeassistant.core import HomeAssistant
 
+
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(enable_custom_integrations) -> Generator[None]:  # noqa: ANN001, ARG001
     """Enable custom integrations."""
     yield  # noqa: PT022
+
+
+@pytest.fixture(autouse=True)
+def mock_huesyncbox(mock_api: Mock) -> Generator[Mock]:
+    """Prevent integration tests from constructing a real HueSyncBox client."""
+    with patch("aiohuesyncbox.HueSyncBox", return_value=mock_api):
+        yield mock_api
 
 
 # Copied from HA tests/components/conftest.py
@@ -46,9 +54,10 @@ def entity_registry_enabled_by_default() -> Generator[None]:
 @pytest.fixture
 def mock_api() -> Mock:
     """Create a mocked HueSyncBox instance."""
-    mock_api = Mock(
+    mock_api = MagicMock(
         spec=aiohuesyncbox.HueSyncBox,
     )
+    mock_api.__aenter__.return_value = mock_api
 
     mock_api.device = Mock(aiohuesyncbox.Device)
     mock_api.device.name = "Name"
@@ -138,12 +147,8 @@ async def setup_integration(
     )
     entry.add_to_hass(hass)
 
-    with (
-        patch("aiohuesyncbox.HueSyncBox", return_value=mock_api),
-        patch.object(mock_api, "_get_clientsession"),
-    ):
-        await hass.config_entries.async_setup(entry.entry_id)
-        await hass.async_block_till_done()
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
 
     return Integration(entry, mock_api)
 
