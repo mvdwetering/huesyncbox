@@ -91,10 +91,10 @@ async def test_set_sync_state(hass: HomeAssistant, mock_api: Mock) -> None:
     assert mock_api.execution.set_state.call_args == call(
         hdmi_active=True,
         sync_active=True,
-        mode="video",
-        hdmi_source="input1",
+        mode=aiohuesyncbox.ExecutionMode.VIDEO,
+        hdmi_source=aiohuesyncbox.HdmiSource.INPUT1,
         brightness=83,
-        intensity="high",
+        intensity=aiohuesyncbox.Intensity.HIGH,
         hue_target="id1",
     )
 
@@ -168,7 +168,7 @@ async def test_set_sync_state_retry_on_invalid_state_streaming(
     hass: HomeAssistant,
     mock_api: Mock,
 ) -> None:
-    mock_api.hue.groups[1]._raw["active"] = True  # noqa: SLF001
+    mock_api.hue.groups[1].active = True
     await setup_integration(hass, mock_api)
 
     device_registry = dr.async_get(hass)

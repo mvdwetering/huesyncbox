@@ -1,12 +1,9 @@
-from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 import aiohuesyncbox
@@ -14,6 +11,13 @@ import aiohuesyncbox
 from .const import DOMAIN, INTENSITIES, SYNC_MODES
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import get_hue_target_from_id, stop_sync_and_retry_on_invalid_state
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Coroutine
+
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 LED_INDICATOR_MODES = ["off", "normal", "dimmed"]
 INPUTS = ["input1", "input2", "input3", "input4"]
@@ -28,10 +32,9 @@ class HueSyncBoxSelectEntityDescription(SelectEntityDescription):
 
 def get_sync_mode(api: aiohuesyncbox.HueSyncBox) -> str:
     """Get mode."""
-    mode = api.execution.mode
     if api.execution.mode not in SYNC_MODES:
-        mode = api.execution.last_sync_mode
-    return mode
+        return api.execution.last_sync_mode
+    return api.execution.mode
 
 
 def available_inputs(api: aiohuesyncbox.HueSyncBox) -> list[str]:
@@ -54,7 +57,9 @@ async def select_input(api: aiohuesyncbox.HueSyncBox, input_name: str) -> None:
     for input_id in INPUTS:
         input_ = getattr(api.hdmi, input_id)
         if input_name == input_.name:
-            await api.execution.set_state(hdmi_source=input_id)
+            await api.execution.set_state(
+                hdmi_source=aiohuesyncbox.HdmiSource(input_id)
+            )
 
 
 def available_entertainment_areas(api: aiohuesyncbox.HueSyncBox) -> list[str]:
@@ -91,11 +96,7 @@ def current_intensity(api: aiohuesyncbox.HueSyncBox) -> str:
 
 async def select_intensity(api: aiohuesyncbox.HueSyncBox, intensity: str) -> None:
     """Set intensity for sync mode."""
-    sync_mode = get_sync_mode(api)
-
-    # Intensity is per mode so update accordingly
-    state = {sync_mode: {"intensity": intensity}}
-    await api.execution.set_state(**state)  # type: ignore  # noqa: PGH003
+    await api.execution.set_state(intensity=aiohuesyncbox.Intensity(intensity))
 
 
 def current_sync_mode(api: aiohuesyncbox.HueSyncBox) -> str:
@@ -104,7 +105,7 @@ def current_sync_mode(api: aiohuesyncbox.HueSyncBox) -> str:
 
 async def select_sync_mode(api: aiohuesyncbox.HueSyncBox, sync_mode: str) -> None:
     """Set sync mode."""
-    await api.execution.set_state(mode=sync_mode)
+    await api.execution.set_state(mode=aiohuesyncbox.ExecutionMode(sync_mode))
 
 
 def current_led_indicator_mode(api: aiohuesyncbox.HueSyncBox) -> str:
@@ -113,7 +114,9 @@ def current_led_indicator_mode(api: aiohuesyncbox.HueSyncBox) -> str:
 
 async def select_led_indicator_mode(api: aiohuesyncbox.HueSyncBox, mode: str) -> None:
     """Set led indicator mode."""
-    await api.device.set_led_mode(LED_INDICATOR_MODES.index(mode))
+    await api.device.set_led_mode(
+        aiohuesyncbox.LedMode(LED_INDICATOR_MODES.index(mode))
+    )
 
 
 ENTITY_DESCRIPTIONS = [

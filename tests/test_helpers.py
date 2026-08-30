@@ -70,7 +70,7 @@ async def test_retry_on_invalid_state_streaming_for_entity_services(
     service: str,
     service_data: dict[str, Any],
 ) -> None:
-    mock_api.hue.groups[1]._raw["active"] = True  # noqa: SLF001
+    mock_api.hue.groups[1].active = True
     await setup_integration(hass, mock_api)
 
     entity = hass.states.get(entity_under_test)

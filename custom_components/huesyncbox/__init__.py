@@ -2,17 +2,16 @@
 
 import asyncio
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers import (
     config_validation as cv,
     entity_registry as er,
     issue_registry as ir,
 )
-from homeassistant.helpers.typing import ConfigType
 
 import aiohuesyncbox
 
@@ -20,6 +19,10 @@ from .const import DOMAIN, LOGGER
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import update_config_entry_title, update_device_registry
 from .services import async_register_services
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.typing import ConfigType
 
 
 @dataclass
