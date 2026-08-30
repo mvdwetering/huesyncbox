@@ -14,7 +14,6 @@ from .conftest import force_coordinator_update, setup_integration
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
-
 async def test_update_device_registry_and_config_entry_on_name_change(
     hass: HomeAssistant, mock_api: Mock
 ) -> None:

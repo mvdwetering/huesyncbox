@@ -14,7 +14,6 @@ from .conftest import setup_integration
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
-
 async def test_register_service_can_be_called_multiple_times(
     hass: HomeAssistant, mock_api: Mock
 ) -> None:

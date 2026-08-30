@@ -8,7 +8,6 @@ from .conftest import force_coordinator_update, setup_integration
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
 
-
 async def test_select(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
     assert hass.states.async_entity_ids_count("select") == 5

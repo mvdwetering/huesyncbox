@@ -26,7 +26,6 @@ if TYPE_CHECKING:
 
     from homeassistant.core import HomeAssistant
 
-
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(enable_custom_integrations) -> Generator[None]:  # noqa: ANN001, ARG001
     """Enable custom integrations."""

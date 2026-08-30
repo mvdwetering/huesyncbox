@@ -23,7 +23,6 @@ if TYPE_CHECKING:
 
     import aiohuesyncbox
 
-
 @dataclass(frozen=True, kw_only=True)
 class HueSyncBoxSensorEntityDescription(SensorEntityDescription):
     get_value: Callable[[aiohuesyncbox.HueSyncBox], str] = None  # type: ignore[assignment]
