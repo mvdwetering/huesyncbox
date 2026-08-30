@@ -99,7 +99,9 @@ async def test_reconfigure_host(hass: HomeAssistant, mock_api: Mock) -> None:
     assert result["step_id"] == "configure"
 
     # Provide different host for existing entry, should update
-    with patch("aiohuesyncbox.HueSyncBox.is_registered", return_value=True):
+    mock_api.is_registered.return_value = True
+    with patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance:
+        huesyncbox_instance.return_value.__aenter__.return_value = mock_api
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {
