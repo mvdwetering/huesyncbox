@@ -44,7 +44,8 @@ async def test_user_new_box(hass: HomeAssistant, mock_api: Mock) -> None:
         # First attempt button not pressed yet, second try return value
         mock_api.register.side_effect = [aiohuesyncbox.InvalidState, mock.DEFAULT]
         mock_api.register.return_value = aiohuesyncbox.RegistrationCredentials(
-            registration_id="registrationId", access_token="accessToken"
+            registration_id="registrationId",
+            access_token="accessToken",  # noqa: S106
         )
 
         result = await hass.config_entries.flow.async_configure(
@@ -263,7 +264,8 @@ async def test_zeroconf_new_box(hass: HomeAssistant, mock_api: Mock) -> None:
         # __aenter__ stuff needed because used as context manager
         huesyncbox_instance.return_value.__aenter__.return_value = mock_api
         mock_api.register.return_value = aiohuesyncbox.RegistrationCredentials(
-            registration_id="registrationId", access_token="accessToken"
+            registration_id="registrationId",
+            access_token="accessToken",  # noqa: S106
         )
 
         result = await hass.config_entries.flow.async_configure(
@@ -361,7 +363,8 @@ async def test_reauth_flow(hass: HomeAssistant, mock_api: Mock) -> None:
 
         # First attempt button not pressed yet, second try return value
         mock_api.register.return_value = aiohuesyncbox.RegistrationCredentials(
-            registration_id="NewRegistrationId", access_token="NewAccessToken"
+            registration_id="NewRegistrationId",
+            access_token="NewAccessToken",  # noqa: S106
         )
 
         # Press next on reauth confirm form
