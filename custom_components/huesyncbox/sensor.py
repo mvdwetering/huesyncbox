@@ -23,6 +23,9 @@ if TYPE_CHECKING:
 
     import aiohuesyncbox
 
+    from . import HueSyncBoxConfigEntry
+
+
 @dataclass(frozen=True, kw_only=True)
 class HueSyncBoxSensorEntityDescription(SensorEntityDescription):
     get_value: Callable[[aiohuesyncbox.HueSyncBox], str] = None  # type: ignore[assignment]
@@ -113,7 +116,7 @@ ENTITY_DESCRIPTIONS = [
 
 async def async_setup_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: HueSyncBoxConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator = config_entry.runtime_data.coordinator
