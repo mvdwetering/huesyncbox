@@ -1,10 +1,8 @@
 """The Philips Hue Play HDMI Sync Box integration services."""
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.light import ATTR_BRIGHTNESS
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import config_validation as cv, device_registry as dr
 import voluptuous as vol
@@ -36,6 +34,10 @@ from .helpers import (
     get_hue_target_from_id,
     stop_sync_and_retry_on_invalid_state,
 )
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant, ServiceCall
 
 HUESYNCBOX_SET_BRIDGE_SCHEMA = vol.Schema(
     {
@@ -128,14 +130,26 @@ async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
         state = {
             "hdmi_active": target_sync_state.get(ATTR_POWER, None),
             "sync_active": target_sync_state.get(ATTR_SYNC, None),
-            "mode": target_sync_state.get(ATTR_MODE, None),
-            "hdmi_source": target_sync_state.get(ATTR_INPUT, None),
+            "mode": (
+                aiohuesyncbox.ExecutionMode(target_sync_state[ATTR_MODE])
+                if ATTR_MODE in target_sync_state
+                else None
+            ),
+            "hdmi_source": (
+                aiohuesyncbox.HdmiSource(target_sync_state[ATTR_INPUT])
+                if ATTR_INPUT in target_sync_state
+                else None
+            ),
             "brightness": (
                 BrightnessRangeConverter.ha_to_api(target_sync_state[ATTR_BRIGHTNESS])
                 if ATTR_BRIGHTNESS in target_sync_state
                 else None
             ),
-            "intensity": target_sync_state.get(ATTR_INTENSITY, None),
+            "intensity": (
+                aiohuesyncbox.Intensity(target_sync_state[ATTR_INTENSITY])
+                if ATTR_INTENSITY in target_sync_state
+                else None
+            ),
             "hue_target": hue_target,
         }
 

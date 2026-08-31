@@ -1,8 +1,8 @@
 import asyncio
+from typing import TYPE_CHECKING
 from unittest.mock import Mock
 
 from homeassistant.config_entries import SOURCE_REAUTH
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 import pytest
 
@@ -11,6 +11,8 @@ from custom_components import huesyncbox
 
 from .conftest import force_coordinator_update, setup_integration
 
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 async def test_update_device_registry_and_config_entry_on_name_change(
     hass: HomeAssistant, mock_api: Mock
@@ -58,7 +60,7 @@ async def test_authentication_error_starts_reauth_flow(
     assert len(list(config_entry.async_get_active_flows(hass, {SOURCE_REAUTH}))) == 0
 
     # Trigger unauthorized update
-    mock_api.update.side_effect = aiohuesyncbox.Unauthorized
+    mock_api.refresh.side_effect = aiohuesyncbox.Unauthorized
     await force_coordinator_update(hass)
 
     # Check if reauth flow is started
@@ -86,7 +88,7 @@ async def test_continued_communication_errors_mark_entities_unavailable(
     assert entity.state == "on"
 
     # Setup communication error
-    mock_api.update.side_effect = side_effect
+    mock_api.refresh.side_effect = side_effect
 
     # Trigger 4 updates, entities should be fine
     for _ in range(4):

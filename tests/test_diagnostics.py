@@ -1,10 +1,15 @@
-from unittest.mock import Mock
 
-from homeassistant.core import HomeAssistant
+
+from typing import TYPE_CHECKING
 
 from custom_components.huesyncbox.diagnostics import async_get_config_entry_diagnostics
 
 from .conftest import setup_integration
+
+if TYPE_CHECKING:
+    from unittest.mock import Mock
+
+    from homeassistant.core import HomeAssistant
 
 REDACTED = "**REDACTED**"
 

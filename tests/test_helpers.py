@@ -1,7 +1,7 @@
-from typing import Any
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any
 from unittest.mock import Mock, call
 
-from homeassistant.core import HomeAssistant
 import pytest
 
 import aiohuesyncbox
@@ -11,6 +11,9 @@ from custom_components.huesyncbox.helpers import (
 )
 
 from .conftest import setup_integration
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 
 def test_linear_range_converter() -> None:
@@ -53,34 +56,43 @@ async def test_retry_on_invalid_state_nothing_streaming_so_no_retry(
     assert mock_api.execution.set_state.call_count == 1
 
 
+@dataclass(frozen=True)
+class EntityServiceCase:
+    entity_platform: str
+    entity_id: str
+    service: str
+    service_data: dict[str, Any]
+
+
 @pytest.mark.parametrize(
-    ("entity_platform", "entity_under_test", "service", "service_data"),
+    "case",
     [
-        ("switch", "switch.name_power", "turn_off", {}),
-        ("switch", "switch.name_power", "turn_on", {}),
-        ("number", "number.name_brightness", "set_value", {"value": 12}),
-        ("select", "select.name_sync_mode", "select_option", {"option": "video"}),
+        EntityServiceCase("switch", "switch.name_power", "turn_off", {}),
+        EntityServiceCase("switch", "switch.name_power", "turn_on", {}),
+        EntityServiceCase(
+            "number", "number.name_brightness", "set_value", {"value": 12}
+        ),
+        EntityServiceCase(
+            "select", "select.name_sync_mode", "select_option", {"option": "video"}
+        ),
     ],
 )
 async def test_retry_on_invalid_state_streaming_for_entity_services(
     hass: HomeAssistant,
     mock_api: Mock,
-    entity_platform: str,
-    entity_under_test: str,
-    service: str,
-    service_data: dict[str, Any],
+    case: EntityServiceCase,
 ) -> None:
-    mock_api.hue.groups[1]._raw["active"] = True  # noqa: SLF001
+    mock_api.hue.groups[1].active = True
     await setup_integration(hass, mock_api)
 
-    entity = hass.states.get(entity_under_test)
+    entity = hass.states.get(case.entity_id)
     assert entity is not None
 
     mock_api.execution.set_state.side_effect = [aiohuesyncbox.InvalidState, None]
-    service_data["entity_id"] = entity_under_test
+    service_data = {**case.service_data, "entity_id": case.entity_id}
     await hass.services.async_call(
-        entity_platform,
-        service,
+        case.entity_platform,
+        case.service,
         service_data,
         blocking=True,
     )

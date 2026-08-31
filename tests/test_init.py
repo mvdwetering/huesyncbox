@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, call, patch
 
 from homeassistant.config_entries import ConfigEntryState
@@ -8,7 +9,6 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_UNIQUE_ID,
 )
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers import (
     device_registry as dr,
     entity_registry as er,
@@ -23,6 +23,9 @@ import aiohuesyncbox
 from custom_components import huesyncbox
 
 from .conftest import setup_integration
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 
 async def test_device_info(hass: HomeAssistant, mock_api: Mock) -> None:

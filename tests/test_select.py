@@ -1,9 +1,12 @@
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, call
 
-from homeassistant.core import HomeAssistant
+import aiohuesyncbox
 
 from .conftest import force_coordinator_update, setup_integration
 
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 async def test_select(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
@@ -28,7 +31,9 @@ async def test_input(hass: HomeAssistant, mock_api: Mock) -> None:
         {"entity_id": entity_under_test, "option": "HDMI 3"},
         blocking=True,
     )
-    assert mock_api.execution.set_state.call_args == call(hdmi_source="input3")
+    assert mock_api.execution.set_state.call_args == call(
+        hdmi_source=aiohuesyncbox.HdmiSource.INPUT3
+    )
 
 
 async def test_input_unsupported_value(hass: HomeAssistant, mock_api: Mock) -> None:
@@ -61,7 +66,9 @@ async def test_intensity(hass: HomeAssistant, mock_api: Mock) -> None:
         {"entity_id": entity_under_test, "option": "high"},
         blocking=True,
     )
-    assert mock_api.execution.set_state.call_args == call(music={"intensity": "high"})
+    assert mock_api.execution.set_state.call_args == call(
+        intensity=aiohuesyncbox.Intensity.HIGH
+    )
 
 
 async def test_mode(hass: HomeAssistant, mock_api: Mock) -> None:
@@ -89,7 +96,9 @@ async def test_mode(hass: HomeAssistant, mock_api: Mock) -> None:
         {"entity_id": entity_under_test, "option": "video"},
         blocking=True,
     )
-    assert mock_api.execution.set_state.call_args == call(mode="video")
+    assert mock_api.execution.set_state.call_args == call(
+        mode=aiohuesyncbox.ExecutionMode.VIDEO
+    )
 
 
 async def test_entertainment_area(hass: HomeAssistant, mock_api: Mock) -> None:

@@ -1,24 +1,27 @@
-from collections.abc import Callable
 import contextlib
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-
-import aiohuesyncbox
 
 from . import HueSyncBoxCoordinator
 from .const import DOMAIN
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    import aiohuesyncbox
 
 @dataclass(frozen=True, kw_only=True)
 class HueSyncBoxSensorEntityDescription(SensorEntityDescription):
