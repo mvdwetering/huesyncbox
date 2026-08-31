@@ -12,12 +12,13 @@ from .const import DOMAIN, LOGGER, MANUFACTURER_NAME
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
+
+    from . import HueSyncBoxConfigEntry
 
 
 async def update_device_registry(
-    hass: HomeAssistant, config_entry: ConfigEntry, api: aiohuesyncbox.HueSyncBox
+    hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry, api: aiohuesyncbox.HueSyncBox
 ) -> None:
     # Add device explicitly to registry so other entities just have to report the identifier to link up
     registry = dr.async_get(hass)
@@ -41,7 +42,7 @@ async def update_device_registry(
 
 
 def update_config_entry_title(
-    hass: HomeAssistant, config_entry: ConfigEntry, new_title: str
+    hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry, new_title: str
 ) -> None:
     hass.config_entries.async_update_entry(config_entry, title=new_title)
 

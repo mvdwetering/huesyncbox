@@ -12,11 +12,12 @@ from .helpers import BrightnessRangeConverter, stop_sync_and_retry_on_invalid_st
 if TYPE_CHECKING:
     from collections.abc import Callable, Coroutine
 
-    from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
     import aiohuesyncbox
+
+    from . import HueSyncBoxConfigEntry
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -48,7 +49,7 @@ ENTITY_DESCRIPTIONS = [
 
 async def async_setup_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: HueSyncBoxConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator = config_entry.runtime_data.coordinator

@@ -15,9 +15,10 @@ from .helpers import get_hue_target_from_id, stop_sync_and_retry_on_invalid_stat
 if TYPE_CHECKING:
     from collections.abc import Callable, Coroutine
 
-    from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    from . import HueSyncBoxConfigEntry
 
 LED_INDICATOR_MODES = ["off", "normal", "dimmed"]
 INPUTS = ["input1", "input2", "input3", "input4"]
@@ -156,7 +157,7 @@ ENTITY_DESCRIPTIONS = [
 
 async def async_setup_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: HueSyncBoxConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator = config_entry.runtime_data.coordinator
