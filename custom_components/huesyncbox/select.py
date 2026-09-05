@@ -29,6 +29,7 @@ class HueSyncBoxSelectEntityDescription(SelectEntityDescription):
     options_fn: Callable[[aiohuesyncbox.HueSyncBox], list[str]] | None = None
     current_option_fn: Callable[[aiohuesyncbox.HueSyncBox], str] = None  # type: ignore[assignment]
     select_option_fn: Callable[[aiohuesyncbox.HueSyncBox, str], Coroutine] = None  # type: ignore[assignment]
+    is_supported_fn: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda _: True
 
 
 def get_sync_mode(api: aiohuesyncbox.HueSyncBox) -> str:
@@ -39,11 +40,12 @@ def get_sync_mode(api: aiohuesyncbox.HueSyncBox) -> str:
 
 
 def available_inputs(api: aiohuesyncbox.HueSyncBox) -> list[str]:
-    inputs = []
-    for input_id in INPUTS:
-        input_ = getattr(api.hdmi, input_id)
-        inputs.append(input_.name)
-    return inputs
+    return [
+        getattr(api.hdmi, input_id).name
+        for input_id in INPUTS
+        if getattr(api.hdmi, input_id)
+    ]
+
 
 
 def current_input(api: aiohuesyncbox.HueSyncBox) -> str:
@@ -57,10 +59,15 @@ async def select_input(api: aiohuesyncbox.HueSyncBox, input_name: str) -> None:
     # Inputname is the user given name, so needs to be mapped back to a valid API value."""
     for input_id in INPUTS:
         input_ = getattr(api.hdmi, input_id)
-        if input_name == input_.name:
+        if input_ and input_name == input_.name:
             await api.execution.set_state(
                 hdmi_source=aiohuesyncbox.HdmiSource(input_id)
             )
+
+
+def are_inputs_supported(api: aiohuesyncbox.HueSyncBox) -> bool:
+    # Check if at least 2 HDMI inputs are available so there is something to choose from
+    return api.hdmi is not None and api.hdmi.input2 is not None
 
 
 def available_entertainment_areas(api: aiohuesyncbox.HueSyncBox) -> list[str]:
@@ -126,6 +133,7 @@ ENTITY_DESCRIPTIONS = [
         options_fn=available_inputs,
         current_option_fn=current_input,
         select_option_fn=select_input,
+        is_supported_fn=are_inputs_supported,
     ),
     HueSyncBoxSelectEntityDescription(
         key="entertainment_area",
@@ -165,6 +173,7 @@ async def async_setup_entry(
     entities: list[SelectEntity] = [
         HueSyncBoxSelect(coordinator, entity_description)
         for entity_description in ENTITY_DESCRIPTIONS
+        if entity_description.is_supported_fn(coordinator.api)
     ]
 
     async_add_entities(entities)

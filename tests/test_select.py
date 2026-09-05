@@ -15,6 +15,7 @@ async def test_select(hass: HomeAssistant, mock_api: Mock) -> None:
 
 async def test_input(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "select.name_hdmi_input"
+    mock_api.hdmi.input4 = None  # Set an input to None to cover more paths
 
     await setup_integration(hass, mock_api)
 
@@ -22,7 +23,7 @@ async def test_input(hass: HomeAssistant, mock_api: Mock) -> None:
     entity = hass.states.get(entity_under_test)
     assert entity is not None
     assert entity.state == "HDMI 2"
-    assert entity.attributes["options"] == ["HDMI 1", "HDMI 2", "HDMI 3", "HDMI 4"]
+    assert entity.attributes["options"] == ["HDMI 1", "HDMI 2", "HDMI 3"]
 
     # Set value
     await hass.services.async_call(
@@ -46,6 +47,28 @@ async def test_input_unsupported_value(hass: HomeAssistant, mock_api: Mock) -> N
     entity = hass.states.get(entity_under_test)
     assert entity is not None
     assert entity.state == "unknown"  # HA seems to map unsupported values to "unknown"
+
+async def test_input_no_hdmi(hass: HomeAssistant, mock_api: Mock) -> None:
+    entity_under_test = "select.name_hdmi_input"
+    mock_api.hdmi = None
+
+    await setup_integration(hass, mock_api)
+
+    # Initial value
+    entity = hass.states.get(entity_under_test)
+    assert entity is None
+
+async def test_input_one_hdmi(hass: HomeAssistant, mock_api: Mock) -> None:
+    entity_under_test = "select.name_hdmi_input"
+    mock_api.hdmi.input2 = None
+    mock_api.hdmi.input3 = None
+    mock_api.hdmi.input4 = None
+
+    await setup_integration(hass, mock_api)
+
+    # Initial value
+    entity = hass.states.get(entity_under_test)
+    assert entity is None
 
 
 async def test_intensity(hass: HomeAssistant, mock_api: Mock) -> None:

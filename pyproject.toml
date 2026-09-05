@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "huesyncbox"
 version = "0.0.0"
 license = { text = "Apache-2.0" }
-description = "Custom integration for Home Assistant to control the Philips Hue Play HDMI Sync Box 4K or 8K."
+description = "Custom integration for Home Assistant to control the Philips Hue Play Sync devices (boxes and screen)."
 authors = [
   { name = "Michel van de Wetering", email = "michel.van.de.wetering+huesyncbox@gmail.com" },
 ]

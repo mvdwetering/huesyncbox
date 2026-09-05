@@ -1,6 +1,6 @@
 {
   "domain": "huesyncbox",
-  "name": "Philips Hue Play HDMI Sync Box",
+  "name": "Philips Hue Play Sync devices",
 
   "codeowners": [
     "@mvdwetering"

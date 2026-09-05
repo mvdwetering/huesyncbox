@@ -1,4 +1,4 @@
-# Philips Hue Play HDMI Sync Box
+# Philips Hue Play Sync devices
 
 Minimum required Home Assistant version is: 2026.8.0
 
@@ -18,13 +18,16 @@ Minimum required Home Assistant version is: 2026.8.0
 
 ## About
 
-> Please set up the Philips Hue Play HDMI Sync Box with the Hue App first and make sure it works before setting up this integration.
+> Please set up the Philips Hue Play Sync device with the Hue App first and make sure it works before setting up this integration.
 
-This integration allows you to control and automate your Philips Hue Play HDMI Sync Box from Home Assistant. Use it in automations, dashboards, and scripts to improve your entertainment experience.
+This integration allows you to control and automate your Philips Hue Play Sync devices from Home Assistant. Use it in automations, dashboards, and scripts to improve your entertainment experience.
 
 ## Supported devices
 
-Both the 4K and 8K models are supported.
+- Philips Hue Play HDMI sync box (the classic 4K with 4 HDMI inputs)
+- Philips Hue Play HDMI sync box 4K (single HDMI input)
+- Philips Hue Play HDMI sync box 8K
+- Philips Hue Play Screen Sync
 
 ## Possible use-cases
 
@@ -44,7 +47,7 @@ Entities are created for the following features:
 - Brightness control slider
 - Entertainment area selection
 - HDMI input connection status
-- Dolby Vision compatibility on/off (only on 4K)
+- Dolby Vision compatibility on/off (only on classic 4K)
 - LED indicator mode selection
 - Bridge connection status ⁺
 - Bridge ID sensor ⁺
@@ -56,7 +59,7 @@ Entities marked with ⁺ are disabled by default.
 
 ### Behavior
 
-A few notes on behavior when changing entities. This behavior is just how the box reacts when sending these commands, not something explicitly coded in this integration.
+A few notes on behavior when changing entities. This behavior is just how the device reacts when sending these commands, not something explicitly coded in this integration.
 
 - Enabling light sync will also power on the box
 - Setting sync mode will also power on the box and start light sync on the selected mode
@@ -64,7 +67,7 @@ A few notes on behavior when changing entities. This behavior is just how the bo
 
 ## Data updates
 
-This integration polls the Philips Hue Play HDMI Sync Box every 3 seconds.
+This integration polls the Philips Hue Play Sync device every 3 seconds.
 
 ## Actions
 
@@ -72,13 +75,13 @@ The integration exposes two additional actions.
 
 ### Set bridge
 
-This action allows setting the bridge to be used by the Philips Hue Play HDMI Sync Box. For example when you have 2 different bridges you want to sync to and need to switch.
+This action allows setting the bridge to be used by the Philips Hue Play Sync device. For example when you have 2 different bridges you want to sync to and need to switch.
 
-Note that changing the bridge by the box takes a while (about 15 seconds it seems). After the bridge has changed you might need to (re)select the `entertainment_area` if connectionstate is `invalidgroup` instead of `connected`.
+Note that changing the bridge by the sync device takes a while (about 15 seconds it seems). After the bridge has changed you might need to (re)select the `entertainment_area` if connectionstate is `invalidgroup` instead of `connected`.
 
 | Parameter | Optional | Description |
 | --- | --- | --- |
-| device_id | No | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. |
+| device_id | No | Home Assistant device ID for the Philips Hue Play Sync device. |
 | bridge_id | No | ID of the bridge. A hexadecimal code of 16 characters. |
 | bridge_username | No | Username (a.k.a. application key) valid for the bridge. A long code of random characters. |
 | bridge_clientkey | No | Client key that belongs with the username. A hexadecimal code of 32 characters. |
@@ -88,6 +91,7 @@ YAML action call example:
 ```yaml
 action: huesyncbox.set_bridge
 data:
+  # All values are examples, replace with the ones for your setup
   device_id: 11223344556677889900aabbccddeeff
   bridge_id: 001788FFFE000000
   bridge_username: abcdefghijklmnopqrstuvwxyz1234567890ABCD
@@ -96,11 +100,11 @@ data:
 
 ### Set sync state
 
-Set the state of multiple entities of the Philips Hue Play HDMI Sync Box at once. Using this action makes sure everything is set in the correct order and is more efficient than using separate commands.
+Set the state of multiple entities of the Philips Hue Play Sync device at once. Using this action makes sure everything is set in the correct order and is more efficient than using separate commands.
 
 | Parameter | Optional | Description |
 | --- | --- | --- |
-| device_id | No | Home Assistant device ID of the Philips Hue Play HDMI Sync Box. |
+| device_id | No | Home Assistant device ID for the Philips Hue Play Sync device. |
 | power | Yes | Turn the box on or off. |
 | sync | Yes | Set light sync state on or off. Setting this to on will also turn on the box. |
 | brightness | Yes | Brightness value to set. |
@@ -126,7 +130,7 @@ data:
 
 ## Installation
 
-> Please set up the Philips Hue Play HDMI Sync Box with the Hue App first and make sure it works before setting up this integration.
+> Please set up the Philips Hue Play Sync device with the Hue App first and make sure it works before setting up this integration.
 
 ### Downloading
 
@@ -145,7 +149,7 @@ If the button does not work, or you don't want to use it, follow these steps to 
 
 - Go to your Home Assistant instance
 - Open the HACS page
-- Search for "Philips Hue HDMI Sync Box" in the HACS search bar
+- Search for "Philips Hue Sync" in the HACS search bar
 - Click/tap on the integration to open the integration page
 - Press the Download button to download the integration
 - **Restart Home Assistant**
@@ -163,18 +167,18 @@ If the button does not work, or you don't want to use it, follow these steps to 
 
 ### Configuration
 
-The Philips Hue Play HDMI Sync Box will be discovered automatically in most cases. If not, add it manually via `Settings > Devices and Services` in Home Assistant.
+The Philips Hue Play Sync device will be discovered automatically in most cases. If not, add it manually via `Settings > Devices and Services` in Home Assistant.
 
-For manual configuration, provide the following parameters (found in the Hue app's sync box device settings):
+For manual configuration, provide the following parameters (found in the Hue app's sync device settings):
 
 **IP Address**
 : IP address of the device e.g. 192.168.1.123.
 
 **Identifier**
-: The device identifier of the box e.g. C42996000000
+: The device identifier of the device e.g. C42996000000
 
 ## Removal
 
 This integration follows standard integration removal. No extra steps are required.
 
-Go to "Settings > Devices & Services". Select Philips Hue Play HDMI Sync Box. Click the three dots ⋮ menu and then select Delete.
+Go to "Settings > Devices & Services". Select Philips Hue Play Sync. Click the three dots ⋮ menu and then select Delete.
