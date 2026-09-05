@@ -1,4 +1,4 @@
-# Philips Hue Play HDMI Sync Box
+# Philips Hue Play Sync devices
 
 Minimum required Home Assistant version is: 2026.8.0
 
