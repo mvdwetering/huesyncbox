@@ -45,7 +45,7 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator[aiohuesyncbox.HueSyncBox]):
             # handled by the data update coordinator.
             async with asyncio.timeout(5):
                 old_device = self.api.device
-                await self.api.refresh()
+                await self.api.refresh_data()
                 self._consecutive_errors = 0
 
                 if old_device != self.api.device:
