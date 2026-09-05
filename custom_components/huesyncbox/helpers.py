@@ -29,8 +29,10 @@ async def update_device_registry(
         manufacturer=MANUFACTURER_NAME,
         name=api.device.name,
         model={
-            "HSB1": "Philips Hue Play HDMI sync box 4K",
+            "HSB1": "Philips Hue Play HDMI sync box",
             "HSB2": "Philips Hue Play HDMI sync box 8K",
+            "HSB3": "Philips Hue Play HDMI sync box 4K",
+            "HSC001": "Philips Hue Play Screen Sync",
         }.get(api.device.device_type, None),
         model_id=api.device.device_type,
         sw_version=api.device.firmware_version,
