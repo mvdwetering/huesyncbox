@@ -40,11 +40,12 @@ def get_sync_mode(api: aiohuesyncbox.HueSyncBox) -> str:
 
 
 def available_inputs(api: aiohuesyncbox.HueSyncBox) -> list[str]:
-    inputs = []
-    for input_id in INPUTS:
-        input_ = getattr(api.hdmi, input_id)
-        inputs.append(input_.name)
-    return inputs
+    return [
+        getattr(api.hdmi, input_id).name
+        for input_id in INPUTS
+        if getattr(api.hdmi, input_id)
+    ]
+
 
 
 def current_input(api: aiohuesyncbox.HueSyncBox) -> str:
@@ -58,7 +59,7 @@ async def select_input(api: aiohuesyncbox.HueSyncBox, input_name: str) -> None:
     # Inputname is the user given name, so needs to be mapped back to a valid API value."""
     for input_id in INPUTS:
         input_ = getattr(api.hdmi, input_id)
-        if input_name == input_.name:
+        if input_ and input_name == input_.name:
             await api.execution.set_state(
                 hdmi_source=aiohuesyncbox.HdmiSource(input_id)
             )

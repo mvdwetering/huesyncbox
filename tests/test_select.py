@@ -15,6 +15,7 @@ async def test_select(hass: HomeAssistant, mock_api: Mock) -> None:
 
 async def test_input(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "select.name_hdmi_input"
+    mock_api.hdmi.input4 = None  # Set an input to None to cover more paths
 
     await setup_integration(hass, mock_api)
 
@@ -22,7 +23,7 @@ async def test_input(hass: HomeAssistant, mock_api: Mock) -> None:
     entity = hass.states.get(entity_under_test)
     assert entity is not None
     assert entity.state == "HDMI 2"
-    assert entity.attributes["options"] == ["HDMI 1", "HDMI 2", "HDMI 3", "HDMI 4"]
+    assert entity.attributes["options"] == ["HDMI 1", "HDMI 2", "HDMI 3"]
 
     # Set value
     await hass.services.async_call(
