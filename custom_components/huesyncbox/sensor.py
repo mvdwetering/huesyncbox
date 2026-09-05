@@ -17,7 +17,6 @@ from .const import DOMAIN
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -29,7 +28,7 @@ if TYPE_CHECKING:
 @dataclass(frozen=True, kw_only=True)
 class HueSyncBoxSensorEntityDescription(SensorEntityDescription):
     get_value: Callable[[aiohuesyncbox.HueSyncBox], str] = None  # type: ignore[assignment]
-
+    is_supported: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda _: True
 
 WIFI_STRENGTH_STATES = {
     0: "not_connected",
@@ -68,28 +67,36 @@ ENTITY_DESCRIPTIONS = [
         entity_category=EntityCategory.DIAGNOSTIC,
         device_class=SensorDeviceClass.ENUM,
         options=["unplugged", "plugged", "linked", "unknown"],
-        get_value=lambda api: api.hdmi.input1.status,
+        # is_supported ensures api.hdmi is not None whenever these run
+        get_value=lambda api: api.hdmi.input1.status,  # type: ignore[union-attr]
+        is_supported=lambda api: api.hdmi is not None and api.hdmi.input1 is not None,
     ),
     HueSyncBoxSensorEntityDescription(
         key="hdmi2_status",
         entity_category=EntityCategory.DIAGNOSTIC,
         device_class=SensorDeviceClass.ENUM,
         options=["unplugged", "plugged", "linked", "unknown"],
-        get_value=lambda api: api.hdmi.input2.status,
+        # is_supported ensures api.hdmi is not None whenever these run
+        get_value=lambda api: api.hdmi.input2.status,  # type: ignore[union-attr]
+        is_supported=lambda api: api.hdmi is not None and api.hdmi.input2 is not None,
     ),
     HueSyncBoxSensorEntityDescription(
         key="hdmi3_status",
         entity_category=EntityCategory.DIAGNOSTIC,
         device_class=SensorDeviceClass.ENUM,
         options=["unplugged", "plugged", "linked", "unknown"],
-        get_value=lambda api: api.hdmi.input3.status,
+        # is_supported ensures api.hdmi is not None whenever these run
+        get_value=lambda api: api.hdmi.input3.status,  # type: ignore[union-attr]
+        is_supported=lambda api: api.hdmi is not None and api.hdmi.input3 is not None,
     ),
     HueSyncBoxSensorEntityDescription(
         key="hdmi4_status",
         entity_category=EntityCategory.DIAGNOSTIC,
         device_class=SensorDeviceClass.ENUM,
         options=["unplugged", "plugged", "linked", "unknown"],
-        get_value=lambda api: api.hdmi.input4.status,
+        # is_supported ensures api.hdmi is not None whenever these run
+        get_value=lambda api: api.hdmi.input4.status,  # type: ignore[union-attr]
+        is_supported=lambda api: api.hdmi is not None and api.hdmi.input4 is not None,
     ),
     HueSyncBoxSensorEntityDescription(
         key="ip_address",
@@ -109,7 +116,9 @@ ENTITY_DESCRIPTIONS = [
         key="content_info",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
-        get_value=lambda api: api.hdmi.content_specs,
+        # is_supported ensures api.hdmi is not None whenever these run
+        get_value=lambda api: api.hdmi.content_specs,  # type: ignore[union-attr]
+        is_supported=lambda api: api.hdmi is not None and api.hdmi.content_specs is not None,
     ),
 ]
 
@@ -121,13 +130,11 @@ async def async_setup_entry(
 ) -> None:
     coordinator = config_entry.runtime_data.coordinator
 
-    entities: list[SensorEntity] = []
-
-    for entity_description in ENTITY_DESCRIPTIONS:
-        # When not able to read value, entity is not supported
-        with contextlib.suppress(Exception):
-            if entity_description.get_value(coordinator.api) is not None:
-                entities.append(HueSyncBoxSensor(coordinator, entity_description))
+    entities: list[SensorEntity] = [
+        HueSyncBoxSensor(coordinator, entity_description)
+        for entity_description in ENTITY_DESCRIPTIONS
+        if entity_description.is_supported(coordinator.api)
+    ]
 
     async_add_entities(entities)
 
