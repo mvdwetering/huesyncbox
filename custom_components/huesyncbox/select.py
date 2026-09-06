@@ -114,7 +114,7 @@ async def select_sync_mode(api: aiohuesyncbox.HueSyncBox, sync_mode: str) -> Non
 
 
 def current_led_indicator_mode(api: aiohuesyncbox.HueSyncBox) -> str | None:
-    return LED_INDICATOR_MODES[api.device.led_mode] if api.device.led_mode < len(LED_INDICATOR_MODES) else None
+    return LED_INDICATOR_MODES[api.device.led_mode] if 0 <= api.device.led_mode < len(LED_INDICATOR_MODES) else None
 
 
 async def select_led_indicator_mode(api: aiohuesyncbox.HueSyncBox, mode: str) -> None:
