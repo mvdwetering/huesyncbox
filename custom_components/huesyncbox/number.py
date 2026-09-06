@@ -22,9 +22,9 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, kw_only=True)
 class HueSyncBoxNumberEntityDescription(NumberEntityDescription):
-    get_value: Callable[[aiohuesyncbox.HueSyncBox], float] = None  # type: ignore[assignment]
-    set_value_fn: Callable[[aiohuesyncbox.HueSyncBox, float], Coroutine] = None  # type: ignore[assignment]
-
+    get_value: Callable[[aiohuesyncbox.HueSyncBox], float | None]
+    set_value_fn: Callable[[aiohuesyncbox.HueSyncBox, float], Coroutine]
+    is_supported_fn: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda _: True
 
 async def set_brightness(api: aiohuesyncbox.HueSyncBox, brightness: float) -> None:
     await api.execution.set_state(
@@ -57,7 +57,7 @@ async def async_setup_entry(
     entities: list[NumberEntity] = [
         HueSyncBoxNumber(coordinator, entity_description)
         for entity_description in ENTITY_DESCRIPTIONS
-        if entity_description.get_value(coordinator.api) is not None
+        if entity_description.is_supported_fn(coordinator.api)
     ]
 
     async_add_entities(entities)
