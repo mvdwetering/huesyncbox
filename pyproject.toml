@@ -35,7 +35,7 @@ keywords = [
 requires-python = ">=3.14"
 
 # Also update version in manifest.json
-dependencies = ["aiohuesyncbox==0.1.2"]
+dependencies = ["aiohuesyncbox==0.1.4"]
 
 [project.urls]
 Documentation = "https://github.com/mvdwetering/huesyncbox"
