@@ -27,8 +27,9 @@ if TYPE_CHECKING:
 
 @dataclass(frozen=True, kw_only=True)
 class HueSyncBoxSensorEntityDescription(SensorEntityDescription):
-    get_value: Callable[[aiohuesyncbox.HueSyncBox], str] = None  # type: ignore[assignment]
+    get_value: Callable[[aiohuesyncbox.HueSyncBox], str | None]
     is_supported: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda _: True
+
 
 WIFI_STRENGTH_STATES = {
     0: "not_connected",
@@ -67,8 +68,11 @@ ENTITY_DESCRIPTIONS = [
         entity_category=EntityCategory.DIAGNOSTIC,
         device_class=SensorDeviceClass.ENUM,
         options=["unplugged", "plugged", "linked", "unknown"],
-        # is_supported ensures api.hdmi is not None whenever these run
-        get_value=lambda api: api.hdmi.input1.status,  # type: ignore[union-attr]
+        get_value=lambda api: (
+            api.hdmi.input1.status
+            if api.hdmi is not None and api.hdmi.input1 is not None
+            else None
+        ),
         is_supported=lambda api: api.hdmi is not None and api.hdmi.input1 is not None,
     ),
     HueSyncBoxSensorEntityDescription(
@@ -76,8 +80,11 @@ ENTITY_DESCRIPTIONS = [
         entity_category=EntityCategory.DIAGNOSTIC,
         device_class=SensorDeviceClass.ENUM,
         options=["unplugged", "plugged", "linked", "unknown"],
-        # is_supported ensures api.hdmi is not None whenever these run
-        get_value=lambda api: api.hdmi.input2.status,  # type: ignore[union-attr]
+        get_value=lambda api: (
+            api.hdmi.input2.status
+            if api.hdmi is not None and api.hdmi.input2 is not None
+            else None
+        ),
         is_supported=lambda api: api.hdmi is not None and api.hdmi.input2 is not None,
     ),
     HueSyncBoxSensorEntityDescription(
@@ -85,8 +92,11 @@ ENTITY_DESCRIPTIONS = [
         entity_category=EntityCategory.DIAGNOSTIC,
         device_class=SensorDeviceClass.ENUM,
         options=["unplugged", "plugged", "linked", "unknown"],
-        # is_supported ensures api.hdmi is not None whenever these run
-        get_value=lambda api: api.hdmi.input3.status,  # type: ignore[union-attr]
+        get_value=lambda api: (
+            api.hdmi.input3.status
+            if api.hdmi is not None and api.hdmi.input3 is not None
+            else None
+        ),
         is_supported=lambda api: api.hdmi is not None and api.hdmi.input3 is not None,
     ),
     HueSyncBoxSensorEntityDescription(
@@ -94,8 +104,11 @@ ENTITY_DESCRIPTIONS = [
         entity_category=EntityCategory.DIAGNOSTIC,
         device_class=SensorDeviceClass.ENUM,
         options=["unplugged", "plugged", "linked", "unknown"],
-        # is_supported ensures api.hdmi is not None whenever these run
-        get_value=lambda api: api.hdmi.input4.status,  # type: ignore[union-attr]
+        get_value=lambda api: (
+            api.hdmi.input4.status
+            if api.hdmi is not None and api.hdmi.input4 is not None
+            else None
+        ),
         is_supported=lambda api: api.hdmi is not None and api.hdmi.input4 is not None,
     ),
     HueSyncBoxSensorEntityDescription(
@@ -108,17 +121,25 @@ ENTITY_DESCRIPTIONS = [
         key="wifi_strength",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
-        get_value=lambda api: WIFI_STRENGTH_STATES[api.device.wifi.strength],  # type: ignore[union-attr]
+        get_value=lambda api: (
+            WIFI_STRENGTH_STATES[api.device.wifi.strength]
+            if api.device.wifi
+            and api.device.wifi.strength is not None
+            and api.device.wifi.strength in WIFI_STRENGTH_STATES
+            else None
+        ),
         device_class=SensorDeviceClass.ENUM,
         options=["not_connected", "weak", "fair", "good", "excellent"],
+        is_supported=lambda api: api.device.wifi is not None
+        and api.device.wifi.strength is not None,
     ),
     HueSyncBoxSensorEntityDescription(
         key="content_info",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
-        # is_supported ensures api.hdmi is not None whenever these run
-        get_value=lambda api: api.hdmi.content_specs,  # type: ignore[union-attr]
-        is_supported=lambda api: api.hdmi is not None and api.hdmi.content_specs is not None,
+        get_value=lambda api: api.hdmi.content_specs if api.hdmi is not None else None,
+        is_supported=lambda api: api.hdmi is not None
+        and api.hdmi.content_specs is not None,
     ),
 ]
 

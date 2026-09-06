@@ -145,6 +145,19 @@ async def test_entertainment_area(hass: HomeAssistant, mock_api: Mock) -> None:
     assert mock_api.execution.set_state.call_args == call(hue_target="id1")
 
 
+async def test_entertainment_area_unsupported_value(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
+    entity_under_test = "select.name_entertainment_area"
+    mock_api.execution.hue_target = "unknown_id"
+
+    await setup_integration(hass, mock_api)
+
+    entity = hass.states.get(entity_under_test)
+    assert entity is not None
+    assert entity.state == "unknown"
+
+
 async def test_led_indicator(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "select.name_led_indicator"
 
