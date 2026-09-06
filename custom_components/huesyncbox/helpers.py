@@ -1,10 +1,7 @@
 """Helpers for the Philips Hue Play HDMI Sync Box integration."""
 
-from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 
@@ -12,9 +9,16 @@ import aiohuesyncbox
 
 from .const import DOMAIN, LOGGER, MANUFACTURER_NAME
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from homeassistant.core import HomeAssistant
+
+    from . import HueSyncBoxConfigEntry
+
 
 async def update_device_registry(
-    hass: HomeAssistant, config_entry: ConfigEntry, api: aiohuesyncbox.HueSyncBox
+    hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry, api: aiohuesyncbox.HueSyncBox
 ) -> None:
     # Add device explicitly to registry so other entities just have to report the identifier to link up
     registry = dr.async_get(hass)
@@ -25,8 +29,10 @@ async def update_device_registry(
         manufacturer=MANUFACTURER_NAME,
         name=api.device.name,
         model={
-            "HSB1": "Philips Hue Play HDMI sync box 4K",
+            "HSB1": "Philips Hue Play HDMI sync box",
             "HSB2": "Philips Hue Play HDMI sync box 8K",
+            "HSB3": "Philips Hue Play HDMI sync box 4K",
+            "HSC001": "Philips Hue Play Screen Sync",
         }.get(api.device.device_type, None),
         model_id=api.device.device_type,
         sw_version=api.device.firmware_version,
@@ -38,7 +44,7 @@ async def update_device_registry(
 
 
 def update_config_entry_title(
-    hass: HomeAssistant, config_entry: ConfigEntry, new_title: str
+    hass: HomeAssistant, config_entry: HueSyncBoxConfigEntry, new_title: str
 ) -> None:
     hass.config_entries.async_update_entry(config_entry, title=new_title)
 

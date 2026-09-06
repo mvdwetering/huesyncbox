@@ -4,7 +4,7 @@ import asyncio
 import contextlib
 from dataclasses import asdict, dataclass
 import logging
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from homeassistant.config_entries import (
     SOURCE_REAUTH,
@@ -22,13 +22,16 @@ from homeassistant.const import (
     CONF_UNIQUE_ID,
 )
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 import voluptuous as vol
 
 import aiohuesyncbox
 
-from . import HueSyncBoxConfigEntry
 from .const import DEFAULT_PORT, DOMAIN, REGISTRATION_ID
+
+if TYPE_CHECKING:
+    from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
+
+    from . import HueSyncBoxConfigEntry
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -246,10 +249,8 @@ class HueSyncBoxConfigFlow(ConfigFlow, domain=DOMAIN):
                         )
                     await asyncio.sleep(1)
 
-                self.connection_info.access_token = registration_info[CONF_ACCESS_TOKEN]
-                self.connection_info.registration_id = registration_info[
-                    REGISTRATION_ID
-                ]
+                self.connection_info.access_token = registration_info.access_token
+                self.connection_info.registration_id = registration_info.registration_id
 
                 await huesyncbox.initialize()
                 self.device_name = huesyncbox.device.name

@@ -1,12 +1,9 @@
-from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 import aiohuesyncbox
@@ -15,6 +12,14 @@ from .const import DOMAIN, INTENSITIES, SYNC_MODES
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import get_hue_target_from_id, stop_sync_and_retry_on_invalid_state
 
+if TYPE_CHECKING:
+    from collections.abc import Callable, Coroutine
+
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    from . import HueSyncBoxConfigEntry
+
 LED_INDICATOR_MODES = ["off", "normal", "dimmed"]
 INPUTS = ["input1", "input2", "input3", "input4"]
 
@@ -22,59 +27,64 @@ INPUTS = ["input1", "input2", "input3", "input4"]
 @dataclass(frozen=True, kw_only=True)
 class HueSyncBoxSelectEntityDescription(SelectEntityDescription):
     options_fn: Callable[[aiohuesyncbox.HueSyncBox], list[str]] | None = None
-    current_option_fn: Callable[[aiohuesyncbox.HueSyncBox], str] = None  # type: ignore[assignment]
-    select_option_fn: Callable[[aiohuesyncbox.HueSyncBox, str], Coroutine] = None  # type: ignore[assignment]
+    current_option_fn: Callable[[aiohuesyncbox.HueSyncBox], str | None]
+    select_option_fn: Callable[[aiohuesyncbox.HueSyncBox, str], Coroutine]
+    is_supported_fn: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda _: True
 
 
 def get_sync_mode(api: aiohuesyncbox.HueSyncBox) -> str:
     """Get mode."""
-    mode = api.execution.mode
     if api.execution.mode not in SYNC_MODES:
-        mode = api.execution.last_sync_mode
-    return mode
+        return api.execution.last_sync_mode
+    return api.execution.mode
 
 
 def available_inputs(api: aiohuesyncbox.HueSyncBox) -> list[str]:
-    inputs = []
-    for input_id in INPUTS:
-        input_ = getattr(api.hdmi, input_id)
-        inputs.append(input_.name)
-    return inputs
+    return [
+        getattr(api.hdmi, input_id).name
+        for input_id in INPUTS
+        if getattr(api.hdmi, input_id)
+    ]
 
 
-def current_input(api: aiohuesyncbox.HueSyncBox) -> str:
+
+def current_input(api: aiohuesyncbox.HueSyncBox) -> str | None:
     for input_id in INPUTS:
         if input_id == api.execution.hdmi_source:
             return getattr(api.hdmi, input_id).name
-    return "no_input"
+    return None
 
 
 async def select_input(api: aiohuesyncbox.HueSyncBox, input_name: str) -> None:
-    # Inputname is the user given name, so needs to be mapped back to a valid API value."""
+    # Inputname is the user given name, so needs to be mapped back to a valid API value.
     for input_id in INPUTS:
         input_ = getattr(api.hdmi, input_id)
-        if input_name == input_.name:
-            await api.execution.set_state(hdmi_source=input_id)
+        if input_ and input_name == input_.name:
+            await api.execution.set_state(
+                hdmi_source=aiohuesyncbox.HdmiSource(input_id)
+            )
+
+
+def are_inputs_supported(api: aiohuesyncbox.HueSyncBox) -> bool:
+    # Check if at least 2 HDMI inputs are available so there is something to choose from
+    return api.hdmi is not None and api.hdmi.input2 is not None
 
 
 def available_entertainment_areas(api: aiohuesyncbox.HueSyncBox) -> list[str]:
     return sorted(group.name for group in api.hue.groups)
 
 
-def current_entertainment_area(api: aiohuesyncbox.HueSyncBox) -> str:
+def current_entertainment_area(api: aiohuesyncbox.HueSyncBox) -> str | None:
     hue_target = (
         api.execution.hue_target
     )  # this is a string like "groups/123" or a UUID
     id_ = hue_target.replace("groups/", "")
 
-    selected_area = "no_area"
-
     for group in api.hue.groups:
         if group.id == id_:
-            selected_area = group.name
-            break
+            return group.name
 
-    return selected_area
+    return None
 
 
 async def select_entertainment_area(api: aiohuesyncbox.HueSyncBox, name: str) -> None:
@@ -84,36 +94,34 @@ async def select_entertainment_area(api: aiohuesyncbox.HueSyncBox, name: str) ->
         await api.execution.set_state(hue_target=get_hue_target_from_id(group.id))
 
 
-def current_intensity(api: aiohuesyncbox.HueSyncBox) -> str:
+def current_intensity(api: aiohuesyncbox.HueSyncBox) -> str | None:
     sync_mode = get_sync_mode(api)
     return getattr(api.execution, sync_mode).intensity
 
 
 async def select_intensity(api: aiohuesyncbox.HueSyncBox, intensity: str) -> None:
     """Set intensity for sync mode."""
-    sync_mode = get_sync_mode(api)
-
-    # Intensity is per mode so update accordingly
-    state = {sync_mode: {"intensity": intensity}}
-    await api.execution.set_state(**state)  # type: ignore  # noqa: PGH003
+    await api.execution.set_state(intensity=aiohuesyncbox.Intensity(intensity))
 
 
-def current_sync_mode(api: aiohuesyncbox.HueSyncBox) -> str:
+def current_sync_mode(api: aiohuesyncbox.HueSyncBox) -> str | None:
     return get_sync_mode(api)
 
 
 async def select_sync_mode(api: aiohuesyncbox.HueSyncBox, sync_mode: str) -> None:
     """Set sync mode."""
-    await api.execution.set_state(mode=sync_mode)
+    await api.execution.set_state(mode=aiohuesyncbox.ExecutionMode(sync_mode))
 
 
-def current_led_indicator_mode(api: aiohuesyncbox.HueSyncBox) -> str:
-    return LED_INDICATOR_MODES[api.device.led_mode]
+def current_led_indicator_mode(api: aiohuesyncbox.HueSyncBox) -> str | None:
+    return LED_INDICATOR_MODES[api.device.led_mode] if 0 <= api.device.led_mode < len(LED_INDICATOR_MODES) else None
 
 
 async def select_led_indicator_mode(api: aiohuesyncbox.HueSyncBox, mode: str) -> None:
     """Set led indicator mode."""
-    await api.device.set_led_mode(LED_INDICATOR_MODES.index(mode))
+    await api.device.set_led_mode(
+        aiohuesyncbox.LedMode(LED_INDICATOR_MODES.index(mode))
+    )
 
 
 ENTITY_DESCRIPTIONS = [
@@ -122,6 +130,7 @@ ENTITY_DESCRIPTIONS = [
         options_fn=available_inputs,
         current_option_fn=current_input,
         select_option_fn=select_input,
+        is_supported_fn=are_inputs_supported,
     ),
     HueSyncBoxSelectEntityDescription(
         key="entertainment_area",
@@ -147,13 +156,14 @@ ENTITY_DESCRIPTIONS = [
         options=sorted(LED_INDICATOR_MODES),
         current_option_fn=current_led_indicator_mode,
         select_option_fn=select_led_indicator_mode,
+        is_supported_fn=lambda api: bool(api.device.led_mode),
     ),
 ]
 
 
 async def async_setup_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: HueSyncBoxConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator = config_entry.runtime_data.coordinator
@@ -161,6 +171,7 @@ async def async_setup_entry(
     entities: list[SelectEntity] = [
         HueSyncBoxSelect(coordinator, entity_description)
         for entity_description in ENTITY_DESCRIPTIONS
+        if entity_description.is_supported_fn(coordinator.api)
     ]
 
     async_add_entities(entities)

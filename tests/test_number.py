@@ -1,8 +1,10 @@
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, call
 
-from homeassistant.core import HomeAssistant
-
 from .conftest import setup_integration
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 
 async def test_number(hass: HomeAssistant, mock_api: Mock) -> None:

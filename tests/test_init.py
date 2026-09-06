@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, call, patch
 
 from homeassistant.config_entries import ConfigEntryState
@@ -8,7 +9,6 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_UNIQUE_ID,
 )
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers import (
     device_registry as dr,
     entity_registry as er,
@@ -24,6 +24,9 @@ from custom_components import huesyncbox
 
 from .conftest import setup_integration
 
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
+
 
 async def test_device_info(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
@@ -36,7 +39,7 @@ async def test_device_info(hass: HomeAssistant, mock_api: Mock) -> None:
     assert device is not None
     assert device.name == "Name"
     assert device.manufacturer == "Signify"
-    assert device.model == "Philips Hue Play HDMI sync box 4K"
+    assert device.model == "Philips Hue Play HDMI sync box"
     assert device.model_id == "HSB1"
     assert device.sw_version == "firmwareversion"
     assert device.connections == {("mac", "12:34:56:ab:cd:ef")}

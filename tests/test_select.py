@@ -1,9 +1,12 @@
+from typing import TYPE_CHECKING
 from unittest.mock import Mock, call
 
-from homeassistant.core import HomeAssistant
+import aiohuesyncbox
 
 from .conftest import force_coordinator_update, setup_integration
 
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 async def test_select(hass: HomeAssistant, mock_api: Mock) -> None:
     await setup_integration(hass, mock_api)
@@ -12,6 +15,7 @@ async def test_select(hass: HomeAssistant, mock_api: Mock) -> None:
 
 async def test_input(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "select.name_hdmi_input"
+    mock_api.hdmi.input4 = None  # Set an input to None to cover more paths
 
     await setup_integration(hass, mock_api)
 
@@ -19,7 +23,7 @@ async def test_input(hass: HomeAssistant, mock_api: Mock) -> None:
     entity = hass.states.get(entity_under_test)
     assert entity is not None
     assert entity.state == "HDMI 2"
-    assert entity.attributes["options"] == ["HDMI 1", "HDMI 2", "HDMI 3", "HDMI 4"]
+    assert entity.attributes["options"] == ["HDMI 1", "HDMI 2", "HDMI 3"]
 
     # Set value
     await hass.services.async_call(
@@ -28,7 +32,9 @@ async def test_input(hass: HomeAssistant, mock_api: Mock) -> None:
         {"entity_id": entity_under_test, "option": "HDMI 3"},
         blocking=True,
     )
-    assert mock_api.execution.set_state.call_args == call(hdmi_source="input3")
+    assert mock_api.execution.set_state.call_args == call(
+        hdmi_source=aiohuesyncbox.HdmiSource.INPUT3
+    )
 
 
 async def test_input_unsupported_value(hass: HomeAssistant, mock_api: Mock) -> None:
@@ -41,6 +47,28 @@ async def test_input_unsupported_value(hass: HomeAssistant, mock_api: Mock) -> N
     entity = hass.states.get(entity_under_test)
     assert entity is not None
     assert entity.state == "unknown"  # HA seems to map unsupported values to "unknown"
+
+async def test_input_no_hdmi(hass: HomeAssistant, mock_api: Mock) -> None:
+    entity_under_test = "select.name_hdmi_input"
+    mock_api.hdmi = None
+
+    await setup_integration(hass, mock_api)
+
+    # Initial value
+    entity = hass.states.get(entity_under_test)
+    assert entity is None
+
+async def test_input_one_hdmi(hass: HomeAssistant, mock_api: Mock) -> None:
+    entity_under_test = "select.name_hdmi_input"
+    mock_api.hdmi.input2 = None
+    mock_api.hdmi.input3 = None
+    mock_api.hdmi.input4 = None
+
+    await setup_integration(hass, mock_api)
+
+    # Initial value
+    entity = hass.states.get(entity_under_test)
+    assert entity is None
 
 
 async def test_intensity(hass: HomeAssistant, mock_api: Mock) -> None:
@@ -61,7 +89,9 @@ async def test_intensity(hass: HomeAssistant, mock_api: Mock) -> None:
         {"entity_id": entity_under_test, "option": "high"},
         blocking=True,
     )
-    assert mock_api.execution.set_state.call_args == call(music={"intensity": "high"})
+    assert mock_api.execution.set_state.call_args == call(
+        intensity=aiohuesyncbox.Intensity.HIGH
+    )
 
 
 async def test_mode(hass: HomeAssistant, mock_api: Mock) -> None:
@@ -89,7 +119,9 @@ async def test_mode(hass: HomeAssistant, mock_api: Mock) -> None:
         {"entity_id": entity_under_test, "option": "video"},
         blocking=True,
     )
-    assert mock_api.execution.set_state.call_args == call(mode="video")
+    assert mock_api.execution.set_state.call_args == call(
+        mode=aiohuesyncbox.ExecutionMode.VIDEO
+    )
 
 
 async def test_entertainment_area(hass: HomeAssistant, mock_api: Mock) -> None:
@@ -111,6 +143,19 @@ async def test_entertainment_area(hass: HomeAssistant, mock_api: Mock) -> None:
         blocking=True,
     )
     assert mock_api.execution.set_state.call_args == call(hue_target="id1")
+
+
+async def test_entertainment_area_unsupported_value(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
+    entity_under_test = "select.name_entertainment_area"
+    mock_api.execution.hue_target = "unknown_id"
+
+    await setup_integration(hass, mock_api)
+
+    entity = hass.states.get(entity_under_test)
+    assert entity is not None
+    assert entity.state == "unknown"
 
 
 async def test_led_indicator(hass: HomeAssistant, mock_api: Mock) -> None:

@@ -1,28 +1,34 @@
-from collections.abc import Callable
 import contextlib
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-
-import aiohuesyncbox
 
 from . import HueSyncBoxCoordinator
 from .const import DOMAIN
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    import aiohuesyncbox
+
+    from . import HueSyncBoxConfigEntry
+
 
 @dataclass(frozen=True, kw_only=True)
 class HueSyncBoxSensorEntityDescription(SensorEntityDescription):
-    get_value: Callable[[aiohuesyncbox.HueSyncBox], str] = None  # type: ignore[assignment]
+    get_value: Callable[[aiohuesyncbox.HueSyncBox], str | None]
+    is_supported: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda _: True
 
 
 WIFI_STRENGTH_STATES = {
@@ -62,28 +68,48 @@ ENTITY_DESCRIPTIONS = [
         entity_category=EntityCategory.DIAGNOSTIC,
         device_class=SensorDeviceClass.ENUM,
         options=["unplugged", "plugged", "linked", "unknown"],
-        get_value=lambda api: api.hdmi.input1.status,
+        get_value=lambda api: (
+            api.hdmi.input1.status
+            if api.hdmi is not None and api.hdmi.input1 is not None
+            else None
+        ),
+        is_supported=lambda api: api.hdmi is not None and api.hdmi.input1 is not None,
     ),
     HueSyncBoxSensorEntityDescription(
         key="hdmi2_status",
         entity_category=EntityCategory.DIAGNOSTIC,
         device_class=SensorDeviceClass.ENUM,
         options=["unplugged", "plugged", "linked", "unknown"],
-        get_value=lambda api: api.hdmi.input2.status,
+        get_value=lambda api: (
+            api.hdmi.input2.status
+            if api.hdmi is not None and api.hdmi.input2 is not None
+            else None
+        ),
+        is_supported=lambda api: api.hdmi is not None and api.hdmi.input2 is not None,
     ),
     HueSyncBoxSensorEntityDescription(
         key="hdmi3_status",
         entity_category=EntityCategory.DIAGNOSTIC,
         device_class=SensorDeviceClass.ENUM,
         options=["unplugged", "plugged", "linked", "unknown"],
-        get_value=lambda api: api.hdmi.input3.status,
+        get_value=lambda api: (
+            api.hdmi.input3.status
+            if api.hdmi is not None and api.hdmi.input3 is not None
+            else None
+        ),
+        is_supported=lambda api: api.hdmi is not None and api.hdmi.input3 is not None,
     ),
     HueSyncBoxSensorEntityDescription(
         key="hdmi4_status",
         entity_category=EntityCategory.DIAGNOSTIC,
         device_class=SensorDeviceClass.ENUM,
         options=["unplugged", "plugged", "linked", "unknown"],
-        get_value=lambda api: api.hdmi.input4.status,
+        get_value=lambda api: (
+            api.hdmi.input4.status
+            if api.hdmi is not None and api.hdmi.input4 is not None
+            else None
+        ),
+        is_supported=lambda api: api.hdmi is not None and api.hdmi.input4 is not None,
     ),
     HueSyncBoxSensorEntityDescription(
         key="ip_address",
@@ -95,33 +121,41 @@ ENTITY_DESCRIPTIONS = [
         key="wifi_strength",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
-        get_value=lambda api: WIFI_STRENGTH_STATES[api.device.wifi.strength],  # type: ignore[union-attr]
+        get_value=lambda api: (
+            WIFI_STRENGTH_STATES[api.device.wifi.strength]
+            if api.device.wifi
+            and api.device.wifi.strength is not None
+            and api.device.wifi.strength in WIFI_STRENGTH_STATES
+            else None
+        ),
         device_class=SensorDeviceClass.ENUM,
         options=["not_connected", "weak", "fair", "good", "excellent"],
+        is_supported=lambda api: api.device.wifi is not None
+        and api.device.wifi.strength is not None,
     ),
     HueSyncBoxSensorEntityDescription(
         key="content_info",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
-        get_value=lambda api: api.hdmi.content_specs,
+        get_value=lambda api: api.hdmi.content_specs if api.hdmi is not None else None,
+        is_supported=lambda api: api.hdmi is not None
+        and api.hdmi.content_specs is not None,
     ),
 ]
 
 
 async def async_setup_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: HueSyncBoxConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator = config_entry.runtime_data.coordinator
 
-    entities: list[SensorEntity] = []
-
-    for entity_description in ENTITY_DESCRIPTIONS:
-        # When not able to read value, entity is not supported
-        with contextlib.suppress(Exception):
-            if entity_description.get_value(coordinator.api) is not None:
-                entities.append(HueSyncBoxSensor(coordinator, entity_description))
+    entities: list[SensorEntity] = [
+        HueSyncBoxSensor(coordinator, entity_description)
+        for entity_description in ENTITY_DESCRIPTIONS
+        if entity_description.is_supported(coordinator.api)
+    ]
 
     async_add_entities(entities)
 

@@ -1,8 +1,8 @@
 """Common fixtures  for the Philips Hue Play HDMI Sync Box integration tests."""
 
-from collections.abc import Generator
 from dataclasses import dataclass
-from unittest.mock import Mock, patch
+from typing import TYPE_CHECKING
+from unittest.mock import MagicMock, Mock, patch
 
 from homeassistant.const import (
     CONF_ACCESS_TOKEN,
@@ -11,7 +11,6 @@ from homeassistant.const import (
     CONF_PORT,
     CONF_UNIQUE_ID,
 )
-from homeassistant.core import HomeAssistant
 from homeassistant.util import dt as dt_util
 import pytest
 from pytest_homeassistant_custom_component.common import (  # type: ignore[import]
@@ -22,11 +21,23 @@ from pytest_homeassistant_custom_component.common import (  # type: ignore[impor
 import aiohuesyncbox
 from custom_components import huesyncbox
 
+if TYPE_CHECKING:
+    from collections.abc import Generator
+
+    from homeassistant.core import HomeAssistant
+
 
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(enable_custom_integrations) -> Generator[None]:  # noqa: ANN001, ARG001
     """Enable custom integrations."""
     yield  # noqa: PT022
+
+
+@pytest.fixture(autouse=True)
+def mock_huesyncbox(mock_api: Mock) -> Generator[Mock]:
+    """Prevent integration tests from constructing a real HueSyncBox client."""
+    with patch("aiohuesyncbox.HueSyncBox", return_value=mock_api):
+        yield mock_api
 
 
 # Copied from HA tests/components/conftest.py
@@ -43,11 +54,12 @@ def entity_registry_enabled_by_default() -> Generator[None]:
 @pytest.fixture
 def mock_api() -> Mock:
     """Create a mocked HueSyncBox instance."""
-    mock_api = Mock(
+    mock_api = MagicMock(
         spec=aiohuesyncbox.HueSyncBox,
     )
+    mock_api.__aenter__.return_value = mock_api
 
-    mock_api.device = Mock(aiohuesyncbox.device.Device)
+    mock_api.device = Mock(aiohuesyncbox.Device)
     mock_api.device.name = "Name"
     mock_api.device.api_level = 7
     mock_api.device.device_type = "HSB1"
@@ -55,55 +67,51 @@ def mock_api() -> Mock:
     mock_api.device.unique_id = "123456ABCDEF"  # Make sure it resembles real value
     mock_api.device.led_mode = 1
     mock_api.device.ip_address = "1.2.3.4"
-    mock_api.device.wifi = Mock(aiohuesyncbox.device.Wifi)
+    mock_api.device.wifi = Mock(aiohuesyncbox.Wifi)
     mock_api.device.wifi.strength = 2
 
-    mock_api.execution = Mock(aiohuesyncbox.execution.Execution)
+    mock_api.execution = Mock(aiohuesyncbox.Execution)
     mock_api.execution.brightness = 120
     mock_api.execution.mode = "music"
     mock_api.execution.last_sync_mode = "game"
     mock_api.execution.sync_active = False
     mock_api.execution.hdmi_source = "input2"
     mock_api.execution.hue_target = "id2"
-    mock_api.execution.video = Mock(aiohuesyncbox.execution.SyncMode)
+    mock_api.execution.video = Mock(aiohuesyncbox.SyncMode)
     mock_api.execution.video.intensity = "subtle"
-    mock_api.execution.music = Mock(aiohuesyncbox.execution.SyncMode)
+    mock_api.execution.music = Mock(aiohuesyncbox.SyncMode)
     mock_api.execution.music.intensity = "moderate"
-    mock_api.execution.game = Mock(aiohuesyncbox.execution.SyncMode)
+    mock_api.execution.game = Mock(aiohuesyncbox.SyncMode)
     mock_api.execution.game.intensity = "intense"
 
-    mock_api.hdmi = Mock(aiohuesyncbox.hdmi.Hdmi)
-    mock_api.hdmi.input1 = Mock(aiohuesyncbox.hdmi.Input)
+    mock_api.hdmi = Mock(aiohuesyncbox.Hdmi)
+    mock_api.hdmi.input1 = Mock(aiohuesyncbox.Input)
     mock_api.hdmi.input1.name = "HDMI 1"
     mock_api.hdmi.input1.type = "generic"
     mock_api.hdmi.input1.status = "unplugged"
-    mock_api.hdmi.input2 = Mock(aiohuesyncbox.hdmi.Input)
+    mock_api.hdmi.input2 = Mock(aiohuesyncbox.Input)
     mock_api.hdmi.input2.name = "HDMI 2"
     mock_api.hdmi.input2.type = "generic"
     mock_api.hdmi.input2.status = "plugged"
-    mock_api.hdmi.input3 = Mock(aiohuesyncbox.hdmi.Input)
+    mock_api.hdmi.input3 = Mock(aiohuesyncbox.Input)
     mock_api.hdmi.input3.name = "HDMI 3"
     mock_api.hdmi.input3.type = "generic"
     mock_api.hdmi.input3.status = "linked"
-    mock_api.hdmi.input4 = Mock(aiohuesyncbox.hdmi.Input)
+    mock_api.hdmi.input4 = Mock(aiohuesyncbox.Input)
     mock_api.hdmi.input4.name = "HDMI 4"
     mock_api.hdmi.input4.type = "generic"
     mock_api.hdmi.input4.status = "unknown"
     mock_api.hdmi.content_specs = "1920 x 1080 @ 60 - SDR"
 
-    mock_api.hue = Mock(aiohuesyncbox.hue.Hue)
+    mock_api.hue = Mock(aiohuesyncbox.Hue)
     mock_api.hue.bridge_unique_id = "bridge_id"
     mock_api.hue.connection_state = "connected"
     mock_api.hue.groups = [
-        aiohuesyncbox.hue.Group(
-            "id1", {"name": "Name 1", "numLights": 1, "active": False}
-        ),
-        aiohuesyncbox.hue.Group(
-            "id2", {"name": "Name 2", "numLights": 2, "active": False}
-        ),
+        aiohuesyncbox.Group(id="id1", name="Name 1", num_lights=1, active=False),
+        aiohuesyncbox.Group(id="id2", name="Name 2", num_lights=2, active=False),
     ]
 
-    mock_api.behavior = Mock(aiohuesyncbox.behavior.Behavior)
+    mock_api.behavior = Mock(aiohuesyncbox.Behavior)
     mock_api.behavior.force_dovi_native = 1
 
     return mock_api
@@ -139,9 +147,8 @@ async def setup_integration(
     )
     entry.add_to_hass(hass)
 
-    with patch("aiohuesyncbox.HueSyncBox", return_value=mock_api):
-        await hass.config_entries.async_setup(entry.entry_id)
-        await hass.async_block_till_done()
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
 
     return Integration(entry, mock_api)
 

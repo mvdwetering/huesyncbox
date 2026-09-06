@@ -1,9 +1,14 @@
-from unittest.mock import Mock
 
-from homeassistant.core import HomeAssistant
+from typing import TYPE_CHECKING
+
 import pytest
 
 from .conftest import setup_integration
+
+if TYPE_CHECKING:
+    from unittest.mock import Mock
+
+    from homeassistant.core import HomeAssistant
 
 
 @pytest.mark.usefixtures("entity_registry_enabled_by_default")

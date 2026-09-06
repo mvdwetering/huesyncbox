@@ -1,8 +1,8 @@
 """Coordinator for the Philips Hue Play HDMI Sync Box integration."""
 
 import asyncio
+from typing import TYPE_CHECKING
 
-from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
@@ -10,6 +10,9 @@ import aiohuesyncbox
 
 from .const import COORDINATOR_UPDATE_INTERVAL, LOGGER
 from .helpers import update_config_entry_title, update_device_registry
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 MAX_CONSECUTIVE_ERRORS = 5
 
@@ -42,7 +45,7 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator[aiohuesyncbox.HueSyncBox]):
             # handled by the data update coordinator.
             async with asyncio.timeout(5):
                 old_device = self.api.device
-                await self.api.update()
+                await self.api.refresh_data()
                 self._consecutive_errors = 0
 
                 if old_device != self.api.device:

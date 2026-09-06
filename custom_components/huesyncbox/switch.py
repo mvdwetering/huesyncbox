@@ -1,13 +1,9 @@
-from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 import aiohuesyncbox
@@ -15,6 +11,14 @@ import aiohuesyncbox
 from .const import DOMAIN
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import stop_sync_and_retry_on_invalid_state
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Coroutine
+
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    from . import HueSyncBoxConfigEntry
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -29,8 +33,13 @@ ENTITY_DESCRIPTIONS = [
     HueSyncBoxSwitchEntityDescription(
         key="power",
         is_on=lambda api: api.execution.mode != "powersave",
-        turn_on=lambda api: api.execution.set_state(mode="passthrough"),
-        turn_off=lambda api: api.execution.set_state(mode="powersave"),
+        turn_on=lambda api: api.execution.set_state(
+            mode=aiohuesyncbox.ExecutionMode.PASSTHROUGH
+        ),
+        turn_off=lambda api: api.execution.set_state(
+            mode=aiohuesyncbox.ExecutionMode.POWERSAVE
+        ),
+        is_supported=lambda api: api.device.device_type.startswith("HSC") is False,
     ),
     HueSyncBoxSwitchEntityDescription(
         key="light_sync",
@@ -41,17 +50,18 @@ ENTITY_DESCRIPTIONS = [
     HueSyncBoxSwitchEntityDescription(
         key="dolby_vision_compatibility",
         entity_category=EntityCategory.CONFIG,
-        is_on=lambda api: api.behavior.force_dovi_native == 1,
-        turn_on=lambda api: api.behavior.set_force_dovi_native(1),
-        turn_off=lambda api: api.behavior.set_force_dovi_native(0),
-        is_supported=lambda api: api.behavior.force_dovi_native is not None,
+        # is_supported ensures api.behavior is not None whenever these run
+        is_on=lambda api: api.behavior.force_dovi_native == 1,  # type: ignore[union-attr]
+        turn_on=lambda api: api.behavior.set_force_dovi_native(True),  # type: ignore[union-attr]
+        turn_off=lambda api: api.behavior.set_force_dovi_native(False),  # type: ignore[union-attr]
+        is_supported=lambda api: api.behavior is not None and api.behavior.force_dovi_native is not None,
     ),
 ]
 
 
 async def async_setup_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: HueSyncBoxConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator = config_entry.runtime_data.coordinator

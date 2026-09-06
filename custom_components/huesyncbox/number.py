@@ -1,25 +1,30 @@
-from collections.abc import Callable, Coroutine
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from homeassistant.components.number import NumberEntity, NumberEntityDescription
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-
-import aiohuesyncbox
 
 from .const import DOMAIN
 from .coordinator import HueSyncBoxCoordinator
 from .helpers import BrightnessRangeConverter, stop_sync_and_retry_on_invalid_state
 
+if TYPE_CHECKING:
+    from collections.abc import Callable, Coroutine
+
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    import aiohuesyncbox
+
+    from . import HueSyncBoxConfigEntry
+
 
 @dataclass(frozen=True, kw_only=True)
 class HueSyncBoxNumberEntityDescription(NumberEntityDescription):
-    get_value: Callable[[aiohuesyncbox.HueSyncBox], float] = None  # type: ignore[assignment]
-    set_value_fn: Callable[[aiohuesyncbox.HueSyncBox, float], Coroutine] = None  # type: ignore[assignment]
-
+    get_value: Callable[[aiohuesyncbox.HueSyncBox], float | None]
+    set_value_fn: Callable[[aiohuesyncbox.HueSyncBox, float], Coroutine]
+    is_supported_fn: Callable[[aiohuesyncbox.HueSyncBox], bool] = lambda _: True
 
 async def set_brightness(api: aiohuesyncbox.HueSyncBox, brightness: float) -> None:
     await api.execution.set_state(
@@ -44,7 +49,7 @@ ENTITY_DESCRIPTIONS = [
 
 async def async_setup_entry(
     _hass: HomeAssistant,
-    config_entry: ConfigEntry,
+    config_entry: HueSyncBoxConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     coordinator = config_entry.runtime_data.coordinator
@@ -52,7 +57,7 @@ async def async_setup_entry(
     entities: list[NumberEntity] = [
         HueSyncBoxNumber(coordinator, entity_description)
         for entity_description in ENTITY_DESCRIPTIONS
-        if entity_description.get_value(coordinator.api) is not None
+        if entity_description.is_supported_fn(coordinator.api)
     ]
 
     async_add_entities(entities)

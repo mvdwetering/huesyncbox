@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "huesyncbox"
 version = "0.0.0"
 license = { text = "Apache-2.0" }
-description = "Custom integration for Home Assistant to control the Philips Hue Play HDMI Sync Box 4K or 8K."
+description = "Custom integration for Home Assistant to control the Philips Hue Play Sync devices (boxes and screen)."
 authors = [
   { name = "Michel van de Wetering", email = "michel.van.de.wetering+huesyncbox@gmail.com" },
 ]
@@ -32,10 +32,10 @@ keywords = [
   "hue",
   "huesyncbox",
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 
 # Also update version in manifest.json
-dependencies = ["aiohuesyncbox==0.0.31"]
+dependencies = ["aiohuesyncbox==0.1.4"]
 
 [project.urls]
 Documentation = "https://github.com/mvdwetering/huesyncbox"
@@ -47,16 +47,13 @@ Repository = "https://github.com/mvdwetering/huesyncbox"
 dev = [
   "mypy==1.17.0",
   "ruff==0.14.10",
-  "pytest>=7.0.0",
+  "pytest>=9.0.3",
   "pytest-cov",
   "pytest-mock",
-  "pytest-homeassistant-custom-component==0.13.298",
   "awesomeversion>=24.0.0",
-  "homeassistant-stubs==2025.12.0",
-
-  # Pin pycares to avoid aiodns incompatibility with pycares 5.0.0
-  # See: https://github.com/aio-libs/aiodns/issues/214
-  "pycares<5.0.0",
+  "homeassistant==2026.8.0",
+  "pytest-homeassistant-custom-component",
+  "homeassistant-stubs",
 ]
 
 

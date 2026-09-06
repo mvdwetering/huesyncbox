@@ -2,11 +2,11 @@
 
 import asyncio
 from ipaddress import IPv4Address
+from typing import TYPE_CHECKING
 from unittest import mock
 from unittest.mock import Mock, patch
 
 from homeassistant import config_entries
-from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, UnknownFlow
 from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 import pytest
@@ -15,6 +15,9 @@ import aiohuesyncbox
 from custom_components import huesyncbox
 
 from .conftest import setup_integration
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
 
 
 async def test_user_new_box(hass: HomeAssistant, mock_api: Mock) -> None:
@@ -40,10 +43,10 @@ async def test_user_new_box(hass: HomeAssistant, mock_api: Mock) -> None:
 
         # First attempt button not pressed yet, second try return value
         mock_api.register.side_effect = [aiohuesyncbox.InvalidState, mock.DEFAULT]
-        mock_api.register.return_value = {
-            "registration_id": "registrationId",
-            "access_token": "accessToken",
-        }
+        mock_api.register.return_value = aiohuesyncbox.RegistrationCredentials(
+            registration_id="registrationId",
+            access_token="accessToken",  # noqa: S106
+        )
 
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
@@ -99,7 +102,9 @@ async def test_reconfigure_host(hass: HomeAssistant, mock_api: Mock) -> None:
     assert result["step_id"] == "configure"
 
     # Provide different host for existing entry, should update
-    with patch("aiohuesyncbox.HueSyncBox.is_registered", return_value=True):
+    mock_api.is_registered.return_value = True
+    with patch("aiohuesyncbox.HueSyncBox") as huesyncbox_instance:
+        huesyncbox_instance.return_value.__aenter__.return_value = mock_api
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {
@@ -120,7 +125,10 @@ async def test_reconfigure_host(hass: HomeAssistant, mock_api: Mock) -> None:
     ],
 )
 async def test_connection_errors_during_connection_check(
-    hass: HomeAssistant, side_effect: type[Exception], error_message: str
+    hass: HomeAssistant,
+    mock_api: Mock,
+    side_effect: type[Exception],
+    error_message: str,
 ) -> None:
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN, context={"source": config_entries.SOURCE_USER}
@@ -128,22 +136,18 @@ async def test_connection_errors_during_connection_check(
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "configure"
 
-    with patch(
-        "aiohuesyncbox.HueSyncBox.is_registered",
-        return_value=False,
-        side_effect=side_effect,
-    ):
-        result = await hass.config_entries.flow.async_configure(
-            result["flow_id"],
-            {
-                "host": "1.1.1.1",
-                "unique_id": "test-unique_id",
-            },
-        )
+    mock_api.is_registered.side_effect = side_effect
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        {
+            "host": "1.1.1.1",
+            "unique_id": "test-unique_id",
+        },
+    )
 
-        assert result["type"] == FlowResultType.FORM
-        assert result["step_id"] == "configure"
-        assert result["errors"] == {"base": error_message}
+    assert result["type"] == FlowResultType.FORM
+    assert result["step_id"] == "configure"
+    assert result["errors"] == {"base": error_message}
 
 
 @pytest.mark.parametrize(
@@ -258,10 +262,10 @@ async def test_zeroconf_new_box(hass: HomeAssistant, mock_api: Mock) -> None:
     ):
         # __aenter__ stuff needed because used as context manager
         huesyncbox_instance.return_value.__aenter__.return_value = mock_api
-        mock_api.register.return_value = {
-            "registration_id": "registrationId",
-            "access_token": "accessToken",
-        }
+        mock_api.register.return_value = aiohuesyncbox.RegistrationCredentials(
+            registration_id="registrationId",
+            access_token="accessToken",  # noqa: S106
+        )
 
         result = await hass.config_entries.flow.async_configure(
             result["flow_id"],
@@ -300,7 +304,6 @@ async def test_zeroconf_already_configured(hass: HomeAssistant, mock_api: Mock) 
     assert integration.entry.data["port"] != 443
     assert integration.entry.data["path"] != "/different"
 
-    # Trigger flow
     result = await hass.config_entries.flow.async_init(
         huesyncbox.DOMAIN,
         context={"source": config_entries.SOURCE_ZEROCONF},
@@ -357,10 +360,10 @@ async def test_reauth_flow(hass: HomeAssistant, mock_api: Mock) -> None:
         huesyncbox_instance.return_value.__aenter__.return_value = mock_api
 
         # First attempt button not pressed yet, second try return value
-        mock_api.register.return_value = {
-            "registration_id": "NewRegistrationId",
-            "access_token": "NewAccessToken",
-        }
+        mock_api.register.return_value = aiohuesyncbox.RegistrationCredentials(
+            registration_id="NewRegistrationId",
+            access_token="NewAccessToken",  # noqa: S106
+        )
 
         # Press next on reauth confirm form
         result = await hass.config_entries.flow.async_configure(result["flow_id"], {})
