@@ -116,3 +116,6 @@ def get_group_from_area_name(
         if group.name == area_name:
             return group
     return None
+
+def is_standalone_mode(api: aiohuesyncbox.HueSyncBox) -> bool:
+    return api.hue.operating_mode is aiohuesyncbox.OperatingMode.STANDALONE

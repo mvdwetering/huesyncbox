@@ -10,7 +10,11 @@ import aiohuesyncbox
 
 from .const import DOMAIN, INTENSITIES, SYNC_MODES
 from .coordinator import HueSyncBoxCoordinator
-from .helpers import get_hue_target_from_id, stop_sync_and_retry_on_invalid_state
+from .helpers import (
+    get_hue_target_from_id,
+    is_standalone_mode,
+    stop_sync_and_retry_on_invalid_state,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Coroutine
@@ -45,7 +49,6 @@ def available_inputs(api: aiohuesyncbox.HueSyncBox) -> list[str]:
         for input_id in INPUTS
         if getattr(api.hdmi, input_id)
     ]
-
 
 
 def current_input(api: aiohuesyncbox.HueSyncBox) -> str | None:
@@ -88,7 +91,7 @@ def current_entertainment_area(api: aiohuesyncbox.HueSyncBox) -> str | None:
 
 
 async def select_entertainment_area(api: aiohuesyncbox.HueSyncBox, name: str) -> None:
-    # Source is the user given name, so needs to be mapped back to a valid API value."""
+    # Name is the user given name, so needs to be mapped back to a valid API value.
     group = next(filter(lambda g: g.name == name, api.hue.groups), None)
     if group:
         await api.execution.set_state(hue_target=get_hue_target_from_id(group.id))
@@ -114,7 +117,11 @@ async def select_sync_mode(api: aiohuesyncbox.HueSyncBox, sync_mode: str) -> Non
 
 
 def current_led_indicator_mode(api: aiohuesyncbox.HueSyncBox) -> str | None:
-    return LED_INDICATOR_MODES[api.device.led_mode] if 0 <= api.device.led_mode < len(LED_INDICATOR_MODES) else None
+    return (
+        LED_INDICATOR_MODES[api.device.led_mode]
+        if 0 <= api.device.led_mode < len(LED_INDICATOR_MODES)
+        else None
+    )
 
 
 async def select_led_indicator_mode(api: aiohuesyncbox.HueSyncBox, mode: str) -> None:
@@ -122,6 +129,8 @@ async def select_led_indicator_mode(api: aiohuesyncbox.HueSyncBox, mode: str) ->
     await api.device.set_led_mode(
         aiohuesyncbox.LedMode(LED_INDICATOR_MODES.index(mode))
     )
+
+
 
 
 ENTITY_DESCRIPTIONS = [
@@ -137,6 +146,7 @@ ENTITY_DESCRIPTIONS = [
         options_fn=available_entertainment_areas,
         current_option_fn=current_entertainment_area,
         select_option_fn=select_entertainment_area,
+        is_supported_fn=lambda api: not is_standalone_mode(api),
     ),
     HueSyncBoxSelectEntityDescription(
         key="intensity",

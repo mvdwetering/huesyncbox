@@ -1,4 +1,3 @@
-import contextlib
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -13,6 +12,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import HueSyncBoxCoordinator
 from .const import DOMAIN
+from .helpers import is_standalone_mode
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -56,12 +56,14 @@ ENTITY_DESCRIPTIONS = [
             "busy",
         ],
         get_value=lambda api: api.hue.connection_state,
+        is_supported=lambda api: not is_standalone_mode(api),
     ),
     HueSyncBoxSensorEntityDescription(
         key="bridge_unique_id",
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
         get_value=lambda api: api.hue.bridge_unique_id,
+        is_supported=lambda api: not is_standalone_mode(api),
     ),
     HueSyncBoxSensorEntityDescription(
         key="hdmi1_status",
