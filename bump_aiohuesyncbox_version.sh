@@ -64,6 +64,6 @@ if [[ "$CONFIRM" == "y" ]]; then
   BRANCH_NAME="bump_aiohuesyncbox_$NEW_VERSION"
   git checkout -b "$BRANCH_NAME"
   git add pyproject.toml custom_components/huesyncbox/manifest.json
-  git commit -m "Bump aiohuesyncboxversion to $NEW_VERSION"
+  git commit -m "Bump aiohuesyncbox version to $NEW_VERSION"
   git push origin "$BRANCH_NAME"
 fi
