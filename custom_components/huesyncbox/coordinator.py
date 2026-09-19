@@ -45,6 +45,7 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator[aiohuesyncbox.HueSyncBox]):
             # handled by the data update coordinator.
             async with asyncio.timeout(5):
                 old_device = self.api.device
+                old_operating_mode = self.api.hue.operating_mode
                 await self.api.refresh_data()
                 self._consecutive_errors = 0
 
@@ -52,6 +53,18 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator[aiohuesyncbox.HueSyncBox]):
                     await update_device_registry(self.hass, self.config_entry, self.api)
                     update_config_entry_title(
                         self.hass, self.config_entry, self.api.device.name
+                    )
+
+                if old_operating_mode != self.api.hue.operating_mode and (
+                    old_operating_mode is aiohuesyncbox.OperatingMode.STANDALONE
+                    or self.api.hue.operating_mode
+                    is aiohuesyncbox.OperatingMode.STANDALONE
+                ):
+                    # Device changed to or from standalone mode, reload the integration to add/remove entities
+                    # It would be possible to selectively add or remove entities instead of reloading the
+                    # entire integration, but reloading allows to reuse the existing is_supported_fn logic
+                    await self.hass.config_entries.async_reload(
+                        self.config_entry.entry_id
                     )
 
         except aiohuesyncbox.Unauthorized as err:
