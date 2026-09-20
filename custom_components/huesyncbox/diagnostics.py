@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from . import HueSyncBoxConfigEntry
 
 KEYS_TO_REDACT_CONFIG_ENTRY = [CONF_ACCESS_TOKEN, CONF_UNIQUE_ID]
-KEYS_TO_REDACT_API = ["uniqueId", "bridgeUniqueId", "ssid"]
+KEYS_TO_REDACT_API = ["uniqueId", "bridgeUniqueId", "ssid", "bleDLCKey"]
 
 
 async def async_get_config_entry_diagnostics(
