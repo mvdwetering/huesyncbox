@@ -1,5 +1,5 @@
 {
-    "name": "Philips Hue Play Sync devices",
+    "name": "Philips Hue Play Sync devices (Syncbox and Screensync)",
     "homeassistant": "2026.8.0",
     "render_readme": true,
     "zip_release": true,
