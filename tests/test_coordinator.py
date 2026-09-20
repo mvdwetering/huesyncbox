@@ -100,3 +100,72 @@ async def test_continued_communication_errors_mark_entities_unavailable(
     await force_coordinator_update(hass)
     entity = hass.states.get(entity_under_test)
     assert entity.state == "unavailable"
+
+
+@pytest.mark.parametrize(
+    ("current_operating_mode", "next_operating_mode", "expected_callback_count"),
+    [
+        (aiohuesyncbox.OperatingMode.BRIDGE, aiohuesyncbox.OperatingMode.BRIDGE, 0),
+        (aiohuesyncbox.OperatingMode.BRIDGE, aiohuesyncbox.OperatingMode.STANDALONE, 1),
+        (aiohuesyncbox.OperatingMode.BRIDGE, None, 0),
+        (aiohuesyncbox.OperatingMode.STANDALONE, aiohuesyncbox.OperatingMode.BRIDGE, 1),
+        (aiohuesyncbox.OperatingMode.STANDALONE, aiohuesyncbox.OperatingMode.STANDALONE, 0),
+        (aiohuesyncbox.OperatingMode.STANDALONE, None, 1),
+        (None, aiohuesyncbox.OperatingMode.BRIDGE, 0),
+        (None, aiohuesyncbox.OperatingMode.STANDALONE, 1),
+        (None, None, 0),
+    ],
+)
+async def test_operating_mode_change_listener_transition_behavior(
+    hass: HomeAssistant,
+    mock_api: Mock,
+    current_operating_mode: aiohuesyncbox.OperatingMode | None,
+    next_operating_mode: aiohuesyncbox.OperatingMode | None,
+    expected_callback_count: int,
+) -> None:
+    mock_api.hue.operating_mode = current_operating_mode
+    integration = await setup_integration(hass, mock_api)
+    coordinator = integration.entry.runtime_data.coordinator
+    callback = Mock()
+
+    coordinator.async_add_operating_mode_change_listener(callback)
+
+    async def refresh_data() -> None:
+        mock_api.hue.operating_mode = next_operating_mode
+
+    mock_api.refresh_data.side_effect = refresh_data
+    await force_coordinator_update(hass)
+    assert callback.call_count == expected_callback_count
+
+
+async def test_operating_mode_change_listener_can_be_removed(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
+    integration = await setup_integration(hass, mock_api)
+    coordinator = integration.entry.runtime_data.coordinator
+    callback = Mock()
+    next_operating_mode = aiohuesyncbox.OperatingMode.STANDALONE
+
+    remove_listener = coordinator.async_add_operating_mode_change_listener(callback)
+
+    async def refresh_data() -> None:
+        mock_api.hue.operating_mode = next_operating_mode
+
+    mock_api.refresh_data.side_effect = refresh_data
+
+    remove_listener()
+    await force_coordinator_update(hass)
+    callback.assert_not_called()
+
+
+async def test_operating_mode_change_listener_handles_callback_exceptions(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
+    integration = await setup_integration(hass, mock_api)
+    coordinator = integration.entry.runtime_data.coordinator
+    callback = Mock(side_effect=ValueError("boom"))
+
+    coordinator.async_add_operating_mode_change_listener(callback)
+
+    coordinator.async_trigger_operating_mode_change_listeners()
+    callback.assert_called_once()

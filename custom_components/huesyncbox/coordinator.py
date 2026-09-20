@@ -71,8 +71,8 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator[aiohuesyncbox.HueSyncBox]):
                     or self.api.hue.operating_mode
                     is aiohuesyncbox.OperatingMode.STANDALONE
                 ):
-                    # Device changed to or from standalone mode, trigger platforms so 
-                    # they can add/remove entities as needed
+                    # Device changed to or from standalone mode, trigger platforms so
+                    # they can add/remove entities as needed.
                     self.async_trigger_operating_mode_change_listeners()
 
         except aiohuesyncbox.Unauthorized as err:
