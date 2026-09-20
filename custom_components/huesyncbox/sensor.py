@@ -6,7 +6,8 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorEntityDescription,
 )
-from homeassistant.const import EntityCategory
+from homeassistant.const import EntityCategory, Platform
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -153,13 +154,26 @@ async def async_setup_entry(
 ) -> None:
     coordinator = config_entry.runtime_data.coordinator
 
-    entities: list[SensorEntity] = [
-        HueSyncBoxSensor(coordinator, entity_description)
-        for entity_description in ENTITY_DESCRIPTIONS
-        if entity_description.is_supported(coordinator.api)
-    ]
+    def _update_entities() -> None:
+        entity_registry = er.async_get(_hass)
+        entities: list[HueSyncBoxSensor] = []
 
-    async_add_entities(entities)
+        for entity_description in ENTITY_DESCRIPTIONS:
+            unique_id = f"{entity_description.key}_{coordinator.api.device.unique_id}"
+
+            entity_id = entity_registry.async_get_entity_id(
+                Platform.SENSOR, DOMAIN, unique_id
+            )
+
+            if entity_id is None and entity_description.is_supported(coordinator.api):
+                entities.append(HueSyncBoxSensor(coordinator, entity_description))
+            elif entity_id and not entity_description.is_supported(coordinator.api):
+                entity_registry.async_remove(entity_id)
+
+        async_add_entities(entities)
+
+    coordinator.async_add_operating_mode_change_listener(_update_entities)
+    _update_entities()
 
 
 class HueSyncBoxSensor(CoordinatorEntity[HueSyncBoxCoordinator], SensorEntity):

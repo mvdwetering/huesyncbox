@@ -1,10 +1,15 @@
 """Coordinator for the Philips Hue Play HDMI Sync Box integration."""
 
 import asyncio
+from functools import partial
 from typing import TYPE_CHECKING
 
 from homeassistant.exceptions import ConfigEntryAuthFailed
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.update_coordinator import (
+    CALLBACK_TYPE,
+    DataUpdateCoordinator,
+    UpdateFailed,
+)
 
 import aiohuesyncbox
 
@@ -12,6 +17,8 @@ from .const import COORDINATOR_UPDATE_INTERVAL, LOGGER
 from .helpers import update_config_entry_title, update_device_registry
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from homeassistant.core import HomeAssistant
 
 MAX_CONSECUTIVE_ERRORS = 5
@@ -32,6 +39,10 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator[aiohuesyncbox.HueSyncBox]):
         )
         self.api = api
         self._consecutive_errors = 0
+
+        self._operating_mode_change_listeners: dict[int, CALLBACK_TYPE] = {}
+        self._last_operating_mode_change_listener_id: int = 0
+
 
     def _is_consecutive_error_reached(self) -> bool:
         self._consecutive_errors += 1
@@ -60,12 +71,9 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator[aiohuesyncbox.HueSyncBox]):
                     or self.api.hue.operating_mode
                     is aiohuesyncbox.OperatingMode.STANDALONE
                 ):
-                    # Device changed to or from standalone mode, reload the integration to add/remove entities
-                    # It would be possible to selectively add or remove entities instead of reloading the
-                    # entire integration, but reloading allows to reuse the existing is_supported_fn logic
-                    await self.hass.config_entries.async_reload(
-                        self.config_entry.entry_id
-                    )
+                    # Device changed to or from standalone mode, trigger platforms so 
+                    # they can add/remove entities as needed
+                    self.async_trigger_operating_mode_change_listeners()
 
         except aiohuesyncbox.Unauthorized as err:
             # Raising ConfigEntryAuthFailed will cancel future updates
@@ -81,3 +89,28 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator[aiohuesyncbox.HueSyncBox]):
                 raise
 
         return self.api
+
+    def async_add_operating_mode_change_listener(
+        self, update_callback: CALLBACK_TYPE
+    ) -> Callable[[], None]:
+        """Listen for changes in operating mode."""
+        self._last_operating_mode_change_listener_id += 1
+        self._operating_mode_change_listeners[self._last_operating_mode_change_listener_id] = update_callback
+
+        return partial(self.__async_remove_operating_mode_change_listener_internal, self._last_operating_mode_change_listener_id)
+
+    def __async_remove_operating_mode_change_listener_internal(self, listener_id: int) -> None:
+        """Remove an operating mode change listener."""
+        self._operating_mode_change_listeners.pop(listener_id, None)
+
+    def async_trigger_operating_mode_change_listeners(self) -> None:
+        """Update all registered operating mode change listeners."""
+        for update_callback in list(self._operating_mode_change_listeners.values()):
+            try:
+                update_callback()
+            except Exception:
+                self.logger.exception(
+                    "Unexpected error updating listener %s for %s",
+                    id(update_callback),
+                    self.name,
+                )
