@@ -20,6 +20,7 @@ async def test_diagnostics(hass: HomeAssistant, mock_api: Mock) -> None:
         "uniqueId": "abc",
         "bridgeUniqueId": "def",
         "ssid": "ghi",
+        "bleDLCKey": "jkl"
     }
 
     diagnostics = await async_get_config_entry_diagnostics(hass, integration.entry)
@@ -32,6 +33,7 @@ async def test_diagnostics(hass: HomeAssistant, mock_api: Mock) -> None:
     assert diagnostics["api"]["uniqueId"] == REDACTED
     assert diagnostics["api"]["bridgeUniqueId"] == REDACTED
     assert diagnostics["api"]["ssid"] == REDACTED
+    assert diagnostics["api"]["bleDLCKey"] == REDACTED
 
 
 async def test_diagnostics_no_response_yet(hass: HomeAssistant, mock_api: Mock) -> None:

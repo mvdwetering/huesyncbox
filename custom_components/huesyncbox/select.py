@@ -2,7 +2,8 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from homeassistant.components.select import SelectEntity, SelectEntityDescription
-from homeassistant.const import EntityCategory
+from homeassistant.const import EntityCategory, Platform
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -10,7 +11,11 @@ import aiohuesyncbox
 
 from .const import DOMAIN, INTENSITIES, SYNC_MODES
 from .coordinator import HueSyncBoxCoordinator
-from .helpers import get_hue_target_from_id, stop_sync_and_retry_on_invalid_state
+from .helpers import (
+    get_hue_target_from_id,
+    is_standalone_mode,
+    stop_sync_and_retry_on_invalid_state,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Coroutine
@@ -45,7 +50,6 @@ def available_inputs(api: aiohuesyncbox.HueSyncBox) -> list[str]:
         for input_id in INPUTS
         if getattr(api.hdmi, input_id)
     ]
-
 
 
 def current_input(api: aiohuesyncbox.HueSyncBox) -> str | None:
@@ -88,7 +92,7 @@ def current_entertainment_area(api: aiohuesyncbox.HueSyncBox) -> str | None:
 
 
 async def select_entertainment_area(api: aiohuesyncbox.HueSyncBox, name: str) -> None:
-    # Source is the user given name, so needs to be mapped back to a valid API value."""
+    # Name is the user given name, so needs to be mapped back to a valid API value.
     group = next(filter(lambda g: g.name == name, api.hue.groups), None)
     if group:
         await api.execution.set_state(hue_target=get_hue_target_from_id(group.id))
@@ -114,7 +118,11 @@ async def select_sync_mode(api: aiohuesyncbox.HueSyncBox, sync_mode: str) -> Non
 
 
 def current_led_indicator_mode(api: aiohuesyncbox.HueSyncBox) -> str | None:
-    return LED_INDICATOR_MODES[api.device.led_mode] if 0 <= api.device.led_mode < len(LED_INDICATOR_MODES) else None
+    return (
+        LED_INDICATOR_MODES[api.device.led_mode]
+        if 0 <= api.device.led_mode < len(LED_INDICATOR_MODES)
+        else None
+    )
 
 
 async def select_led_indicator_mode(api: aiohuesyncbox.HueSyncBox, mode: str) -> None:
@@ -122,6 +130,8 @@ async def select_led_indicator_mode(api: aiohuesyncbox.HueSyncBox, mode: str) ->
     await api.device.set_led_mode(
         aiohuesyncbox.LedMode(LED_INDICATOR_MODES.index(mode))
     )
+
+
 
 
 ENTITY_DESCRIPTIONS = [
@@ -137,6 +147,7 @@ ENTITY_DESCRIPTIONS = [
         options_fn=available_entertainment_areas,
         current_option_fn=current_entertainment_area,
         select_option_fn=select_entertainment_area,
+        is_supported_fn=lambda api: not is_standalone_mode(api),
     ),
     HueSyncBoxSelectEntityDescription(
         key="intensity",
@@ -168,13 +179,29 @@ async def async_setup_entry(
 ) -> None:
     coordinator = config_entry.runtime_data.coordinator
 
-    entities: list[SelectEntity] = [
-        HueSyncBoxSelect(coordinator, entity_description)
-        for entity_description in ENTITY_DESCRIPTIONS
-        if entity_description.is_supported_fn(coordinator.api)
-    ]
+    def _update_entities(*, initial_setup: bool) -> None:
 
-    async_add_entities(entities)
+        entity_registry = er.async_get(_hass)
+        entities: list[HueSyncBoxSelect] = []
+
+        for entity_description in ENTITY_DESCRIPTIONS:
+            unique_id = f"{entity_description.key}_{coordinator.api.device.unique_id}"
+
+            entity_id = entity_registry.async_get_entity_id(
+                Platform.SELECT, DOMAIN, unique_id
+            )
+
+            if (initial_setup or entity_id is None) and entity_description.is_supported_fn(coordinator.api):
+                entities.append(HueSyncBoxSelect(coordinator, entity_description))
+            elif entity_id and not entity_description.is_supported_fn(coordinator.api):
+                entity_registry.async_remove(entity_id)
+
+        async_add_entities(entities)
+
+    coordinator.async_add_operating_mode_change_listener(
+        lambda: _update_entities(initial_setup=False)
+    )
+    _update_entities(initial_setup=True)
 
 
 class HueSyncBoxSelect(CoordinatorEntity[HueSyncBoxCoordinator], SelectEntity):

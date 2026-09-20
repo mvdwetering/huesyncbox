@@ -158,6 +158,29 @@ async def test_entertainment_area_unsupported_value(
     assert entity.state == "unknown"
 
 
+async def test_entities_are_added_or_removed_when_operating_mode_changes(
+    hass: HomeAssistant, mock_api: Mock
+) -> None:
+    entity_under_test = "select.name_entertainment_area"
+    mock_api.hue.operating_mode = aiohuesyncbox.OperatingMode.BRIDGE
+    next_operating_mode = aiohuesyncbox.OperatingMode.STANDALONE
+
+    async def refresh_data() -> None:
+        mock_api.hue.operating_mode = next_operating_mode
+
+    mock_api.refresh_data.side_effect = refresh_data
+
+    await setup_integration(hass, mock_api)
+    assert hass.states.get(entity_under_test) is not None
+
+    await force_coordinator_update(hass)
+    assert hass.states.get(entity_under_test) is None
+
+    next_operating_mode = aiohuesyncbox.OperatingMode.BRIDGE
+    await force_coordinator_update(hass)
+    assert hass.states.get(entity_under_test) is not None
+
+
 async def test_led_indicator(hass: HomeAssistant, mock_api: Mock) -> None:
     entity_under_test = "select.name_led_indicator"
 
