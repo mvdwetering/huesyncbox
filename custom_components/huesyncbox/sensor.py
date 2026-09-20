@@ -154,7 +154,7 @@ async def async_setup_entry(
 ) -> None:
     coordinator = config_entry.runtime_data.coordinator
 
-    def _update_entities() -> None:
+    def _update_entities(*, initial_setup: bool) -> None:
         entity_registry = er.async_get(_hass)
         entities: list[HueSyncBoxSensor] = []
 
@@ -165,15 +165,19 @@ async def async_setup_entry(
                 Platform.SENSOR, DOMAIN, unique_id
             )
 
-            if entity_id is None and entity_description.is_supported(coordinator.api):
+            if (initial_setup or entity_id is None) and entity_description.is_supported(
+                coordinator.api
+            ):
                 entities.append(HueSyncBoxSensor(coordinator, entity_description))
             elif entity_id and not entity_description.is_supported(coordinator.api):
                 entity_registry.async_remove(entity_id)
 
         async_add_entities(entities)
 
-    coordinator.async_add_operating_mode_change_listener(_update_entities)
-    _update_entities()
+    coordinator.async_add_operating_mode_change_listener(
+        lambda: _update_entities(initial_setup=False)
+    )
+    _update_entities(initial_setup=True)
 
 
 class HueSyncBoxSensor(CoordinatorEntity[HueSyncBoxCoordinator], SensorEntity):
