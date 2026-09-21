@@ -167,7 +167,7 @@ ENTITY_DESCRIPTIONS = [
         options=sorted(LED_INDICATOR_MODES),
         current_option_fn=current_led_indicator_mode,
         select_option_fn=select_led_indicator_mode,
-        is_supported_fn=lambda api: bool(api.device.led_mode),
+        is_supported_fn=lambda api: api.device.led_mode is not None,
     ),
 ]
 
