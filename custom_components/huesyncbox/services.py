@@ -67,22 +67,13 @@ HUESYNCBOX_SET_SYNC_STATE_SCHEMA = vol.Schema(
 def syncbox_config_entry_for_device_id(
     hass: HomeAssistant, device_id: str
 ) -> ConfigEntry:
-    lookup = getattr(dr, "async_get_device_and_config_entry_for_domain", None)
-    if lookup is not None:
-        # Home Assistant 2026.9+: a device belongs to a single config entry and
-        # DeviceEntry.config_entries is deprecated (warns from 2026.10, removed
-        # in 2027.10). The helper also resolves a device id stored before the
-        # 2026.8 device split to the device owned by this integration.
-        _device_entry, entry = lookup(hass, device_id, domain=DOMAIN)
-        if entry is not None:
+    device_registry = dr.async_get(hass)
+
+    if device_entry := device_registry.async_get(device_id):
+        # Since Home Assistant 2026.8 a device belongs to a single config entry.
+        entry = hass.config_entries.async_get_entry(device_entry.config_entry_id)
+        if entry is not None and entry.domain == DOMAIN:
             return entry
-    elif device_entry := dr.async_get(hass).async_get(device_id):
-        # Older cores: multiple config entries can be associated with a device.
-        # So need to find the correct one for this integration.
-        for config_entry_id in device_entry.config_entries:
-            entry = hass.config_entries.async_get_entry(config_entry_id)
-            if entry is not None and entry.domain == DOMAIN:
-                return entry
 
     raise ServiceValidationError(
         translation_domain=DOMAIN,

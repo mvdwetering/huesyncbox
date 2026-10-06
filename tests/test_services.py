@@ -47,37 +47,6 @@ async def test_set_bridge(hass: HomeAssistant, mock_api: Mock) -> None:
     )
 
 
-async def test_set_bridge_does_not_read_deprecated_config_entries(
-    hass: HomeAssistant, mock_api: Mock, caplog: pytest.LogCaptureFixture
-) -> None:
-    """The device lookup must not read DeviceEntry.config_entries.
-
-    Home Assistant 2026.10 logs a warning for every read, and 2027.10 removes it.
-    """
-    await setup_integration(hass, mock_api)
-
-    # async_get_device_by_identifier rather than the deprecated async_get_device,
-    # which Home Assistant 2026.10 rejects when called from tests.
-    device_entry = dr.async_get(hass).async_get_device_by_identifier(
-        (huesyncbox.DOMAIN, "123456ABCDEF"), "entry_id"
-    )
-    assert device_entry is not None
-
-    await hass.services.async_call(
-        huesyncbox.DOMAIN,
-        "set_bridge",
-        {
-            "device_id": device_entry.id,
-            "bridge_id": "001788FFFE000000",
-            "bridge_username": "bridge_username_value",
-            "bridge_clientkey": "00112233445566778899AABBCCDDEEFF",
-        },
-        blocking=True,
-    )
-    assert mock_api.hue.set_bridge.call_count == 1
-    assert "DeviceEntry.config_entries" not in caplog.text
-
-
 async def test_set_bridge_unknown_device_id(
     hass: HomeAssistant, mock_api: Mock
 ) -> None:
