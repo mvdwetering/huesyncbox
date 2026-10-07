@@ -121,7 +121,7 @@ async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
 
         # Resolve entertainment area
         group = get_group_from_area_name(
-            coordinator.api, target_sync_state.get(ATTR_ENTERTAINMENT_AREA, None)
+            coordinator.api, target_sync_state.get(ATTR_ENTERTAINMENT_AREA, "")
         )
         hue_target = get_hue_target_from_id(group.id) if group else None
 

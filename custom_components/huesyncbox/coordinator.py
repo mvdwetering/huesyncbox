@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import (
-    CALLBACK_TYPE,
     DataUpdateCoordinator,
     UpdateFailed,
 )
@@ -19,7 +18,7 @@ from .helpers import update_config_entry_title, update_device_registry
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from homeassistant.core import HomeAssistant
+    from homeassistant.core import CALLBACK_TYPE, HomeAssistant
 
 MAX_CONSECUTIVE_ERRORS = 5
 
@@ -60,7 +59,7 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator[aiohuesyncbox.HueSyncBox]):
                 await self.api.refresh_data()
                 self._consecutive_errors = 0
 
-                if old_device != self.api.device:
+                if old_device != self.api.device and self.config_entry:
                     await update_device_registry(self.hass, self.config_entry, self.api)
                     update_config_entry_title(
                         self.hass, self.config_entry, self.api.device.name
