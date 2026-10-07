@@ -70,12 +70,10 @@ def syncbox_config_entry_for_device_id(
     device_registry = dr.async_get(hass)
 
     if device_entry := device_registry.async_get(device_id):
-        # Multiple config entries can be associated with a device.
-        # So need to find the correct one for this integration.
-        for config_entry_id in device_entry.config_entries:
-            entry = hass.config_entries.async_get_entry(config_entry_id)
-            if entry is not None and entry.domain == DOMAIN:
-                return entry
+        # Since Home Assistant 2026.8 a device belongs to a single config entry.
+        entry = hass.config_entries.async_get_entry(device_entry.config_entry_id)
+        if entry is not None and entry.domain == DOMAIN:
+            return entry
 
     raise ServiceValidationError(
         translation_domain=DOMAIN,
@@ -123,7 +121,7 @@ async def async_register_set_sync_state_service(hass: HomeAssistant) -> None:
 
         # Resolve entertainment area
         group = get_group_from_area_name(
-            coordinator.api, target_sync_state.get(ATTR_ENTERTAINMENT_AREA, None)
+            coordinator.api, target_sync_state.get(ATTR_ENTERTAINMENT_AREA, "")
         )
         hue_target = get_hue_target_from_id(group.id) if group else None
 

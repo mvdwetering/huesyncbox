@@ -29,20 +29,21 @@ if TYPE_CHECKING:
 
 
 async def test_device_info(hass: HomeAssistant, mock_api: Mock) -> None:
-    await setup_integration(hass, mock_api)
+    integration = await setup_integration(hass, mock_api)
 
     device_registry = dr.async_get(hass)
-    device = device_registry.async_get_device(
-        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    device_entry = device_registry.async_get_device_by_identifier(
+        identifier=(huesyncbox.DOMAIN, "123456ABCDEF"),
+        config_entry_id=integration.entry.entry_id,
     )
+    assert device_entry is not None
 
-    assert device is not None
-    assert device.name == "Name"
-    assert device.manufacturer == "Signify"
-    assert device.model == "Philips Hue Play HDMI sync box"
-    assert device.model_id == "HSB1"
-    assert device.sw_version == "firmwareversion"
-    assert device.connections == {("mac", "12:34:56:ab:cd:ef")}
+    assert device_entry.name == "Name"
+    assert device_entry.manufacturer == "Signify"
+    assert device_entry.model == "Philips Hue Play HDMI sync box"
+    assert device_entry.model_id == "HSB1"
+    assert device_entry.sw_version == "firmwareversion"
+    assert device_entry.connections == {("mac", "12:34:56:ab:cd:ef")}
 
 
 async def test_handle_authentication_error_during_setup(
