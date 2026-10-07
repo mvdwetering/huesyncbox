@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import (
-    CALLBACK_TYPE,
     DataUpdateCoordinator,
     UpdateFailed,
 )
@@ -19,7 +18,7 @@ from .helpers import update_config_entry_title, update_device_registry
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from homeassistant.core import HomeAssistant
+    from homeassistant.core import CALLBACK_TYPE, HomeAssistant
 
 MAX_CONSECUTIVE_ERRORS = 5
 
