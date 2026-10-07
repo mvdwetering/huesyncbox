@@ -94,11 +94,13 @@ async def test_continued_communication_errors_mark_entities_unavailable(
     for _ in range(4):
         await force_coordinator_update(hass)
         entity = hass.states.get(entity_under_test)
+        assert entity is not None
         assert entity.state == "on"
 
     # 5th error makes entity unavailable
     await force_coordinator_update(hass)
     entity = hass.states.get(entity_under_test)
+    assert entity is not None
     assert entity.state == "unavailable"
 
 
