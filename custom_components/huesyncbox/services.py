@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, Any
 
-from homeassistant.components.light.const import ATTR_BRIGHTNESS
+from homeassistant.components.light import ATTR_BRIGHTNESS
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import config_validation as cv, device_registry as dr
 import voluptuous as vol
