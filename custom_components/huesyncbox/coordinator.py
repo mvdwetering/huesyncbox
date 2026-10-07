@@ -59,7 +59,7 @@ class HueSyncBoxCoordinator(DataUpdateCoordinator[aiohuesyncbox.HueSyncBox]):
                 await self.api.refresh_data()
                 self._consecutive_errors = 0
 
-                if old_device != self.api.device:
+                if old_device != self.api.device and self.config_entry:
                     await update_device_registry(self.hass, self.config_entry, self.api)
                     update_config_entry_title(
                         self.hass, self.config_entry, self.api.device.name
