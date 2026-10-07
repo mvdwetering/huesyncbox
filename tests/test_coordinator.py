@@ -21,11 +21,12 @@ async def test_update_device_registry_and_config_entry_on_name_change(
 
     # Verify current name
     device_registry = dr.async_get(hass)
-    device = device_registry.async_get_device(
-        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    device_entry = device_registry.async_get_device_by_identifier(
+        identifier=(huesyncbox.DOMAIN, "123456ABCDEF"),
+        config_entry_id=integration.entry.entry_id,
     )
-    assert device is not None
-    assert device.name == "Name"
+    assert device_entry is not None
+    assert device_entry.name == "Name"
 
     config_entry = hass.config_entries.async_get_entry(integration.entry.entry_id)
     assert config_entry is not None
@@ -38,11 +39,12 @@ async def test_update_device_registry_and_config_entry_on_name_change(
     await force_coordinator_update(hass)
 
     # Check device registry and config entry got updated
-    device = device_registry.async_get_device(
-        identifiers={(huesyncbox.DOMAIN, "123456ABCDEF")}
+    device_entry = device_registry.async_get_device_by_identifier(
+        identifier=(huesyncbox.DOMAIN, "123456ABCDEF"),
+        config_entry_id=integration.entry.entry_id,
     )
-    assert device is not None
-    assert device.name == "New name"
+    assert device_entry is not None
+    assert device_entry.name == "New name"
 
     config_entry = hass.config_entries.async_get_entry(integration.entry.entry_id)
     assert config_entry is not None
