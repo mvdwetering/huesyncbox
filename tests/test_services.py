@@ -22,10 +22,9 @@ async def test_register_service_can_be_called_multiple_times(
 
 
 async def test_set_bridge(hass: HomeAssistant, mock_api: Mock) -> None:
-    await setup_integration(hass, mock_api)
+    integration = await setup_integration(hass, mock_api)
 
     device_registry = dr.async_get(hass)
-    integration = await setup_integration(hass, mock_api)
 
     device_entry = device_registry.async_get_device_by_identifier(
         identifier=(huesyncbox.DOMAIN, "123456ABCDEF"),
