@@ -24,7 +24,7 @@ This integration allows you to control and automate your Philips Hue Play Sync d
 
 ## Supported devices
 
-- Philips Hue Play HDMI sync box (the classic 4K with 4 HDMI inputs)
+- Philips Hue Play HDMI sync box (the original one with 4 HDMI inputs)
 - Philips Hue Play HDMI sync box 4K (single HDMI input)
 - Philips Hue Play HDMI sync box 8K
 - Philips Hue Play Screen Sync
