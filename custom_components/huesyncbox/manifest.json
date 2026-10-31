@@ -1,7 +1,7 @@
 {
   "domain": "huesyncbox",
   "name": "Philips Hue Play Sync devices",
-
+  "categories": ["media_entertainment"],
   "codeowners": [
     "@mvdwetering"
   ],
