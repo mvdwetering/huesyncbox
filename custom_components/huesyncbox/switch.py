@@ -52,8 +52,8 @@ ENTITY_DESCRIPTIONS = [
         entity_category=EntityCategory.CONFIG,
         # is_supported ensures api.behavior is not None whenever these run
         is_on=lambda api: api.behavior.force_dovi_native == 1,  # type: ignore[union-attr]
-        turn_on=lambda api: api.behavior.set_force_dovi_native(True),  # type: ignore[union-attr]
-        turn_off=lambda api: api.behavior.set_force_dovi_native(False),  # type: ignore[union-attr]
+        turn_on=lambda api: api.behavior.set_force_dovi_native(1),  # type: ignore[union-attr, arg-type]
+        turn_off=lambda api: api.behavior.set_force_dovi_native(0),  # type: ignore[union-attr, arg-type]
         is_supported=lambda api: api.behavior is not None and api.behavior.force_dovi_native is not None,
     ),
 ]

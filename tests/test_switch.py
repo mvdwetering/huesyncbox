@@ -105,6 +105,7 @@ async def test_dolby_vision_compatibility_supported(
         blocking=True,
     )
     assert mock_api.behavior.set_force_dovi_native.call_args == call(0)
+    assert type(mock_api.behavior.set_force_dovi_native.call_args.args[0]) is int
 
     # Turn on
     await hass.services.async_call(
@@ -114,3 +115,4 @@ async def test_dolby_vision_compatibility_supported(
         blocking=True,
     )
     assert mock_api.behavior.set_force_dovi_native.call_args == call(1)
+    assert type(mock_api.behavior.set_force_dovi_native.call_args.args[0]) is int
