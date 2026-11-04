@@ -112,7 +112,7 @@ def mock_api() -> Mock:
     ]
 
     mock_api.behavior = Mock(aiohuesyncbox.Behavior)
-    mock_api.behavior.force_dovi_native = 1
+    mock_api.behavior.force_dovi_native = True
 
     return mock_api
 
