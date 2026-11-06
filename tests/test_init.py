@@ -15,7 +15,7 @@ from homeassistant.helpers import (
     issue_registry as ir,
 )
 import pytest
-from pytest_homeassistant_custom_component.common import (  # type: ignore[import]
+from pytest_homeassistant.common import (  # type: ignore[import]
     MockConfigEntry,
 )
 
