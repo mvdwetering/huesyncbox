@@ -13,7 +13,7 @@ from homeassistant.const import (
 )
 from homeassistant.util import dt as dt_util
 import pytest
-from pytest_homeassistant_custom_component.common import (  # type: ignore[import]
+from pytest_homeassistant.common import (  # type: ignore[import]
     MockConfigEntry,
     async_fire_time_changed,
 )
