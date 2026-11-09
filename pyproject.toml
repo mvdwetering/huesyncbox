@@ -179,6 +179,10 @@ ignore = [
   "S101",    # Asserts in tests is ok
   "PLR2004", # Magic values in tests is ok(-ish)
 ]
+"release.py" = [
+  "T201",    # Print statements in release.py are allowed
+  "TRY003"   # Avoid specifying long messages outside the exception class
+]
 
 [tool.ruff.lint.flake8-import-conventions.extend-aliases]
 "homeassistant.helpers.area_registry" = "ar"
