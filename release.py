@@ -8,6 +8,7 @@ import logging
 from pathlib import Path
 import re
 import subprocess
+import sys
 
 from awesomeversion import AwesomeVersion  # type: ignore[import]
 
@@ -232,7 +233,7 @@ def main(args):
 
     if not Git.workarea_is_clean():
         LOGGER.error("Workarea is not clean")
-        exit(1)
+        sys.exit(1)
 
     Git.fetch_tags()
 
@@ -310,7 +311,7 @@ def main(args):
     print(" ")
 
     if input(f"Confirm release of version {next_version}? [y/N]: ") != "y":
-        exit(1)
+        sys.exit(1)
 
     if branch.is_dev:
         Git.create_branch(release_branch_name)
