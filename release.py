@@ -3,14 +3,16 @@
 
 import argparse
 from enum import Enum
-import logging
-import subprocess
 import json
-import os
+import logging
+from pathlib import Path
 import re
+import subprocess
+import sys
 
 from awesomeversion import AwesomeVersion  # type: ignore[import]
 
+LOGGER = logging.getLogger(__name__)
 MASTER = "master"
 
 
@@ -104,8 +106,7 @@ def menu(title, choices):
             continue
         if choice in range(1, len(choices) + 1):
             return choices[choice - 1]
-        else:
-            print("Invalid input, please enter a valid number")
+        print("Invalid input, please enter a valid number")
 
 
 def enum_menu(title, enum_type):
@@ -113,7 +114,7 @@ def enum_menu(title, enum_type):
     return enum_type[menu(title, choices)]
 
 
-def bump_version(
+def bump_version(  # noqa: C901, PLR0912, PLR0913
     version,
     major: bool = False,
     minor: bool = False,
@@ -180,33 +181,32 @@ def get_versions():
 
 def get_integration_name():
     dir_list = [
-        name
-        for name in os.listdir("custom_components")
-        if os.path.isdir(os.path.join("custom_components", name))
-        and name != "__pycache__"
+        path.name
+        for path in Path("custom_components").iterdir()
+        if path.is_dir() and path.name != "__pycache__"
     ]
     if len(dir_list) != 1:
         raise ValueError(
-            f"Expected one directory below custom_components, but found {', '.join(dir_list)}"
+            f"Expected one integration directory, found {', '.join(map(str, dir_list))}"
         )
     return dir_list[0]
 
 
 def update_manifest_version_number(version):
-    manifest_file = "custom_components/{}/manifest.json".format(get_integration_name())
+    manifest_file = f"custom_components/{get_integration_name()}/manifest.json"
 
-    with open(manifest_file) as f:
+    with Path(manifest_file).open() as f:
         manifest = json.load(f)
 
     manifest["version"] = str(version)
-    with open(manifest_file, "w") as f:
+    with Path(manifest_file).open("w") as f:
         json.dump(manifest, f, indent=2)
 
 
 def get_version_from_manifest():
-    manifest_file = "custom_components/{}/manifest.json".format(get_integration_name())
+    manifest_file = f"custom_components/{get_integration_name()}/manifest.json"
 
-    with open(manifest_file) as f:
+    with Path(manifest_file).open() as f:
         manifest = json.load(f)
 
     return AwesomeVersion(manifest["version"])
@@ -214,15 +214,15 @@ def get_version_from_manifest():
 
 def get_last_released_version():
     versions = get_versions()
-    logging.debug(f"All versions: {versions}")
+    LOGGER.debug("All versions: %s", versions)
 
     versions = [version for version in versions if not version.modifier]
-    logging.debug(f"Real versions: {versions}")
+    LOGGER.debug("Real versions: %s", versions)
 
     return versions[-1] if len(versions) > 0 else None
 
 
-def main(args):
+def main(args):  # noqa: C901, PLR0912, PLR0915
     branch = Git.get_current_branch()
 
     if not (branch.is_dev or branch.is_release):
@@ -231,8 +231,8 @@ def main(args):
         )
 
     if not Git.workarea_is_clean():
-        logging.error("Workarea is not clean")
-        exit(1)
+        LOGGER.error("Workarea is not clean")
+        sys.exit(1)
 
     Git.fetch_tags()
 
@@ -301,7 +301,7 @@ def main(args):
         )
 
     tag_name = f"v{next_version}"
-    logging.debug(f"Tag name: {tag_name}")
+    LOGGER.debug("Tag name: %s", tag_name)
 
     print(f"On branch: {branch.name}")
     print(f"Release branch to use: {release_branch_name}")
@@ -310,7 +310,7 @@ def main(args):
     print(" ")
 
     if input(f"Confirm release of version {next_version}? [y/N]: ") != "y":
-        exit(1)
+        sys.exit(1)
 
     if branch.is_dev:
         Git.create_branch(release_branch_name)
