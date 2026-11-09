@@ -114,7 +114,7 @@ def enum_menu(title, enum_type):
     return enum_type[menu(title, choices)]
 
 
-def bump_version(
+def bump_version(  # noqa: C901, PLR0912, PLR0913
     version,
     major: bool = False,
     minor: bool = False,
@@ -223,7 +223,7 @@ def get_last_released_version():
     return versions[-1] if len(versions) > 0 else None
 
 
-def main(args):
+def main(args):  # noqa: C901, PLR0912, PLR0915
     branch = Git.get_current_branch()
 
     if not (branch.is_dev or branch.is_release):
