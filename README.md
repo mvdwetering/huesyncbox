@@ -1,6 +1,6 @@
 # Philips Hue Play Sync devices
 
-Minimum required Home Assistant version is: 2026.8.0
+Minimum required Home Assistant version is: 2026.11.0
 
 [![Contributors](https://img.shields.io/github/contributors/mvdwetering/huesyncbox.svg)](https://github.com/mvdwetering/huesyncbox/graphs/contributors)
 
