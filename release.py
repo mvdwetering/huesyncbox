@@ -181,10 +181,9 @@ def get_versions():
 
 def get_integration_name():
     dir_list = [
-        name
-        for name in Path("custom_components").iterdir()
-        if Path.is_dir(Path("custom_components", name))
-        and name != "__pycache__"
+        path.name
+        for path in Path("custom_components").iterdir()
+        if path.is_dir() and path.name != "__pycache__"
     ]
     if len(dir_list) != 1:
         raise ValueError(
