@@ -5,7 +5,7 @@ import argparse
 from enum import Enum
 import json
 import logging
-import os
+from pathlib import Path
 import re
 import subprocess
 
@@ -180,8 +180,8 @@ def get_versions():
 def get_integration_name():
     dir_list = [
         name
-        for name in os.listdir("custom_components")
-        if os.path.isdir(os.path.join("custom_components", name))
+        for name in Path("custom_components").iterdir()
+        if Path.is_dir(Path("custom_components", name))
         and name != "__pycache__"
     ]
     if len(dir_list) != 1:
@@ -194,18 +194,18 @@ def get_integration_name():
 def update_manifest_version_number(version):
     manifest_file = f"custom_components/{get_integration_name()}/manifest.json"
 
-    with open(manifest_file) as f:
+    with Path(manifest_file).open() as f:
         manifest = json.load(f)
 
     manifest["version"] = str(version)
-    with open(manifest_file, "w") as f:
+    with Path(manifest_file).open("w") as f:
         json.dump(manifest, f, indent=2)
 
 
 def get_version_from_manifest():
     manifest_file = f"custom_components/{get_integration_name()}/manifest.json"
 
-    with open(manifest_file) as f:
+    with Path(manifest_file).open() as f:
         manifest = json.load(f)
 
     return AwesomeVersion(manifest["version"])
