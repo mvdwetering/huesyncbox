@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 from homeassistant.components.light import ATTR_BRIGHTNESS
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import config_validation as cv, device_registry as dr
-import voluptuous as vol
+import probatio
 
 import aiohuesyncbox
 
@@ -39,27 +39,27 @@ if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
     from homeassistant.core import HomeAssistant, ServiceCall
 
-HUESYNCBOX_SET_BRIDGE_SCHEMA = vol.Schema(
+HUESYNCBOX_SET_BRIDGE_SCHEMA = probatio.Schema(
     {
-        vol.Required(ATTR_DEVICE_ID): cv.string,
-        vol.Required(ATTR_BRIDGE_ID): cv.string,
-        vol.Required(ATTR_BRIDGE_USERNAME): cv.string,
-        vol.Required(ATTR_BRIDGE_CLIENTKEY): cv.string,
+        probatio.Required(ATTR_DEVICE_ID): cv.string,
+        probatio.Required(ATTR_BRIDGE_ID): cv.string,
+        probatio.Required(ATTR_BRIDGE_USERNAME): cv.string,
+        probatio.Required(ATTR_BRIDGE_CLIENTKEY): cv.string,
     }
 )
 
-HUESYNCBOX_SET_SYNC_STATE_SCHEMA = vol.Schema(
+HUESYNCBOX_SET_SYNC_STATE_SCHEMA = probatio.Schema(
     {
-        vol.Required(ATTR_DEVICE_ID): cv.string,
-        vol.Optional(ATTR_POWER): cv.boolean,
-        vol.Optional(ATTR_SYNC): cv.boolean,
-        vol.Optional(ATTR_BRIGHTNESS): vol.All(
-            vol.Coerce(float), vol.Range(min=1, max=100)
+        probatio.Required(ATTR_DEVICE_ID): cv.string,
+        probatio.Optional(ATTR_POWER): cv.boolean,
+        probatio.Optional(ATTR_SYNC): cv.boolean,
+        probatio.Optional(ATTR_BRIGHTNESS): probatio.All(
+            probatio.Coerce(float), probatio.Range(min=1, max=100)
         ),
-        vol.Optional(ATTR_MODE): vol.In(SYNC_MODES),
-        vol.Optional(ATTR_INTENSITY): vol.In(INTENSITIES),
-        vol.Optional(ATTR_INPUT): vol.In(INPUTS),
-        vol.Optional(ATTR_ENTERTAINMENT_AREA): cv.string,
+        probatio.Optional(ATTR_MODE): probatio.In(SYNC_MODES),
+        probatio.Optional(ATTR_INTENSITY): probatio.In(INTENSITIES),
+        probatio.Optional(ATTR_INPUT): probatio.In(INPUTS),
+        probatio.Optional(ATTR_ENTERTAINMENT_AREA): cv.string,
     }
 )
 

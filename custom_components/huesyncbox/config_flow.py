@@ -22,7 +22,7 @@ from homeassistant.const import (
     CONF_UNIQUE_ID,
 )
 from homeassistant.exceptions import HomeAssistantError
-import voluptuous as vol
+import probatio
 
 import aiohuesyncbox
 
@@ -35,16 +35,16 @@ if TYPE_CHECKING:
 
 _LOGGER = logging.getLogger(__name__)
 
-USER_DATA_SCHEMA = vol.Schema(
+USER_DATA_SCHEMA = probatio.Schema(
     {
-        vol.Required(CONF_HOST): str,
-        vol.Required(CONF_UNIQUE_ID): str,
+        probatio.Required(CONF_HOST): str,
+        probatio.Required(CONF_UNIQUE_ID): str,
     }
 )
 
-RECONFIGURE_DATA_SCHEMA = vol.Schema(
+RECONFIGURE_DATA_SCHEMA = probatio.Schema(
     {
-        vol.Required(CONF_HOST): str,
+        probatio.Required(CONF_HOST): str,
     }
 )
 
@@ -93,7 +93,7 @@ async def try_connection(connection_info: ConnectionInfo) -> bool:
             return await huesyncbox.is_registered()
         # Note that Unauthorized exception can not occur with the call to `is_registered`
         # Leave it here to make clear why it is not handled
-        # except aiohuesyncbox.Unauthorized:  # noqa: ERA001
+        # except aiohuesyncbox.Unauthorized:
         except aiohuesyncbox.RequestError as err:
             raise CannotConnectError from err
 
