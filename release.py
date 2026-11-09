@@ -11,6 +11,7 @@ import subprocess
 
 from awesomeversion import AwesomeVersion  # type: ignore[import]
 
+LOGGER = logging.getLogger(__name__)
 MASTER = "master"
 
 
@@ -213,10 +214,10 @@ def get_version_from_manifest():
 
 def get_last_released_version():
     versions = get_versions()
-    logging.debug(f"All versions: {versions}")
+    LOGGER.debug("All versions: %s", versions)
 
     versions = [version for version in versions if not version.modifier]
-    logging.debug(f"Real versions: {versions}")
+    LOGGER.debug("Real versions: %s", versions)
 
     return versions[-1] if len(versions) > 0 else None
 
@@ -230,7 +231,7 @@ def main(args):
         )
 
     if not Git.workarea_is_clean():
-        logging.error("Workarea is not clean")
+        LOGGER.error("Workarea is not clean")
         exit(1)
 
     Git.fetch_tags()
@@ -300,7 +301,7 @@ def main(args):
         )
 
     tag_name = f"v{next_version}"
-    logging.debug(f"Tag name: {tag_name}")
+    LOGGER.debug("Tag name: %s", tag_name)
 
     print(f"On branch: {branch.name}")
     print(f"Release branch to use: {release_branch_name}")
