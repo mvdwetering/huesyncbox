@@ -187,7 +187,7 @@ def get_integration_name():
     ]
     if len(dir_list) != 1:
         raise ValueError(
-            f"Expected one directory below custom_components, but found {', '.join(dir_list)}"
+            f"Expected one integration directory, found {', '.join(map(str, dir_list))}"
         )
     return dir_list[0]
 
