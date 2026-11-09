@@ -71,8 +71,78 @@ testpaths = ["tests"]
 [tool.ruff]
 src = ["custom_components/huesyncbox"]
 
-# Most ignores are taken from Home Assistant configuration
+# Most settings are taken from Home Assistant configuration
 [tool.ruff.lint]
+select = [
+  "A001",   # Variable {name} is shadowing a Python builtin
+  "ASYNC",  # flake8-async
+  "B",      # flake8-bugbear
+  "BLE",
+  "C",      # complexity
+  "COM818", # Trailing comma on bare tuple prohibited
+  "D",      # docstrings
+  "DTZ003", # Use datetime.now(tz=) instead of datetime.utcnow()
+  "DTZ004", # Use datetime.fromtimestamp(ts, tz=) instead of datetime.utcfromtimestamp(ts)
+  "DTZ011", # Use datetime.now(tz=).date() instead of date.today()
+  "E",      # pycodestyle
+  "F",      # pyflakes/autoflake
+  "F541",   # f-string without any placeholders
+  "FLY",    # flynt
+  "FURB",   # refurb
+  "G",      # flake8-logging-format
+  "I",      # isort
+  "INP",    # flake8-no-pep420
+  "ISC",    # flake8-implicit-str-concat
+  "ICN001", # import concentions; {name} should be imported as {asname}
+  "ICN002", # import conventions; {name} should not be imported as {asname}
+  "LOG",    # flake8-logging
+  "N804",   # First argument of a class method should be named cls
+  "N805",   # First argument of a method should be named self
+  "N806",   # Variable {name} in function should be snake_case
+  "N815",   # Variable {name} in class scope should not be mixedCase
+  "PERF",   # Perflint
+  "PGH",    # pygrep-hooks
+  "PIE",    # flake8-pie
+  "PL",     # pylint
+  "PT",     # flake8-pytest-style
+  "PTH",    # flake8-pathlib
+  "PYI",    # flake8-pyi
+  "RET",    # flake8-return
+  "RSE",    # flake8-raise
+  "RUF",    # Ruff-specific rules (see `ignore` for exclusions)
+  "S107",   # Possible hardcoded password assigned to function default
+  "S102",   # Use of exec detected
+  "S103",   # bad-file-permissions
+  "S108",   # hardcoded-temp-file
+  "S301",   # suspicious-pickle-usage
+  "S306",   # suspicious-mktemp-usage
+  "S307",   # suspicious-eval-usage
+  "S313",   # suspicious-xmlc-element-tree-usage
+  "S314",   # suspicious-xml-element-tree-usage
+  "S315",   # suspicious-xml-expat-reader-usage
+  "S316",   # suspicious-xml-expat-builder-usage
+  "S317",   # suspicious-xml-sax-usage
+  "S318",   # suspicious-xml-mini-dom-usage
+  "S319",   # suspicious-xml-pull-dom-usage
+  "S601",   # paramiko-call
+  "S602",   # subprocess-popen-with-shell-equals-true
+  "S604",   # call-with-shell-equals-true
+  "S608",   # hardcoded-sql-expression
+  "S609",   # unix-command-wildcard-injection
+  "SIM",    # flake8-simplify
+  "SLF",    # flake8-self
+  "SLOT",   # flake8-slots
+  "T100",   # Trace found: {name} used
+  "T20",    # flake8-print
+  "TC",     # flake8-type-checking
+  "TID",    # Tidy imports
+  "TRY",    # tryceratops
+  "UP",     # pyupgrade
+  "UP031",  # Use format specifiers instead of percent format
+  "UP032",  # Use f-string instead of `format` call
+  "W",      # pycodestyle
+]
+
 ignore = [
   "A005",   # It is just wrong
   "ANN401", # Opiniated warning on disallowing dynamically typed expressions
@@ -102,12 +172,15 @@ ignore = [
   "Q003",
   "W191",
 ]
-select = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [
   "S101",    # Asserts in tests is ok
   "PLR2004", # Magic values in tests is ok(-ish)
+]
+"release.py" = [
+  "T201",    # Print statements in release.py are allowed
+  "TRY003"   # Avoid specifying long messages outside the exception class
 ]
 
 [tool.ruff.lint.flake8-import-conventions.extend-aliases]
