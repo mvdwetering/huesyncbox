@@ -51,8 +51,8 @@ dev = [
   "pytest-cov",
   "pytest-mock",
   "awesomeversion>=24.0.0",
-  "homeassistant==2026.8.0",
-  "pytest-homeassistant-custom-component",
+  "homeassistant==2026.11.0",
+  "pytest-homeassistant==2026.11.0",
   "homeassistant-stubs",
 ]
 
@@ -64,7 +64,7 @@ exclude_also = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--cov=custom_components/huesyncbox --cov-report=term-missing --cov-report=html"
+addopts = "-p no:respx --cov=custom_components/huesyncbox --cov-report=term-missing --cov-report=html"
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
