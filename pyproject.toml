@@ -146,6 +146,7 @@ select = [
 
 ignore = [
   "A005",   # It is just wrong
+  "ANN401", # Opiniated warning on disallowing dynamically typed expressions
   # Ignoring missing docstrings. Most things should be clear and they tend to get out of date which is worse.
   "D100", # Missing docstrings for public module
   "D101", # Missing docstrings for public classes
@@ -161,10 +162,15 @@ ignore = [
   "TID252", # Relative imports
 
   # Formatter conflicts
+  "COM812",
   "COM819",
   "D206",
   "E501",
   "ISC001",
+  "Q000",
+  "Q001",
+  "Q002",
+  "Q003",
   "W191",
 ]
 
