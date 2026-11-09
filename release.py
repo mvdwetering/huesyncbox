@@ -3,11 +3,11 @@
 
 import argparse
 from enum import Enum
-import logging
-import subprocess
 import json
+import logging
 import os
 import re
+import subprocess
 
 from awesomeversion import AwesomeVersion  # type: ignore[import]
 
@@ -104,8 +104,7 @@ def menu(title, choices):
             continue
         if choice in range(1, len(choices) + 1):
             return choices[choice - 1]
-        else:
-            print("Invalid input, please enter a valid number")
+        print("Invalid input, please enter a valid number")
 
 
 def enum_menu(title, enum_type):
@@ -193,7 +192,7 @@ def get_integration_name():
 
 
 def update_manifest_version_number(version):
-    manifest_file = "custom_components/{}/manifest.json".format(get_integration_name())
+    manifest_file = f"custom_components/{get_integration_name()}/manifest.json"
 
     with open(manifest_file) as f:
         manifest = json.load(f)
@@ -204,7 +203,7 @@ def update_manifest_version_number(version):
 
 
 def get_version_from_manifest():
-    manifest_file = "custom_components/{}/manifest.json".format(get_integration_name())
+    manifest_file = f"custom_components/{get_integration_name()}/manifest.json"
 
     with open(manifest_file) as f:
         manifest = json.load(f)
